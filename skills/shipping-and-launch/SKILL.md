@@ -235,36 +235,9 @@ In the first hour after launch:
 6. Confirm rollback mechanism works (dry run if possible)
 ```
 
-## SLOs and Error Budgets
+## Error Budget Release Gate
 
-Monitoring tells you what is happening. SLOs tell you what *should* be happening and how much failure you can afford. Without them, alert thresholds are guesses and "is this good enough to ship?" has no shared answer.
-
-### The Three Concepts
-
-**SLI (Service Level Indicator):** The actual measurement — what you observe.
-
-```
-Error rate    = failed requests / total requests
-Latency       = P95 response time over a rolling window
-Availability  = successful health checks / total checks
-```
-
-**SLO (Service Level Objective):** The target for the SLI — the promise you make to users.
-
-```
-99.9% of API requests succeed in < 500ms, measured over a 30-day window
-```
-
-**Error budget:** The allowed failure implied by the SLO.
-
-```
-100% − 99.9% = 0.1% of requests may fail
-Over 30 days (43,200 minutes): 43 minutes of full outage, or proportionally more partial failure
-```
-
-### Error Budgets Gate Releases
-
-The error budget is the mechanism that balances feature velocity against reliability:
+Your service's error budget (defined by its SLO in `observability-and-instrumentation`) determines whether it's safe to ship. Use it as an objective gate — not a negotiation:
 
 ```
 Budget remaining > 20%  →  Ship normally; monitor closely
@@ -273,29 +246,7 @@ Budget exhausted        →  Freeze feature work; focus entirely on reliability
 Budget resets           →  Resume normal pace; bake in the fix that recovered it
 ```
 
-This gives both product and engineering a shared, objective answer to "can we ship?" — not a negotiation, not a gut call.
-
-### Setting SLO Targets
-
-Start from measurement, not aspiration:
-
-1. Instrument the SLI first (you need baseline data before you can set a target).
-2. Set the initial SLO at roughly your current p75 — achievable, but not slack.
-3. Tighten it incrementally as reliability improves and you understand your user's tolerance.
-
-**Avoid the four-nines trap.** 99.99% uptime sounds right for a serious service, but it costs exponentially more than 99.9% to maintain and allows only 52 minutes of downtime per year. Know what your users actually need — most internal tools and early-stage products can start at 99.5% and tighten from there.
-
-### Burn Rate Alerts
-
-Track how fast you're consuming the error budget, not just whether you've breached the SLO:
-
-```
-Normal burn rate = 1×  (budget consumed at exactly the SLO pace)
-High burn rate   = 5×  (alert: investigate)
-Critical burn    = 14× (page on-call: you'll exhaust 30 days' budget in 2 days)
-```
-
-Burn rate alerts catch slow degradations that never individually exceed the SLO threshold but collectively drain the budget. Connect these to the rollout thresholds in the Staged Rollout section — a high burn rate during a canary is a hold signal, not just a monitor signal.
+A high burn rate during a canary (consuming budget faster than the baseline pace) is a **hold** signal in the rollout thresholds table above — treat it the same as an elevated error rate.
 
 ## Rollback Strategy
 
@@ -341,8 +292,7 @@ Every deployment needs a rollback plan before it happens:
 | "Monitoring is overhead" | Not having monitoring means you discover problems from user complaints instead of dashboards. |
 | "We'll add monitoring later" | Add it before launch. You can't debug what you can't see. |
 | "Rolling back is admitting failure" | Rolling back is responsible engineering. Shipping a broken feature is the failure. |
-| "We'll set SLOs later when we have data" | SLOs don't require perfect data — start with a hypothesis, track it, refine it. No SLO means no shared definition of working. |
-| "Customers expect 99.99% uptime" | Each additional 9 costs exponentially more. Know what your users actually need before committing to a target. |
+| "The error rate looks fine, let's keep shipping" | Check the burn rate, not just the current error rate. Consuming budget faster than baseline is a hold signal even when individual thresholds are green. |
 
 ## Red Flags
 
@@ -353,9 +303,7 @@ Every deployment needs a rollback plan before it happens:
 - No one monitoring the deploy for the first hour
 - Production environment configuration done by memory, not code
 - "It's Friday afternoon, let's ship it"
-- Alert thresholds set without reference to an SLO
 - Error budget exhausted but feature work continues unchanged
-- SLO targets set aspirationally without baseline measurement
 
 ## Verification
 
@@ -378,6 +326,4 @@ After deploying:
 
 For every shipped service:
 
-- [ ] SLIs defined (error rate, latency, and/or availability for each user-facing feature)
-- [ ] SLO targets derived from baseline measurement, not aspiration
-- [ ] Error budget policy documented: what changes when budget drops below 20%, and when it's exhausted
+- [ ] Error budget policy in place: what happens when budget drops below 20% and when it's exhausted (see `observability-and-instrumentation` for SLO/SLI setup)
