@@ -237,7 +237,7 @@ In the first hour after launch:
 
 ## Error Budget Release Gate
 
-Your service's error budget (defined by its SLO in `observability-and-instrumentation`) determines whether it's safe to ship. Use it as an objective gate — not a negotiation:
+Your service's error budget — the fraction of requests or time your SLO allows to fail — determines whether it's safe to ship. Use it as an objective gate — not a negotiation:
 
 ```
 Budget remaining > 20%  →  Ship normally; monitor closely
@@ -282,6 +282,7 @@ Every deployment needs a rollback plan before it happens:
 - For security pre-launch checks, see `../../references/security-checklist.md`
 - For performance pre-launch checklist, see `../../references/performance-checklist.md`
 - For accessibility verification before launch, see `../../references/accessibility-checklist.md`
+- For the alerting rules and SLO-tied thresholds, see `observability-and-instrumentation`
 
 ## Common Rationalizations
 
@@ -326,4 +327,4 @@ After deploying:
 
 For every shipped service:
 
-- [ ] Error budget policy in place: what happens when budget drops below 20% and when it's exhausted (see `observability-and-instrumentation` for SLO/SLI setup)
+- [ ] Error budget policy in place: know what action to take when budget drops below 20% and when it's exhausted
