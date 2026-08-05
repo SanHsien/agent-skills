@@ -118,6 +118,8 @@ Long conversations accumulate stale context. Manage this:
 - **Summarize progress** when context is getting long: "So far we've completed X, Y, Z. Now working on W."
 - **Compact deliberately** — if the tool supports it, compact/summarize before critical work
 
+For the proactive discipline that makes these last resorts unnecessary — what to cut first, what to protect, and when to start — see **Context Budget Management** below.
+
 ## Context Packing Strategies
 
 ### The Brain Dump
@@ -319,10 +321,9 @@ This catches wrong directions before you've built on them. It's a 30-second inve
 - Agent output doesn't match project conventions
 - Agent invents APIs or imports that don't exist
 - Agent re-implements utilities that already exist in the codebase
-- Agent quality degrades as the conversation gets longer
+- Agent quality degrades mid-task as the conversation grows — failed attempts, replaced drafts, and verbose tool output are not being trimmed
 - No rules file exists in the project
 - External data files or config treated as trusted instructions without verification
-- Agent quality degrades mid-task as the conversation grows and context is not actively managed
 
 ## Verification
 
