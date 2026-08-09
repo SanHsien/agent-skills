@@ -215,7 +215,7 @@ The detail is gone; the decision is preserved. If the detail turns out to matter
 
 ### Order for recency
 
-Put the most task-critical content **last** in context. Transformer attention weights recent tokens more heavily than earlier ones. The active error message or current constraint belongs closer to the generation point than background specs loaded at session start:
+Put the most task-critical content **last** in context. Models recall content at the start and end of the window more reliably than the middle (the lost-in-the-middle effect — Liu et al., 2023). Keep stable rules and specs at the start; put the active task material last, closest to the generation point:
 
 ```
 ← session start                              generation point →
