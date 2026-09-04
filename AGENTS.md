@@ -90,3 +90,21 @@ See [docs/agents.md](docs/agents.md) for the decision matrix and [references/orc
 Skills in this repo are markdown-first: each lives at `skills/<kebab-case-name>/SKILL.md` with YAML frontmatter (`name`, `description`) and follows the section anatomy (Overview, When to Use, Process, Common Rationalizations, Red Flags, Verification). Add a `scripts/` directory only when the skill ships runnable helpers; most skills are markdown only, and there are no per-skill zip packages.
 
 For the full format, naming conventions, frontmatter rules, supporting-file thresholds, and writing principles, see [docs/skill-anatomy.md](docs/skill-anatomy.md), the single source of truth for skill structure. Do not restate that guidance here, link to it.
+
+## Fork 維護規則（SanHsien 維護線）
+
+> 本節只適用於 `SanHsien/agent-skills`（本 fork）。上游 `addyosmani/agent-skills` 沒有這一節。
+
+- `origin/main` 是唯一長期分支，日常修改直接推上去；只有需要他人審查或高風險改動才開
+  branch → PR。
+- 不要 `git push upstream`。`upstream/main` 只用來 fetch、比對，不推送、不 force-push、不刪除。
+- PR、push、release 一律指向 `SanHsien/agent-skills`，除非維護者在**當次對話**明確同意回貢
+  上游——回貢判準見 [`FORK.md`](FORK.md)。
+- Windows 本機與 CI 的 canonical gate 是 `tools/dev_check.ps1`（ruff、pytest、
+  `node scripts/validate-skills.js`、`node scripts/validate-commands.js`、
+  `tools/check_links.py`）；上游既有的 `.github/workflows/test-plugin-install.yml` 維持不動，
+  不重複覆蓋。
+- 產品 `skills/`、`commands/`、`.claude/commands/`、`.gemini/commands/`、`agents/`、`hooks/`、
+  `references/`、`evals/`、`scripts/` 與既有 `docs/*.md` 以上游為準，不因本線需求改寫成維護索引。
+- 上游同步、決策記錄、開發環境細節見 [`FORK.md`](FORK.md)、[`docs/UPSTREAM.md`](docs/UPSTREAM.md)、
+  [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md)。

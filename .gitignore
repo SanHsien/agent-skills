@@ -7,3 +7,11 @@ node_modules/
 .claude/sdd-cache/
 evals/results/
 __pycache__/
+
+# --- SanHsien maintenance fork: local tooling output (see FORK.md) ---
+.venv/
+.pytest_cache/
+.ruff_cache/
+# Generated locally and in CI; published to the job summary, not committed.
+upstream-review-report.md
+dependency-freshness-report.md

@@ -1,0 +1,9 @@
+{
+  "repo": "https://github.com/addyosmani/agent-skills.git",
+  "branch": "main",
+  "reviewed_through": "1c760d643497e9da289300e5eb2f5aca861503f7",
+  "reviewed_date": "2026-09-04",
+  "notes": "Fork overlay established at this commit (Merge pull request #316 from nucliweb/docs/advanced-per-agent-configuration). No upstream commits adopted beyond the fork point. Subsequent upstream commits, PRs, and issues require review before the watermarks advance.",
+  "reviewed_pr_through": 547,
+  "reviewed_issue_through": 542
+}
