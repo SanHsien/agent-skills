@@ -90,7 +90,8 @@ Gemini CLI、Windsurf、OpenCode、GitHub Copilot、Antigravity CLI、Command Co
 [README.en.md 的 Quick Start 章節](README.en.md#quick-start)，以及對應的宿主設定文件：
 [gemini-cli-setup.md](docs/gemini-cli-setup.md)、
 [windsurf-setup.md](docs/windsurf-setup.md)、[opencode-setup.md](docs/opencode-setup.md)、
-[copilot-setup.md](docs/copilot-setup.md)、[antigravity-setup.md](docs/antigravity-setup.md)、
+[copilot-setup.md](docs/copilot-setup.md)、[copilot-cli-setup.md](docs/copilot-cli-setup.md)、
+[antigravity-setup.md](docs/antigravity-setup.md)、
 [commandcode-setup.md](docs/commandcode-setup.md)。這些是上游文件，本 fork 不重寫安裝指令。
 
 ### 只想裝單一 skill
