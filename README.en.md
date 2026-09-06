@@ -173,6 +173,8 @@ See [docs/opencode-setup.md](docs/opencode-setup.md).
 
 Use agent definitions from `agents/` as Copilot personas and skill content in `.github/copilot-instructions.md`. See [docs/copilot-setup.md](docs/copilot-setup.md).
 
+Using the standalone `copilot` CLI? Install it as a plugin — see [docs/copilot-cli-setup.md](docs/copilot-cli-setup.md).
+
 </details>
 
 <details>

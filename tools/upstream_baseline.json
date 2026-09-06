@@ -1,9 +1,9 @@
 {
   "repo": "https://github.com/addyosmani/agent-skills.git",
   "branch": "main",
-  "reviewed_through": "1c760d643497e9da289300e5eb2f5aca861503f7",
-  "reviewed_date": "2026-09-04",
-  "notes": "Fork overlay established at this commit (Merge pull request #316 from nucliweb/docs/advanced-per-agent-configuration). No upstream commits adopted beyond the fork point. Subsequent upstream commits, PRs, and issues require review before the watermarks advance.",
-  "reviewed_pr_through": 547,
+  "reviewed_through": "469d00f4e67ff4a21eb6e6e467a086c9a1f1deb8",
+  "reviewed_date": "2026-09-06",
+  "notes": "Reviewed 13 commits through upstream main: adopted seven substantive documentation changes, skipped five content-empty merge commits, and deferred the 0.6.9 manifest bump because the fork's reachable release tag remains 0.6.8. Open PRs #548 and #551-#560 were reviewed and left pending upstream merge/head changes.",
+  "reviewed_pr_through": 560,
   "reviewed_issue_through": 542
 }

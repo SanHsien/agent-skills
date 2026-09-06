@@ -82,3 +82,21 @@ Actions 版本漂移的落差，這裡一開始就補上。
 
 **限制**：上游若把宣傳段落一併推進來，merge 後刪掉／不要合進公開入口。技能／指令目錄表與安裝
 方式可同步。
+
+## 2026-09-06：審完 13 個 upstream commits 與 PR #548–#560
+
+**採用**：`dc469a9`、`f0550d8`、`cca4df5` 的 release-gate SLO 說明；`6a9f2eb` 的單一 log
+entry point；`45fd4a0` 的 destructive path allowlist／depth／owner 防線；`878d5d4` 的 session
+handoff；`f7fe1a4` 的 Copilot CLI 與 VS Code 分流。產品檔以 cherry-pick 保留上游作者與提交，
+`README.md` 只解安裝入口衝突，英文增量同步到 `README.en.md`。
+
+**略過**：`8c8cfd1`、`85ea8fb`、`4d10bcb`、`858c1ae`、`469d00f` 是上述內容的 merge
+commit，沒有額外產品 diff；`84ee506` 的 0.6.9 manifest bump 依賴上游 tag ancestry，單獨
+cherry-pick 會讓 `scripts/validate-versions.js` 仍以 fork 可達的 0.6.8 tag 判定並失敗，因此等
+下一次可保留 tag topology 的 release 同步。
+
+**PR 水位**：#549、#550 已由上述 commit 採用；#548 與 #551–#560 仍 open，已讀 diff 後
+記為等待。#548 是 13 檔、1252 行的 catalog generator；#551 是跨 19 檔的 `/review` →
+`/code-review` 相容性改名；#552–#560 分別涵蓋穩定 skill 名稱、既有專案安裝、外部 spec
+artifact、社群影片、互動教學、native router、agent-first CLI、restartable boundary 與 host
+adapter 表。這些都跟隨上游定稿，不在 open 狀態先做 fork-only 搬運。

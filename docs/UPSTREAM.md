@@ -46,3 +46,13 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 - issue：已看到 **#542**（`reviewed_issue_through`）
 - commit baseline：`1c760d6`（完整 SHA 見 `tools/upstream_baseline.json`）
 - 下次只看編號更大的，或已評估項目是否出現新 commit／新 head
+
+## 2026-09-06：13 commits／13 PR bounded review
+
+- commit baseline：`469d00f4e67ff4a21eb6e6e467a086c9a1f1deb8`
+- PR：已看到 **#560**；issue：仍為 **#542**（沒有新增）
+- 採用七筆實質內容：shipping SLO 三筆、observability entry point、destructive path guard、
+  lifecycle handoff、Copilot CLI／VS Code 文件。
+- 五筆 merge commit 沒有額外 diff；0.6.9 manifest bump 因 fork tag ancestry 不相容而略過。
+- #548、#551–#560 都仍 open；完整逐筆理由在 [`DECISIONS.md`](DECISIONS.md)，合併或 head
+  改變後再重新判斷，不 raw merge 47 檔的 fork overlay 差異。
