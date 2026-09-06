@@ -58,4 +58,69 @@ Invoke-Step -Label "Check Markdown links" -Exe $pythonExe -Arguments @(
     "tools\check_links.py"
 )
 
+function Invoke-SkillSpectorSelfScan {
+    # Pre-publish self-scan: run the SkillSpector security scanner against every
+    # skill this repo ships, the same way a downstream host would scan a
+    # third-party skill before installing it. Ratchet, not one-time: new findings
+    # (anything not already in .skillspector-baseline.yaml) fail this gate; they
+    # must be reviewed and either fixed or added to the baseline with a specific
+    # reason -- never rubber-stamped.
+    #
+    # Gate signal is the JSON report's `issues` array, not $LASTEXITCODE:
+    # SkillSpector's exit code reflects an aggregate risk-score threshold (see its
+    # docs/SUPPRESSION.md), not "any un-suppressed finding present", so relying on
+    # exit code alone would silently let new LOW/MEDIUM findings through.
+    param(
+        [Parameter(Mandatory)]
+        [string]$RepoRoot,
+        [Parameter(Mandatory)]
+        [string]$SkillsRoot
+    )
+
+    $skillSpectorCmd = Get-Command skillspector -ErrorAction SilentlyContinue
+    if (-not $skillSpectorCmd) {
+        Write-Host "==> SkillSpector self-scan (skipped: 'skillspector' not found on PATH)"
+        return
+    }
+
+    $baselinePath = Join-Path $RepoRoot ".skillspector-baseline.yaml"
+    if (-not (Test-Path -LiteralPath $baselinePath)) {
+        throw ("Missing $baselinePath -- generate baseline entries with " +
+            "'skillspector baseline skills\<name> --no-llm --reason ...' for every " +
+            "skill under skills\ before this gate can run.")
+    }
+
+    $reportDir = Join-Path $RepoRoot ".skillspector-reports"
+    New-Item -ItemType Directory -Force -Path $reportDir | Out-Null
+
+    Write-Host "==> SkillSpector self-scan (skills\*)"
+    $skillDirs = Get-ChildItem -LiteralPath $SkillsRoot -Directory
+    $failedSkills = @()
+    foreach ($skill in $skillDirs) {
+        $reportPath = Join-Path $reportDir "$($skill.Name).json"
+        & $skillSpectorCmd.Source scan $skill.FullName --no-llm --format json `
+            --output $reportPath --baseline $baselinePath
+        if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 1) {
+            throw ("skillspector scan crashed on skill '$($skill.Name)' " +
+                "(exit code $LASTEXITCODE); see $reportPath")
+        }
+        $report = Get-Content -LiteralPath $reportPath -Raw | ConvertFrom-Json
+        if ($report.issues.Count -gt 0) {
+            $failedSkills += "$($skill.Name) ($($report.issues.Count) finding(s))"
+        }
+    }
+
+    if ($failedSkills.Count -gt 0) {
+        throw ("SkillSpector found new, un-baselined finding(s) in: " +
+            "$($failedSkills -join '; '). Review the reports under $reportDir and " +
+            "either fix the skill content or add a reviewed fingerprint/rule to " +
+            ".skillspector-baseline.yaml with a specific reason -- do not rubber-stamp " +
+            "CRITICAL or otherwise real findings into the baseline.")
+    }
+
+    Write-Host "SkillSpector self-scan: no new findings across $($skillDirs.Count) skill(s)."
+}
+
+Invoke-SkillSpectorSelfScan -RepoRoot $repoRoot -SkillsRoot (Join-Path $repoRoot "skills")
+
 Write-Host "WINDOWS DEV CHECK GREEN"
