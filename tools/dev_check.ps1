@@ -101,7 +101,11 @@ function Invoke-SkillSpectorSelfScan {
     # added SKILLSPECTOR_MAX_STATIC_SECONDS; older builds ignore it and keep the 30s
     # default, which is the previous behaviour rather than a silent weakening.
     $previousStaticBudget = $env:SKILLSPECTOR_MAX_STATIC_SECONDS
+    $previousWorkflowBudget = $env:SKILLSPECTOR_MAX_WORKFLOW_SECONDS
     $env:SKILLSPECTOR_MAX_STATIC_SECONDS = "0"
+    # The graph-wide ceiling binds before the per-artifact one on a skill with
+    # many files; lifting only one leaves the same load-dependent verdict.
+    $env:SKILLSPECTOR_MAX_WORKFLOW_SECONDS = "0"
     try {
     Write-Host "==> SkillSpector self-scan (skills\*)"
     $skillDirs = Get-ChildItem -LiteralPath $SkillsRoot -Directory
@@ -132,6 +136,7 @@ function Invoke-SkillSpectorSelfScan {
     }
     finally {
         $env:SKILLSPECTOR_MAX_STATIC_SECONDS = $previousStaticBudget
+        $env:SKILLSPECTOR_MAX_WORKFLOW_SECONDS = $previousWorkflowBudget
     }
 }
 
