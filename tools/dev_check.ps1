@@ -93,6 +93,16 @@ function Invoke-SkillSpectorSelfScan {
     $reportDir = Join-Path $RepoRoot ".skillspector-reports"
     New-Item -ItemType Directory -Force -Path $reportDir | Out-Null
 
+    # Remove the scanner's 30-second per-artifact ceiling. It bounds pathological
+    # input, but a large reference file on slow storage sits close enough to it that
+    # machine load decides whether the scan completes -- the same tree then passes or
+    # exits 2 depending on what else is running. A gate has to be reproducible, so
+    # here we buy completeness with wall time. Needs SkillSpector >= the commit that
+    # added SKILLSPECTOR_MAX_STATIC_SECONDS; older builds ignore it and keep the 30s
+    # default, which is the previous behaviour rather than a silent weakening.
+    $previousStaticBudget = $env:SKILLSPECTOR_MAX_STATIC_SECONDS
+    $env:SKILLSPECTOR_MAX_STATIC_SECONDS = "0"
+    try {
     Write-Host "==> SkillSpector self-scan (skills\*)"
     $skillDirs = Get-ChildItem -LiteralPath $SkillsRoot -Directory
     $failedSkills = @()
@@ -119,6 +129,10 @@ function Invoke-SkillSpectorSelfScan {
     }
 
     Write-Host "SkillSpector self-scan: no new findings across $($skillDirs.Count) skill(s)."
+    }
+    finally {
+        $env:SKILLSPECTOR_MAX_STATIC_SECONDS = $previousStaticBudget
+    }
 }
 
 Invoke-SkillSpectorSelfScan -RepoRoot $repoRoot -SkillsRoot (Join-Path $repoRoot "skills")
