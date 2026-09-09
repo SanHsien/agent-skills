@@ -10,6 +10,22 @@
 
 ---
 
+## [Unreleased] - 2026-09-09
+
+### 修復
+
+- **依賴新鮮度漏看了每一個 CodeQL pin。** `_USES_RE` 只匹配 `owner/repo@`，而 `github/codeql-action/init`
+  是三段路徑，所以 `codeql.yml` 裡的兩個 pin 從來沒進過報告。路徑改為允許子目錄，查 Releases 時再
+  截回擁有 tag 的 repo。
+- **無法比較的 latest 不再報 OK。** `github/codeql-action` 的 `releases/latest` 回 `codeql-bundle-v2.26.4`，
+  與 workflow 釘的 `v4.37.4` 不同編號系統，解析不出數字就一路報 OK。現在解析失敗會改查 tag 列表取最新
+  可解析版本；真的比不了就記 `CHECK FAILED`——不會失敗的檢查不是檢查。
+- **CodeQL action 重釘 v4.37.4 → v4.37.9**（SHA `cdf488f`），修好檢查後第一次跑就抓到的實際漂移。
+
+兩個缺陷是在 `SanHsien/dashi-ppt-skill` 移植本檔的檢查器時發現的，同源同修。
+
+---
+
 ## [Unreleased] - 2026-09-04
 
 ### 新增

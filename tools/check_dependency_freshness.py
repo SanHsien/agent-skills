@@ -37,8 +37,11 @@ REQUIREMENT_FILES = ("requirements-dev.txt",)
 _REQUIREMENT_RE = re.compile(r"^([A-Za-z0-9_.-]+)(?:\[[^\]]+\])?\s*(.*)$")
 _MINIMUM_RE = re.compile(r"(>=|>|==|~=)\s*([0-9][0-9A-Za-z.!+_-]*)")
 _RELEASE_RE = re.compile(r"^[0-9]+(?:\.[0-9]+)*")
+# The path can carry a subdirectory -- `github/codeql-action/init` is one action
+# in a repo that publishes several. Matching only `owner/repo` silently skipped
+# every one of those, which is how a CodeQL pin ages without anything noticing.
 _USES_RE = re.compile(
-    r"^\s*(?:-\s*)?uses:\s*([\w.\-]+/[\w.\-]+)@([0-9a-fA-F]{40}|\S+)"
+    r"^\s*(?:-\s*)?uses:\s*([\w.\-]+/[\w.\-]+(?:/[\w.\-]+)*)@([0-9a-fA-F]{40}|\S+)"
     r"(?:\s*#\s*(.*))?\s*$",
     re.MULTILINE,
 )
@@ -220,19 +223,57 @@ def fetch_pypi_version(package_name: str, timeout: float = 10.0) -> str | None:
     return str(version) if version else None
 
 
-def fetch_github_release(action_name: str, timeout: float = 10.0) -> str | None:
-    quoted_name = urllib.parse.quote(action_name, safe="/")
+def action_repository(action_name: str) -> str:
+    """`github/codeql-action/init` -> `github/codeql-action`.
+
+    Releases belong to the repository, not to the subdirectory action inside it,
+    so the lookup trims the path while the report keeps showing what the workflow
+    actually declares.
+    """
+    return "/".join(action_name.split("/")[:2])
+
+
+def _github_json(path: str, timeout: float) -> object | None:
     request = urllib.request.Request(
-        f"https://api.github.com/repos/{quoted_name}/releases/latest",
+        f"https://api.github.com/{path}",
         headers={"Accept": "application/vnd.github+json", "User-Agent": USER_AGENT},
     )
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:  # noqa: S310
-            payload = json.loads(response.read().decode("utf-8"))
+            return json.loads(response.read().decode("utf-8"))
     except (OSError, ValueError):
         return None
-    tag = payload.get("tag_name")
-    return str(tag).lstrip("vV") if tag else None
+
+
+def fetch_github_release(action_name: str, timeout: float = 10.0) -> str | None:
+    """Latest comparable release of the action's repository, or None.
+
+    `releases/latest` is the right question for most actions and the wrong one
+    for some: `github/codeql-action` tags its latest release `codeql-bundle-
+    v2.26.4`, which shares no numbering with the `v4.37.4` that workflows pin.
+    Returning that string made every CodeQL row read `OK` forever -- a check
+    that cannot fail is not a check. When the release tag does not parse as a
+    version, fall back to the tag list and take the newest one that does.
+    """
+    repo = urllib.parse.quote(action_repository(action_name), safe="/")
+    payload = _github_json(f"repos/{repo}/releases/latest", timeout)
+    if isinstance(payload, dict):
+        tag = str(payload.get("tag_name") or "").lstrip("vV")
+        if release_key(tag):
+            return tag
+
+    tags = _github_json(f"repos/{repo}/tags?per_page=100", timeout)
+    if not isinstance(tags, list):
+        return None
+    versions = [
+        stripped
+        for stripped in (str(item.get("name") or "").lstrip("vV") for item in tags
+                         if isinstance(item, dict))
+        if release_key(stripped)
+    ]
+    if not versions:
+        return None
+    return max(versions, key=release_key)
 
 
 def collect_status(
@@ -247,12 +288,16 @@ def collect_status(
         latest = fetch(package["name"])
         reviewed, reason = deferrals.get(package["name"].lower(), ("", ""))
         deferred = bool(reviewed and latest and not is_newer_version(latest, reviewed))
+        # An answer that cannot be compared is not an answer. Without this a
+        # non-numeric "latest" scores as OK, which is the same failure mode as
+        # reporting "nothing to review" when the lookup never succeeded.
+        incomparable = bool(latest) and release_key(latest) is None
         rows.append(
             {
                 **package,
                 "latest": latest or "unknown",
                 "outdated": bool(minimum and latest and is_newer_version(latest, minimum)),
-                "check_failed": not minimum or latest is None,
+                "check_failed": not minimum or latest is None or incomparable,
                 "deferred_reason": reason if deferred else "",
             }
         )

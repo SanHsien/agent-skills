@@ -11,6 +11,18 @@ lives in its own history and in the review ledger at
 
 ---
 
+## [Unreleased] - 2026-09-09
+
+### Fixed
+
+- **Dependency freshness was blind to every CodeQL pin.** `_USES_RE` matched only `owner/repo@`, so the three-segment `github/codeql-action/init` and `/analyze` in `codeql.yml` never reached the report. The path now allows subdirectories and the release lookup trims back to the repository that owns the tags.
+- **An uncomparable "latest" no longer reads as OK.** `github/codeql-action` tags its latest release `codeql-bundle-v2.26.4`, which shares no numbering with the pinned `v4.37.4`, so the comparison silently returned "not newer" forever. The lookup now falls back to the tag list and takes the newest parseable version; when nothing is comparable the row is `CHECK FAILED` — a check that cannot fail is not a check.
+- **Repinned the CodeQL action from v4.37.4 to v4.37.9** (SHA `cdf488f`) — real drift, caught on the first run after the fix.
+
+Both defects were found while porting this checker into `SanHsien/dashi-ppt-skill`; the same fix landed in both repositories.
+
+---
+
 ## [Unreleased] - 2026-09-04
 
 ### Added

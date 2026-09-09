@@ -158,3 +158,39 @@ def test_report_has_a_section_for_each_declaration_source() -> None:
 
     assert "Python dev dependencies" in report
     assert "GitHub Actions" in report
+
+
+def test_subdirectory_actions_are_tracked_and_resolved_to_their_repository() -> None:
+    """`github/codeql-action/init` is an action; its releases live on the repo."""
+    text = (
+        "      - uses: github/codeql-action/init@f205ea1c3313d32999d8d6a48b4f6530d4437b38"
+        " # v4.37.4\n"
+    )
+
+    packages = checker.parse_workflow_actions(text, "codeql.yml")
+
+    assert packages[0]["name"] == "github/codeql-action/init"
+    assert packages[0]["minimum"] == "4.37.4"
+    assert checker.action_repository(packages[0]["name"]) == "github/codeql-action"
+    assert checker.action_repository("actions/checkout") == "actions/checkout"
+
+
+def test_codeql_pins_are_in_the_real_report() -> None:
+    """Regression guard: the owner/repo-only pattern skipped every CodeQL pin."""
+    names = {action["name"] for action in checker.load_workflow_actions()}
+
+    assert any(name.startswith("github/codeql-action/") for name in names)
+
+
+def test_an_uncomparable_latest_is_a_failed_check_not_an_ok() -> None:
+    """`codeql-bundle-v2.26.4` shares no numbering with the pinned `v4.37.4`."""
+    packages = checker.parse_workflow_actions(
+        "      - uses: github/codeql-action/init@f205ea1c # v4.37.4\n", "codeql.yml"
+    )
+
+    rows = checker.collect_status(
+        packages, lambda _name: "codeql-bundle-v2.26.4", deferrals={}
+    )
+
+    assert rows[0]["check_failed"] is True
+    assert "CHECK FAILED" in checker.render_markdown([], rows)
