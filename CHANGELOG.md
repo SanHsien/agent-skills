@@ -14,6 +14,9 @@
 
 ### 修復
 
+- **依賴新鮮度的 Actions 查詢改帶 token。** 匿名 `api.github.com` 是每小時 60 次、hosted runner 共用同一個位址額度；超過之後每一列 Action 的 `latest` 都變成 `unknown`，整個 Actions 半邊靜默失聲。`_github_json` 現在在環境有 `GITHUB_TOKEN`／`GH_TOKEN` 時送 `Authorization: Bearer`，workflow 的檢查步驟也補上 `GH_TOKEN: ${{ github.token }}`。沒有 token 仍可運作，只是走匿名額度。（缺陷由 `SanHsien/commerce-agents` 那條線先發現。）
+
+
 - **依賴新鮮度漏看了每一個 CodeQL pin。** `_USES_RE` 只匹配 `owner/repo@`，而 `github/codeql-action/init`
   是三段路徑，所以 `codeql.yml` 裡的兩個 pin 從來沒進過報告。路徑改為允許子目錄，查 Releases 時再
   截回擁有 tag 的 repo。

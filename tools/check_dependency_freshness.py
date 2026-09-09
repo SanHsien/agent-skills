@@ -234,10 +234,19 @@ def action_repository(action_name: str) -> str:
 
 
 def _github_json(path: str, timeout: float) -> object | None:
-    request = urllib.request.Request(
-        f"https://api.github.com/{path}",
-        headers={"Accept": "application/vnd.github+json", "User-Agent": USER_AGENT},
-    )
+    """GET api.github.com, authenticated when the environment offers a token.
+
+    The token matters: unauthenticated api.github.com allows 60 requests an hour
+    per address, and hosted runners share one. Past the limit every lookup here
+    fails at once, so the whole Actions half of the report reads "latest unknown"
+    -- a check going quiet rather than saying it could not ask. Without a token
+    this still works, just against the anonymous limit.
+    """
+    headers = {"Accept": "application/vnd.github+json", "User-Agent": USER_AGENT}
+    token = (os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or "").strip()
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    request = urllib.request.Request(f"https://api.github.com/{path}", headers=headers)
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:  # noqa: S310
             return json.loads(response.read().decode("utf-8"))

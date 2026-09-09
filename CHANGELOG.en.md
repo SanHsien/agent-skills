@@ -15,6 +15,9 @@ lives in its own history and in the review ledger at
 
 ### Fixed
 
+- **The Action lookups now send a token.** Anonymous `api.github.com` allows 60 requests an hour and hosted runners share one address; past the limit every Action row's `latest` reads `unknown` and the whole Actions half of the report goes quiet without failing. `_github_json` now sends `Authorization: Bearer` when `GITHUB_TOKEN`/`GH_TOKEN` is present, and the workflow's check step sets `GH_TOKEN: ${{ github.token }}`. It still works without a token, just against the anonymous limit. (Defect first spotted on the `SanHsien/commerce-agents` line.)
+
+
 - **Dependency freshness was blind to every CodeQL pin.** `_USES_RE` matched only `owner/repo@`, so the three-segment `github/codeql-action/init` and `/analyze` in `codeql.yml` never reached the report. The path now allows subdirectories and the release lookup trims back to the repository that owns the tags.
 - **An uncomparable "latest" no longer reads as OK.** `github/codeql-action` tags its latest release `codeql-bundle-v2.26.4`, which shares no numbering with the pinned `v4.37.4`, so the comparison silently returned "not newer" forever. The lookup now falls back to the tag list and takes the newest parseable version; when nothing is comparable the row is `CHECK FAILED` — a check that cannot fail is not a check.
 - **Repinned the CodeQL action from v4.37.4 to v4.37.9** (SHA `cdf488f`) — real drift, caught on the first run after the fix.

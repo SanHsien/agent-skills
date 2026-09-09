@@ -194,3 +194,35 @@ def test_an_uncomparable_latest_is_a_failed_check_not_an_ok() -> None:
 
     assert rows[0]["check_failed"] is True
     assert "CHECK FAILED" in checker.render_markdown([], rows)
+
+
+def test_a_token_is_sent_when_the_environment_has_one(monkeypatch) -> None:
+    """Anonymous api.github.com is 60/hour and hosted runners share it."""
+    seen: dict[str, str] = {}
+
+    class _Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_exc) -> None:
+            return None
+
+        def read(self) -> bytes:
+            return b'{"tag_name": "v7.0.1"}'
+
+    def fake_urlopen(request, timeout=None):  # noqa: ARG001
+        seen.update(request.headers)
+        return _Response()
+
+    monkeypatch.setattr(checker.urllib.request, "urlopen", fake_urlopen)
+
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+    monkeypatch.delenv("GH_TOKEN", raising=False)
+    assert checker.fetch_github_release("actions/checkout") == "7.0.1"
+    assert not any(key.lower() == "authorization" for key in seen)
+
+    seen.clear()
+    monkeypatch.setenv("GITHUB_TOKEN", "secret-token")
+    checker.fetch_github_release("actions/checkout")
+    authorization = next(value for key, value in seen.items() if key.lower() == "authorization")
+    assert authorization == "Bearer secret-token"
