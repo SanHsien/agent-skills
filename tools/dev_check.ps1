@@ -93,19 +93,25 @@ function Invoke-SkillSpectorSelfScan {
     $reportDir = Join-Path $RepoRoot ".skillspector-reports"
     New-Item -ItemType Directory -Force -Path $reportDir | Out-Null
 
-    # Remove the scanner's 30-second per-artifact ceiling. It bounds pathological
-    # input, but a large reference file on slow storage sits close enough to it that
-    # machine load decides whether the scan completes -- the same tree then passes or
-    # exits 2 depending on what else is running. A gate has to be reproducible, so
-    # here we buy completeness with wall time. Needs SkillSpector >= the commit that
-    # added SKILLSPECTOR_MAX_STATIC_SECONDS; older builds ignore it and keep the 30s
-    # default, which is the previous behaviour rather than a silent weakening.
+    # Lift the scanner's time ceilings for the self-scan. They bound pathological
+    # input, but a large file on slow storage sits close enough to them that machine
+    # load decides whether the scan completes -- the same tree then passes or exits 2
+    # depending on what else is running. A gate has to be reproducible, so here we buy
+    # completeness with wall time.
+    #
+    # 86400 (one day), not 0. SKILLSPECTOR_MAX_WORKFLOW_SECONDS has been upstream's own
+    # variable since SkillSpector 2.11.1, and upstream rejects 0, negatives and
+    # non-finite values with a warning and falls back to its 600-second default -- so
+    # "0" would silently mean 600 s. A large positive value means the same thing under
+    # every build. SKILLSPECTOR_MAX_STATIC_SECONDS (per artifact, default 30 s) exists
+    # only in the SanHsien fork and takes the same value; builds without it ignore it,
+    # which is the previous behaviour rather than a silent weakening.
     $previousStaticBudget = $env:SKILLSPECTOR_MAX_STATIC_SECONDS
     $previousWorkflowBudget = $env:SKILLSPECTOR_MAX_WORKFLOW_SECONDS
-    $env:SKILLSPECTOR_MAX_STATIC_SECONDS = "0"
+    $env:SKILLSPECTOR_MAX_STATIC_SECONDS = "86400"
     # The graph-wide ceiling binds before the per-artifact one on a skill with
     # many files; lifting only one leaves the same load-dependent verdict.
-    $env:SKILLSPECTOR_MAX_WORKFLOW_SECONDS = "0"
+    $env:SKILLSPECTOR_MAX_WORKFLOW_SECONDS = "86400"
     try {
     Write-Host "==> SkillSpector self-scan (skills\*)"
     $skillDirs = Get-ChildItem -LiteralPath $SkillsRoot -Directory
