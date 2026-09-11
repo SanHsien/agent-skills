@@ -16,6 +16,10 @@
 
 - **上游批次審查到 `6ca0cd7`（PR #567、issue #565）。** 採用 observability 的 runbook 撰寫小節、context-engineering 的 Context Budget Management 一節（含兩輪 review 修正）、`commands/planning.toml` 與 `.gemini/commands/planning.toml` 補上不完整 plan 不可覆寫的防線，以及 11 個 skill description 補詞與 eval rank-1 門檻 80 → 95。另從未合併的 #563 取回 `scripts/run-evals.js` 遇到 `null` grader expectation 會丟 `TypeError` 的修正，本 fork 有同一缺陷。#564、#566、#567 暫緩到合併，理由見 [`docs/DECISIONS.md`](docs/DECISIONS.md)。
 
+### 變更
+
+- **CodeQL action 重釘 v4.37.9 → v4.38.0**（commit SHA `b96794f`，由 annotated tag `v4.38.0` 解出）。依賴新鮮度檢查對 fork 持有的 `codeql.yml` 報 `REVIEW UPDATE`，下次排程會紅。
+
 ## [Unreleased] - 2026-09-09
 
 ### 修復

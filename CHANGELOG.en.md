@@ -17,6 +17,10 @@ lives in its own history and in the review ledger at
 
 - **Upstream batch review through `6ca0cd7` (PR #567, issue #565).** Adopted the observability runbook-writing subsection, the context-engineering Context Budget Management section (with both review follow-ups), the incomplete-plan overwrite guard mirrored into `commands/planning.toml` and `.gemini/commands/planning.toml`, and the description vocabulary for 11 skills with the eval rank-1 floor raised from 80 to 95. From unmerged #563, took the fix for `scripts/run-evals.js` throwing `TypeError` on a `null` grader expectation, a defect this fork has too. #564, #566 and #567 are deferred until merged; reasons in [`docs/DECISIONS.md`](docs/DECISIONS.md).
 
+### Changed
+
+- **Repinned the CodeQL action from v4.37.9 to v4.38.0** (commit SHA `b96794f`, resolved from the annotated tag `v4.38.0`). Dependency freshness reported `REVIEW UPDATE` on the fork-owned `codeql.yml`, which would fail the next scheduled run.
+
 ## [Unreleased] - 2026-09-09
 
 ### Fixed
