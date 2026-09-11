@@ -56,3 +56,18 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 - 五筆 merge commit 沒有額外 diff；0.6.9 manifest bump 因 fork tag ancestry 不相容而略過。
 - #548、#551–#560 都仍 open；完整逐筆理由在 [`DECISIONS.md`](DECISIONS.md)，合併或 head
   改變後再重新判斷，不 raw merge 47 檔的 fork overlay 差異。
+
+## 2026-09-11：11 commits／PR #561–#567／issue #565 bounded review
+
+- commit baseline：`6ca0cd7db39b41b1c37e26d335c507ee92382c6d`
+- PR：已看到 **#567**；issue：已看到 **#565**
+- 採用八筆：observability runbook 撰寫小節（初版＋review 收斂）、context-engineering
+  Context Budget Management（初版＋兩筆 review 收斂）、`commands/planning.toml` 與
+  `.gemini/commands/planning.toml` 補齊既有的 plan-clobber 防線、11 個 skill 的
+  description-vocabulary 補詞＋eval rank-1 floor 提到 95；另從未合併的 #563 cherry-pick
+  `scripts/run-evals.js` 的 null-grader-expectation 崩潰修復（fork 上該缺陷原樣存在）。
+- 四筆 merge commit（`48cb116`／`38e2a4a`／`fe6f081`／`6ca0cd7`）沒有額外 diff，child commit
+  已個別採用。
+- #561、#562 已關閉且是提交者個人開發機殘留分支，與本 repo 無關；#564 是作者明講不求合併的
+  展示 PR；#566（新 skill）、#567（下游改名相容指引）都是未合併且不是 fork 現有缺陷，等上游
+  定稿後再評估。issue #565 是感謝信，無需動作。完整逐筆理由見 [`DECISIONS.md`](DECISIONS.md)。

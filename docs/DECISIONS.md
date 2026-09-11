@@ -100,3 +100,57 @@ cherry-pick 會讓 `scripts/validate-versions.js` 仍以 fork 可達的 0.6.8 ta
 `/code-review` 相容性改名；#552–#560 分別涵蓋穩定 skill 名稱、既有專案安裝、外部 spec
 artifact、社群影片、互動教學、native router、agent-first CLI、restartable boundary 與 host
 adapter 表。這些都跟隨上游定稿，不在 open 狀態先做 fork-only 搬運。
+
+## 2026-09-11：審完 11 個 upstream commits、PR #561–#567、issue #565
+
+**採用**（cherry-pick，全部乾淨套用，保留原作者）：
+
+- `cd33117`／`8714f2b`：observability-and-instrumentation 的 Runbook 撰寫小節（三問格式、最小
+  範本、何時擴充、保持更新的紀律），第二筆是 federicobartoli review 後的收斂（nest 成 `####`、
+  指回 rule 2、SQL 加防呆、平台措辭鬆綁）。
+- `a1c8fa9`／`cf0ba3f`／`cc48b69`：context-engineering 新增「Context Budget Management」一節
+  （75% 門檻、優先捨棄表、保護清單、先壓縮再捨棄、recency 排序），後兩筆分別是 nucliweb 與
+  federicobartoli review 後的修正（合併重複 red flag、把 Level 5 接到新小節、把「transformer
+  attention 偏好近期 token」的錯誤機制敘述換成有引註的 lost-in-the-middle U 型效應）。
+- `78970d5`：把既有的「不完整 plan 不可靜默覆寫」防線（fork 已在 `.claude/commands/plan.md`
+  有，來自本線先前採用的 `#518`）鏡像進 `commands/planning.toml` 與 `.gemini/commands/planning.toml`
+  ——這兩檔在 fork 裡原本沒有這道防線，純粹補齊，無衝突。
+- `cda4542`：11 個 skill description 補上使用者實際會說的詞彙（debugging 的「昨天還能動」、
+  documentation-and-adrs 的「記錄一個架構決策」等），CI 的 `--min-rank1` 門檻從 80 提到 95
+  （trigger rank-1 從 86% 升到 100%），`evals/README.md` 與上游自有的
+  `.github/workflows/test-plugin-install.yml` 同步調整；fork 對這個 workflow 檔沒有疊加層差異，
+  乾淨套用。
+- PR **#563**（`fix(evals): reject null grader expectations without crashing`，commit
+  `e6a58d5`）：`scripts/run-evals.js` 的 `parseGrading` 在 grader 回傳的 `expectations` 陣列含
+  `null` 元素時會直接丟 `TypeError`（`expectation.passed`／`expectation.text` 存取 null 的屬性），
+  fork 上這個缺陷原樣存在（`scripts/run-evals.js:442` 與 `:448`），符合「未合併 PR 但修的是 fork
+  demonstrably 有的缺陷」，予以 cherry-pick；帶回歸測試（全 null 與混合 null 的 expectations
+  陣列）。
+
+**略過**（沒有額外 diff的 merge commit）：`48cb116`（#447 merge）、`38e2a4a`（#434 merge）、
+`fe6f081`（#422 merge）、`6ca0cd7`（#531 merge）——四筆的 child commit 已個別 cherry-pick，
+merge 本身在 `--stat` 對照下沒有額外內容。
+
+**擱置**（open PR，未合併，且不是 fork 現有缺陷）：
+
+- **#561**（`test merge upstream`，已 CLOSED）／**#562**（`Temp/plugin bump`，已 CLOSED）：
+  兩筆都是提交者個人開發機的殘留分支（`.serena/`、`debug/`、`docs/INITIATIVES/`、
+  未發布的 `plugins/audit-suite`、`plugins/foreman-line` 等與本 repo 主題無關的內容），且都已
+  關閉未合併，不動。
+- **#564**（`Align skill workflows with GPT-6 Astra guidance [just FYI]`）：作者本文明講
+  「Not looking for approvals or get merged this, just your comments」，是徵詢意見用的展示
+  PR，不是要合併的修正；且大幅改寫 22 個 SKILL.md（多筆刪減兩三成內容），跟隨上游是否定稿，
+  不先行搬運。
+- **#566**（`feat: add task-ledger skill`）：新增一整個 `skills/task-ledger/` skill（含
+  README／CLAUDE.md 目錄表、evals fixture）。這是全新功能而非修 fork 現有缺陷，等上游合併或
+  head 改變後再評估是否要跟進。
+- **#567**（`docs: compatibility guidance for downstream renames of browser-testing-with-devtools`，
+  closes upstream #541）：在 `skills/browser-testing-with-devtools/SKILL.md` 加一段「下游改名
+  要留相容別名或遷移規則」的說明，是給下游 fork／catalog 的預防性指引，fork 本身沒有把這個 skill
+  改名，不是本 fork 現有的缺陷，等上游合併定稿。
+
+**issue**：#565 是感謝信（作者的 AI-SDLC Template 引用了本專案並附 credit），無需動作，僅推進
+水位。
+
+**baseline**：commit 推進到 `6ca0cd7`（upstream `main` HEAD）；PR 水位到 **#567**；issue 水位到
+**#565**。
