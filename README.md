@@ -130,6 +130,24 @@ Commands 是入口；完整清單依 [`CLAUDE.md`](CLAUDE.md) 的分組如下（
 `web-performance-auditor`（Core Web Vitals 稽核，`/webperf` 呼叫）。決策矩陣與編排規則見
 [docs/agents.md](docs/agents.md)。
 
+## 專案架構
+
+可移植的核心流程保留在共用目錄中。特定宿主的路徑為其原生探索慣例，並非品牌別名；重新命名或合併會破壞掃描這些特定位置的工具。
+
+| 分層 / 使用者 | 倉庫路徑 | 目的 |
+|---|---|---|
+| 共用工作流程核心 | `skills/`（25 個 skill） | 供所有整合使用的可移植 `SKILL.md` 工作流程 |
+| 共用審查材料 | `agents/`（4 個 persona）、`references/`（7 個 checklist） | 全倉庫安裝自帶的專家審查者與技能包層級 checklist |
+| Claude Code 適配器 | `.claude/commands/`（9 個 command）、`.claude-plugin/`、`hooks/` | Slash command 包裝、marketplace 元資料與生命週期 hook |
+| Gemini CLI 適配器 | `.gemini/commands/`（9 個 command） | Gemini 原生 TOML command 包裝 |
+| Antigravity CLI 適配器 | `commands/`（9 個 command）、`plugin.json` | 既有 TOML 包裝與根目錄 plugin manifest；見[已知包裝限制](docs/antigravity-setup.md#lifecycle-workflows-and-command-compatibility) |
+| Codex 適配器 | `.codex-plugin/`、`.agents/plugins/` | Codex plugin 元資料與 marketplace 註冊；Codex 直接讀取 `skills/` |
+| GitHub Copilot CLI 適配器 | `plugin.json` | 根目錄 plugin 元資料；Copilot CLI 依慣例探索 `skills/` 且不註冊生命週期包裝 |
+| 貢獻者工具 | `scripts/`（13 個 script）、`evals/`（25 個案例檔）、`.github/workflows/` | 驗證、路由評測與 CI |
+| 文件 | `docs/` | 通用指引與各工具專案設定指南 |
+
+沒有簽入專屬適配器目錄的工具，可將共用的 `skills/` 核心安裝或複製到其原生位置。各支援宿主的設定說明見 [README.en.md 的 Quick Start 章節](README.en.md#quick-start)。
+
 ## 本 fork 的維護
 
 本 repo 是產品內容跟隨上游、維護骨架屬於這條線的疊加式 fork：

@@ -186,3 +186,24 @@ merge 本身在 `--stat` 對照下沒有額外內容。
 
 **觸發條件**：下次掃描器升版時重跑同一流程；若某一組 finding 數量增加，那是真的新 finding，
 要逐筆審查後才准加 fingerprint。
+
+## 2026-09-12：審完 17 個 upstream commits、PR #552–#560 合併、同步 0.6.9 release 與 tag
+
+**採用**：
+- `674921c`（PR #552）：`docs/skill-anatomy.md` 澄清 `browser-testing-with-devtools` 為上游穩定名稱，下游 catalog 若改名須自行維護別名與映射。
+- `4fd76c6`（PR #553）：`docs/getting-started.md` 補充既有專案導入無需遷移架構或複製本倉庫根目錄之 `AGENTS.md`／`CLAUDE.md`。
+- `15af65e`（PR #554）：`skills/spec-driven-development/SKILL.md` 澄清外部規格工具（如 OpenSpec）格式無關，產物格式由外部工具擁有，本技能負責內容、釐清與核准關卡。
+- `5b98a0b`（PR #556）：`docs/getting-started.md` 增加可執行的互動式教學連結（`https://skills.addy.ie/tutorials/`）。
+- `a71eb51`（PR #557）：`docs/adoption-guide.md`、`docs/codex-setup.md`、`docs/getting-started.md` 補充在已具備原生技能路由的宿主（如 Codex、Claude Code）上，安裝個別技能即可，不要再將 `using-agent-skills` 貼入常駐 context 造成雙重路由。
+- `a1c9bd6`（PR #559）：`skills/context-engineering/SKILL.md` 增補「Restartable Session Boundaries」一節，明確規範切換新 session 前應持久化的五項狀態，並在 `docs/getting-started.md` 加入 Ralph loops 邊界與外部 harness 職責說明。
+- `17d8e52`（PR #560）：`README.md`（繁中）、`README.en.md`（英文）、`docs/antigravity-setup.md`、`docs/gemini-cli-setup.md`、`docs/getting-started.md` 加入核心流程與宿主適配器分層架構表，並將指令計數調整為 9 個（納入 `/constraints`）。
+
+**略過**：
+- `e6a58d5`（PR #563）：修復 `scripts/run-evals.js` null expectation 崩潰，本 fork 已在 2026-09-11 提早 cherry-pick 為 `b70ccd8`，diff 完全一致，無需重複動作。
+- `226bdd3`、`20e8699`、`a9d4b46`、`57c0196`、`bc97fd4`、`17cbf4b`、`4e94bb5`、`fd00a70`、`be4e44a`：九筆 merge commit，在 `--stat` 對照下無額外 diff。
+
+**發布與版本（0.6.9）**：
+- 上游於 2026-09-05 發布 0.6.9（commit `84ee506`，tag `0.6.9`）。先前本 fork 因 tag ancestry 暫緩 manifest bump；現藉由完整引進 0.6.9 實質內容，將 5 份 plugin manifest 升版至 `0.6.9`，在最新 commit 建立 tag `0.6.9`，使 `validate-versions.js`（`git describe --tags --abbrev=0`）順利驗證通過。
+- 同步推送至 `origin/main` 及 tag `0.6.9`，並在 `SanHsien/agent-skills` 建立 GitHub Release 0.6.9。嚴格只發在 fork 本身，絕不觸碰 upstream。
+
+**baseline**：commit baseline 推進至 `be4e44a9fbc5e8df0beaefadbb28bd22ee61cc39`；PR 水位維持 **#567**；issue 水位維持 **#565**。

@@ -1,9 +1,9 @@
 {
   "repo": "https://github.com/addyosmani/agent-skills.git",
   "branch": "main",
-  "reviewed_through": "6ca0cd7db39b41b1c37e26d335c507ee92382c6d",
-  "reviewed_date": "2026-09-11",
-  "notes": "Reviewed 13 commits through upstream main: adopted seven substantive documentation changes, skipped five content-empty merge commits, and deferred the 0.6.9 manifest bump because the fork's reachable release tag remains 0.6.8. Open PRs #548 and #551-#560 were reviewed and left pending upstream merge/head changes. 2026-09-11: reviewed 11 commits through 6ca0cd7, PRs #561-#567 and issue #565. Adopted the observability runbook and context-budget sections with their review follow-ups, the incomplete-plan guard in both planning.toml files, and the description-vocabulary/rank-1 floor change; skipped four content-empty merge commits. Cherry-picked unmerged #563 (null grader expectation crash in scripts/run-evals.js), a defect this fork has. #561/#562 are closed personal branches; #564 is a comment-only showcase; #566 and #567 are deferred until merged. Details in docs/DECISIONS.md.",
+  "reviewed_through": "be4e44a9fbc5e8df0beaefadbb28bd22ee61cc39",
+  "reviewed_date": "2026-09-12",
+  "notes": "Reviewed 13 commits through upstream main: adopted seven substantive documentation changes, skipped five content-empty merge commits, and deferred the 0.6.9 manifest bump because the fork's reachable release tag remains 0.6.8. Open PRs #548 and #551-#560 were reviewed and left pending upstream merge/head changes. 2026-09-11: reviewed 11 commits through 6ca0cd7, PRs #561-#567 and issue #565. Adopted the observability runbook and context-budget sections with their review follow-ups, the incomplete-plan guard in both planning.toml files, and the description-vocabulary/rank-1 floor change; skipped four content-empty merge commits. Cherry-picked unmerged #563 (null grader expectation crash in scripts/run-evals.js), a defect this fork has. #561/#562 are closed personal branches; #564 is a comment-only showcase; #566 and #567 are deferred until merged. 2026-09-12: reviewed 17 commits through be4e44a, PRs #552-#560 merged upstream (#552, #553, #554, #556, #557, #559, #560, #563). Adopted seven substantive documentation and skill changes; skipped empty merges and #563 which was previously cherry-picked. Bumped manifests to 0.6.9 and synced release tag. Details in docs/DECISIONS.md.",
   "reviewed_pr_through": 567,
   "reviewed_issue_through": 565
 }

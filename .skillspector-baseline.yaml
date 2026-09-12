@@ -64,12 +64,12 @@ fingerprints:
   skill: code-simplification
   file: SKILL.md
   reason: "自我指涉誤判：code-simplification 的『Scope to What Changed』段落是限制 agent 只改動相關範圍的邊界說明，非技能自身擴權或範圍蔓延。"
-- hash: sha256:4a4d3963864fe4171453a4a07cc0737680a2c1ea01d9c81e9ac23b2f4f446a64
+- hash: sha256:82b4183e0f47dc08e3d4eab1351cc862f8d2ed3b79d7cb1451a9d663f9a94fe1
   rule_id: EA2
   skill: context-engineering
   file: SKILL.md
   reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
-- hash: sha256:1650861cad2c5b2b37efe6d95910579fe480ed458e2974bd62aae6c07cafc6e4
+- hash: sha256:bb9cf4b0a87dfaacb72498ad35cac995c2be801c2325fbbda200f78c9fdf873f
   rule_id: EA2
   skill: context-engineering
   file: SKILL.md
@@ -119,7 +119,7 @@ fingerprints:
   skill: source-driven-development
   file: SKILL.md
   reason: "自我指涉誤判：文中示範『ignore previous instructions』等字面範例是教導 agent 把此類字串當成不可信資料的防禦說明，非真實的指令覆寫攻擊。"
-- hash: sha256:68c99add5bee988361d6fea28372cf2ae50126751adb1cea20173ba2afe6b4b0
+- hash: sha256:20f35f2477037edbf9c539b084bf792ece6882e535c86ee09452dedcc1d1382a
   rule_id: EA2
   skill: spec-driven-development
   file: SKILL.md
@@ -129,17 +129,17 @@ fingerprints:
   skill: test-driven-development
   file: SKILL.md
   reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
-- hash: sha256:8d356358ab2d018380076a490ff44c5fae309a1ef18dc532f18f31ab907fea41
+- hash: sha256:37ff274a71b7f5199a9cf1f101d9724258f5b1c20da7ed124de89a0cc67175c8
   rule_id: AS3
   skill: spec-driven-development
   file: SKILL.md
   reason: "自我指涉誤判：spec-driven-development 在自身流程文字中以相對路徑引用同倉庫其他 skill（如 skills/incremental-implementation/SKILL.md）是刻意設計的技能編排／組合機制，非執行期間窺探其他已安裝 skill 的內容。"
-- hash: sha256:0d42ee37d01c35ed6bdb09c0a2dc2dbb65e4a6e5e8844b599bf9537a610c4d00
+- hash: sha256:6423e87e4941f9381019df0b3a852d59812f6e1ec4797688fc9c6365a338f23c
   rule_id: AS3
   skill: spec-driven-development
   file: SKILL.md
   reason: "自我指涉誤判：spec-driven-development 在自身流程文字中以相對路徑引用同倉庫其他 skill（如 skills/incremental-implementation/SKILL.md）是刻意設計的技能編排／組合機制，非執行期間窺探其他已安裝 skill 的內容。"
-- hash: sha256:c6d83f0c7cfb979b0cea77db64a761f96bb406ffa758c31597626ba7cdd8b4b6
+- hash: sha256:44ab1eca3eb9c44fb4a27a49112f7d2c7bd02c2a576714d13f62a9ca66d7bcc5
   rule_id: AS3
   skill: spec-driven-development
   file: SKILL.md

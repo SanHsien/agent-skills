@@ -71,3 +71,14 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 - #561、#562 已關閉且是提交者個人開發機殘留分支，與本 repo 無關；#564 是作者明講不求合併的
   展示 PR；#566（新 skill）、#567（下游改名相容指引）都是未合併且不是 fork 現有缺陷，等上游
   定稿後再評估。issue #565 是感謝信，無需動作。完整逐筆理由見 [`DECISIONS.md`](DECISIONS.md)。
+
+## 2026-09-12：17 commits／PR #552–#560 合併／0.6.9 release 與 tag 同步
+
+- commit baseline：`be4e44a9fbc5e8df0beaefadbb28bd22ee61cc39`
+- PR 水位：仍為 **#567**；issue 水位：仍為 **#565**（無大於此編號的新項目）
+- 上游將之前 open 的 PR #552–#560（除 #558 仍 open 外）全數合併，連同 PR #563：
+  - 採用七筆實質內容：`674921c`（browser-testing-with-devtools 穩定名稱）、`4fd76c6`（既有專案免遷移說明）、`15af65e`（外部 spec 工具格式無關與歸屬）、`5b98a0b`（可執行工作流程教學連結）、`a71eb51`（原生宿主避免重複路由）、`a1c9bd6`（可重新進入任務邊界與 Ralph loops 規範）、`17d8e52`（核心流程與原生適配器分層架構表）。
+  - `e6a58d5`（PR #563，null grader expectation 崩潰修復）fork 已於 2026-09-11 提早 cherry-pick（`b70ccd8`），內容完全一致，略過。
+  - 九筆 merge commit（`226bdd3`、`20e8699`、`a9d4b46`、`57c0196`、`bc97fd4`、`17cbf4b`、`4e94bb5`、`fd00a70`、`be4e44a`）無額外 diff。
+- 同步發布 0.6.9：5 份 plugin manifest 升版為 0.6.9，建立 tag 0.6.9，通過 `validate-versions.js` 驗證，並同步推送至 `SanHsien/agent-skills` 建立 GitHub Release 0.6.9。
+- 完整逐筆理由見 [`DECISIONS.md`](DECISIONS.md)。

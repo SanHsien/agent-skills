@@ -11,6 +11,13 @@ lives in its own history and in the review ledger at
 
 ---
 
+## [0.6.9] - 2026-09-12
+
+### Synced
+
+- **Upstream batch review through `be4e44a` (PR #567, issue #565).** Adopted seven substantive documentation and skill changes: stable browser skill name (PR #552), existing projects need no migration (PR #553), external spec tools format-agnostic ownership (PR #554), runnable workflow tutorials links (PR #556), avoid double skill routing on native hosts (PR #557), restartable session boundaries and Ralph loops guidelines (PR #559), and core-to-native adapters architecture table (PR #560).
+- **Release and tag synchronization to 0.6.9.** Bumped all five plugin manifests to `0.6.9`, tagged `0.6.9`, validated with `validate-versions.js`, and created GitHub Release 0.6.9.
+
 ## [Unreleased] - 2026-09-11
 
 ### Synced
