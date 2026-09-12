@@ -207,3 +207,12 @@ merge 本身在 `--stat` 對照下沒有額外內容。
 - 同步推送至 `origin/main` 及 tag `0.6.9`，並在 `SanHsien/agent-skills` 建立 GitHub Release 0.6.9。嚴格只發在 fork 本身，絕不觸碰 upstream。
 
 **baseline**：commit baseline 推進至 `be4e44a9fbc5e8df0beaefadbb28bd22ee61cc39`；PR 水位維持 **#567**；issue 水位維持 **#565**。
+
+## 2026-09-12：嚴格落實單一最新分支、Release 與 Tag 政策
+
+**背景與糾正**：
+在推送 0.6.9 升版後，GitHub `SanHsien/agent-skills` 上仍殘留先前的 `0.6.8` tag。維護者糾正要求「單一最新」指的不僅是單一分支，也涵蓋單一最新 release 與單一最新 tag。先前誤以為「單一」僅修飾「分支」而依常規保留歷史 tag，導致遠端出現多個 tag。
+
+**決定與動作**：
+1. 刪除遠端 `origin` 上的舊 tag `0.6.8`（`git push origin --delete 0.6.8`），並刪除本機所有舊 tag，使 GitHub 與本地皆只存在唯一最新 tag `0.6.9`。
+2. 將「單一最新分支、單一最新 release、單一最新 tag」明文寫入 `CLAUDE.md` 與 `FORK.md`，未來任何版本升級均需清理舊 tag，保持絕對乾淨的單一最新狀態。
