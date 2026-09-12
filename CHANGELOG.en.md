@@ -21,6 +21,10 @@ lives in its own history and in the review ledger at
 
 - **Repinned the CodeQL action from v4.37.9 to v4.38.0** (commit SHA `b96794f`, resolved from the annotated tag `v4.38.0`). Dependency freshness reported `REVIEW UPDATE` on the fork-owned `codeql.yml`, which would fail the next scheduled run.
 
+### Fixed
+
+- **The local self-scan had been red since the scanner upgrade.** The baseline recorded `scanner_version: 2.11.0` while the installed `skillspector` is 2.11.2; exact fingerprints are bound to the scanner version, so all 46 were invalid and every gate run reported the baselined findings as new. CI installs no scanner, so only the local gate saw it. Regenerated against 2.11.2 as 26 entries (16 RP1/PE3 ones are already covered by the existing rules, 4 were duplicates of the same finding), with every reason kept verbatim and the owning skill now recorded on each entry. Details in [`docs/DECISIONS.md`](docs/DECISIONS.md).
+
 ## [Unreleased] - 2026-09-09
 
 ### Fixed

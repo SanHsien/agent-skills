@@ -4,14 +4,20 @@
 # someone reviews them and adds a fingerprint + reason here (or fixes the skill).
 # Regenerate a skill's entries with: skillspector baseline skills/<name> --no-llm --reason '...'
 #
+# Exact fingerprints hash the scanner version together with the content and the finding, so a
+# scanner upgrade invalidates all of them by design. Each entry records the `skill` it belongs
+# to (the scanner ignores the field) because every skill is scanned as its own directory and
+# `file` alone is always `SKILL.md`, which made an earlier regeneration ambiguous.
+#
 # `rules` (glob, id-only) for RP1 and PE3: `skillspector baseline` was verified to under-
 # enumerate exact fingerprints when a single SKILL.md has several near-identical lines
 # matching the same rule (e.g. a multi-line .env tree diagram, or several unrelated `npx
 # ...@latest` examples) -- re-running `baseline` on the same unmodified file deterministically
 # skips some occurrences every time (reproduced on ci-cd-and-automation/SKILL.md and
 # security-and-hardening/SKILL.md; see the implementation report for this baseline's origin
-# task). Per-occurrence `fingerprints` below still cover most RP1/PE3 hits; these two `rules`
-# close the gap for the ones the generator drops. Scope/blast-radius note: because every skill
+# task). Since 2026-09-12 the two `rules` carry RP1/PE3 alone: a fresh scan showed every RP1
+# and PE3 hit already suppressed by them, so the 16 per-occurrence fingerprints that shadowed
+# the rules were dropped rather than rehashed. Scope/blast-radius note: because every skill
 # is scanned as its own directory, a baseline `path` glob cannot distinguish "SKILL.md in
 # skill X" from "SKILL.md in skill Y", so these rules apply repo-wide to rule RP1 (unpinned
 # `npx ...@latest` install-command examples) and PE3 (.env/.env.local path mentions in
@@ -21,221 +27,140 @@
 # these two categories are structurally expected to keep recurring as false positives) -- not
 # a blanket "ignore everything" suppression. Re-review periodically with `--show-suppressed`.
 version: 2
-scanner_version: 2.11.0
+scanner_version: 2.11.2
 rules:
   - id: "RP1"
     reason: "自我指涉誤判類別：文件中『npx <pkg>@latest』等安裝／CI 指令範例是給使用者參考的文件文字，非本 skill 綁定執行的未鎖版號設定；規則層級豁免（見上方 rules 區塊說明的成因與範圍）。"
   - id: "PE3"
     reason: "自我指涉誤判類別：.env／.env.local 等憑證路徑字樣出現在祕密管理教學段落，說明檔案該不該提交，非本 skill 實際讀取或外洩憑證；規則層級豁免（見上方 rules 區塊說明的成因與範圍）。"
 fingerprints:
-- hash: sha256:681948750281c599b0bf5bb658049f3d5929a39be26dad2a69702a2d9fef6ca0
+- hash: sha256:e6de85ff64a6dd264b6ce4582b80465ba7827627005d016d2fc31e2323570477
   rule_id: TM1
+  skill: api-and-interface-design
   file: SKILL.md
-  reason: 自我指涉誤判：api-and-interface-design 的 REST 端點列表（如 DELETE /api/tasks/:id）與 git-workflow-and-versioning
-    提到的 `git reset --hard HEAD` 是 API 設計／復原操作的教學範例文字，非本 skill 實際執行的危險指令。
-- hash: sha256:e019032e90099b683be7e100ed32834fc083f101a52ff5c2016d11a939fab59e
+  reason: "自我指涉誤判：api-and-interface-design 的 REST 端點列表（如 DELETE /api/tasks/:id）與 git-workflow-and-versioning 提到的 `git reset --hard HEAD` 是 API 設計／復原操作的教學範例文字，非本 skill 實際執行的危險指令。"
+- hash: sha256:ae86223cff1f846ea71812849b3c3106435c16cc15d533c82c1a7e993f5eebfd
   rule_id: YR1
+  skill: browser-testing-with-devtools
   file: SKILL.md
-  reason: 自我指涉誤判：browser-testing-with-devtools 的 Security Boundaries 段落教導 agent 把瀏覽器內容視為不可信資料，文中示範字串觸發
-    YARA 惡意樣式規則，並非真實惡意程式碼。
-- hash: sha256:9dab40974ef0bf0e391c2d3d146b093253e4b76d0b8f4eed3aca019074b0c40e
+  reason: "自我指涉誤判：browser-testing-with-devtools 的 Security Boundaries 段落教導 agent 把瀏覽器內容視為不可信資料，文中示範字串觸發 YARA 惡意樣式規則，並非真實惡意程式碼。"
+- hash: sha256:bf4ade841fc02659088b8a6f525c79c98067808a8059d98da3fe9ee974a88837
   rule_id: P1
+  skill: browser-testing-with-devtools
   file: SKILL.md
-  reason: 自我指涉誤判：文中示範『ignore previous instructions』等字面範例是教導 agent 把此類字串當成不可信資料的防禦說明，非真實的指令覆寫攻擊。
-- hash: sha256:083ab35fc5d5de3ea8a70d983d5028fe642ba2160e1fd35493c555577e4b5802
+  reason: "自我指涉誤判：文中示範『ignore previous instructions』等字面範例是教導 agent 把此類字串當成不可信資料的防禦說明，非真實的指令覆寫攻擊。"
+- hash: sha256:a0f0e4ba2f36f6aab7f4b49318abc2eca9c179b19f553ac3afb9ef20e5cba748
   rule_id: YR4
+  skill: browser-testing-with-devtools
   file: SKILL.md
-  reason: 自我指涉誤判：browser-testing-with-devtools／security-and-hardening／source-driven-development 的安全教學段落內文示範字串觸發
-    YARA 駭客工具樣式規則，均為教學範例非真實攻擊工具。
-- hash: sha256:b8e1403d4d061e29a6d944787066f3b6bea33d5b01082df16c199542dad93666
-  rule_id: RP1
-  file: SKILL.md
-  reason: 自我指涉誤判：文件中的『npx <pkg>@latest』等安裝／CI 指令範例是說明給使用者參考的文件範例，非本 skill 綁定執行且未鎖版號的 MCP／CLI 設定。
-- hash: sha256:acdaf7ce2142d63d4330e68172289a77dd4b9bcc725670fff3088ede9bb138ca
-  rule_id: PE3
-  file: SKILL.md
-  reason: 自我指涉誤判：.env／.env.local 等憑證路徑字樣出現在『祕密管理』教學段落，說明哪些檔案不可提交、如何管理，非本 skill 實際讀取或外洩憑證檔案。
-- hash: sha256:3cf3396c26ca4082e1a9a3693677e96f59f21b627f6e7eb64381267040e50a4f
-  rule_id: RP1
-  file: SKILL.md
-  reason: 自我指涉誤判：文件中的『npx <pkg>@latest』等安裝／CI 指令範例是說明給使用者參考的文件範例，非本 skill 綁定執行且未鎖版號的 MCP／CLI 設定。
-- hash: sha256:a7b27087f0667f903f0c9d02ba18ec0698f0fe4c6280fb4ffb1e0d5d2c087934
-  rule_id: RP1
-  file: SKILL.md
-  reason: 自我指涉誤判：文件中的『npx <pkg>@latest』等安裝／CI 指令範例是說明給使用者參考的文件範例，非本 skill 綁定執行且未鎖版號的 MCP／CLI 設定。
-- hash: sha256:871cdb8d0ded2be75479b16347ddfa83332f7c7d97c811731c5eb591e564d2af
-  rule_id: RP1
-  file: SKILL.md
-  reason: 自我指涉誤判：文件中的『npx <pkg>@latest』等安裝／CI 指令範例是說明給使用者參考的文件範例，非本 skill 綁定執行且未鎖版號的 MCP／CLI 設定。
-- hash: sha256:b276d0ea3b48abd4ac61ec630937c3165276f31a95673eefd2d8565274a7ad4e
-  rule_id: RP1
-  file: SKILL.md
-  reason: 自我指涉誤判：文件中的『npx <pkg>@latest』等安裝／CI 指令範例是說明給使用者參考的文件範例，非本 skill 綁定執行且未鎖版號的 MCP／CLI 設定。
-- hash: sha256:81a7f76a622540a405d43eec912fe0b700ff57b691e8e608cc4d8d44ae4cae92
+  reason: "自我指涉誤判：browser-testing-with-devtools／security-and-hardening／source-driven-development 的安全教學段落內文示範字串觸發 YARA 駭客工具樣式規則，均為教學範例非真實攻擊工具。"
+- hash: sha256:0550a2be1d589567741f06cb13f7fa3bac5cface400c70dd71b4468f3d4236b0
   rule_id: RA1
+  skill: code-simplification
   file: SKILL.md
-  reason: 自我指涉誤判：code-simplification 描述的是 agent 依指示編輯『使用者專案程式碼』的標準簡化流程（移除死碼、內聯包裝函式等），不是技能對自身定義或設定的執行期自我修改。
-- hash: sha256:1de728ef8fb4d46e163bb17e82dbe3b27891274e151b304ba1caaaa9ea0e65f3
+  reason: "自我指涉誤判：code-simplification 描述的是 agent 依指示編輯『使用者專案程式碼』的標準簡化流程（移除死碼、內聯包裝函式等），不是技能對自身定義或設定的執行期自我修改。"
+- hash: sha256:9d94fa04813dcc9161f783f76a809a169d964fb5ae3d0bab0c7e9d4b476ec5ee
   rule_id: EA3
+  skill: code-simplification
   file: SKILL.md
-  reason: 自我指涉誤判：code-simplification 的『Scope to What Changed』段落是限制 agent 只改動相關範圍的邊界說明，非技能自身擴權或範圍蔓延。
-- hash: sha256:3f5d4cd57c77190e18784c76e83fa8bafec2952d9e02eebc8937f74d74dedc0f
-  rule_id: PE3
-  file: SKILL.md
-  reason: 自我指涉誤判：.env／.env.local 等憑證路徑字樣出現在『祕密管理』教學段落，說明哪些檔案不可提交、如何管理，非本 skill 實際讀取或外洩憑證檔案。
-- hash: sha256:8cc0e8a5f215ea00f30fc0325ccc65802dab455fac3291d9c1fdea4335833fb9
-  rule_id: RP1
-  file: SKILL.md
-  reason: 自我指涉誤判：文件中的『npx <pkg>@latest』等安裝／CI 指令範例是說明給使用者參考的文件範例，非本 skill 綁定執行且未鎖版號的 MCP／CLI 設定。
-- hash: sha256:405a620a849081d1693c6a8cb121d42c0e5fd536f99b29607cfc29eb5bb3f181
+  reason: "自我指涉誤判：code-simplification 的『Scope to What Changed』段落是限制 agent 只改動相關範圍的邊界說明，非技能自身擴權或範圍蔓延。"
+- hash: sha256:4a4d3963864fe4171453a4a07cc0737680a2c1ea01d9c81e9ac23b2f4f446a64
   rule_id: EA2
+  skill: context-engineering
   file: SKILL.md
-  reason: 自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。
-- hash: sha256:33d9b5064907f5b206d1fc93fea45e2390fb6509ccf7c55471663876a5e19a63
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:1650861cad2c5b2b37efe6d95910579fe480ed458e2974bd62aae6c07cafc6e4
   rule_id: EA2
+  skill: context-engineering
   file: SKILL.md
-  reason: 自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。
-- hash: sha256:082d7589cb689357fa54fa23fcca659c71a4036b200698d51f7af2b8da49f9fe
-  rule_id: RP1
-  file: SKILL.md
-  reason: 自我指涉誤判：文件中的『npx <pkg>@latest』等安裝／CI 指令範例是說明給使用者參考的文件範例，非本 skill 綁定執行且未鎖版號的 MCP／CLI 設定。
-- hash: sha256:9dc80d202e599cca2c247eb3769271c6ff649235b9344cb6a37f222905e14feb
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:ee2c244539dc4cb0c45b30c14e63e11d5da104c698023d60b9975404dd453b32
   rule_id: EA5
+  skill: doubt-driven-development
   file: SKILL.md
-  reason: 自我指涉誤判：doubt-driven-development 文件中列出以 codex/gemini CLI 進行對抗性複查是明確揭露、使用者可見的既定作法，非隱藏的模型／帳務切換。
-- hash: sha256:9deb63a945f2e0a3bd61c188a64724d7a8169d424563b79038cd3b8844f42e32
+  reason: "自我指涉誤判：doubt-driven-development 文件中列出以 codex/gemini CLI 進行對抗性複查是明確揭露、使用者可見的既定作法，非隱藏的模型／帳務切換。"
+- hash: sha256:8b00310434573de003bdfad85f6a04e497dbdb3435785bb1db58cbac2ca5c163
   rule_id: TM1
+  skill: git-workflow-and-versioning
   file: SKILL.md
-  reason: 自我指涉誤判：api-and-interface-design 的 REST 端點列表（如 DELETE /api/tasks/:id）與 git-workflow-and-versioning
-    提到的 `git reset --hard HEAD` 是 API 設計／復原操作的教學範例文字，非本 skill 實際執行的危險指令。
-- hash: sha256:a921ab83734195bb53f372e71a736ebb11e49b775d87070814506cbd5bf165ac
-  rule_id: RP1
-  file: SKILL.md
-  reason: 自我指涉誤判：文件中的『npx <pkg>@latest』等安裝／CI 指令範例是說明給使用者參考的文件範例，非本 skill 綁定執行且未鎖版號的 MCP／CLI 設定。
-- hash: sha256:a5ceba2c822bccd86a38264c779892837d724b222c2594431257c93f958b3f51
-  rule_id: RP1
-  file: SKILL.md
-  reason: 自我指涉誤判：文件中的『npx <pkg>@latest』等安裝／CI 指令範例是說明給使用者參考的文件範例，非本 skill 綁定執行且未鎖版號的 MCP／CLI 設定。
-- hash: sha256:46074a4fa9994ec60d5a7fb5965dd7c2cbc82d12f478b4d4b6a329e814e03193
-  rule_id: RP1
-  file: SKILL.md
-  reason: 自我指涉誤判：文件中的『npx <pkg>@latest』等安裝／CI 指令範例是說明給使用者參考的文件範例，非本 skill 綁定執行且未鎖版號的 MCP／CLI 設定。
-- hash: sha256:200772273e832dc58f2ce0209c1b3b1df5f6bb80727913b8e042b3b03d92580e
-  rule_id: RP1
-  file: SKILL.md
-  reason: 自我指涉誤判：文件中的『npx <pkg>@latest』等安裝／CI 指令範例是說明給使用者參考的文件範例，非本 skill 綁定執行且未鎖版號的 MCP／CLI 設定。
-- hash: sha256:ab06bea14bad3033110d34570d6bf3f2f972a7d106efae0646c71dc4ce71273e
+  reason: "自我指涉誤判：api-and-interface-design 的 REST 端點列表（如 DELETE /api/tasks/:id）與 git-workflow-and-versioning 提到的 `git reset --hard HEAD` 是 API 設計／復原操作的教學範例文字，非本 skill 實際執行的危險指令。"
+- hash: sha256:49353986e904979f8de929270aedf773beff0abad6ddfaeecbd0a14d8cdfec59
   rule_id: EA2
+  skill: planning-and-task-breakdown
   file: SKILL.md
-  reason: 自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。
-- hash: sha256:234e518d394f65be68935661f7fd619887e16b15431cd75d9b5d46d98d7f70f4
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:2172e8fb119366a0a994d1760caac9c6b7f87bae02f971e808ef5eb72c3acd5e
   rule_id: EA2
+  skill: planning-and-task-breakdown
   file: SKILL.md
-  reason: 自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。
-- hash: sha256:6573fd5e4bab3a073cc4970798b52dd081a46c1ccc7e039876c501eb5badc0ad
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:813393f194bbe387ca7469a2c201fc8eff0a6ec9a73c605c07b658cc760edac5
   rule_id: YR4
+  skill: source-driven-development
   file: SKILL.md
-  reason: 自我指涉誤判：browser-testing-with-devtools／security-and-hardening／source-driven-development 的安全教學段落內文示範字串觸發
-    YARA 駭客工具樣式規則，均為教學範例非真實攻擊工具。
-- hash: sha256:b1d944530d043abb978fb93fae36fe7bc8ed7c13f07f12a3e3ebde4dff207758
+  reason: "自我指涉誤判：browser-testing-with-devtools／security-and-hardening／source-driven-development 的安全教學段落內文示範字串觸發 YARA 駭客工具樣式規則，均為教學範例非真實攻擊工具。"
+- hash: sha256:ddd8769e1e6eaaf32287ceb2c39204abd7732fdeef00faa8426dee2d79dc6c01
   rule_id: SSRF1
+  skill: security-and-hardening
   file: SKILL.md
-  reason: 自我指涉誤判：security-and-hardening 是安全強化教學文件，169.254.169.254 雲端 metadata 端點是 SSRF 防禦範例程式碼的教學說明，非本
-    skill 實際發出的請求。
-- hash: sha256:85fcbe078a03d09c3caeccee538184bb316b69768f3cb6be9837f302a62c704d
-  rule_id: PE3
-  file: SKILL.md
-  reason: 自我指涉誤判：.env／.env.local 等憑證路徑字樣出現在『祕密管理』教學段落，說明哪些檔案不可提交、如何管理，非本 skill 實際讀取或外洩憑證檔案。
-- hash: sha256:3ffe8d4560300184926f863ee760e64fab78020e0aa8c83815bb455fe985e012
-  rule_id: PE3
-  file: SKILL.md
-  reason: 自我指涉誤判：.env／.env.local 等憑證路徑字樣出現在『祕密管理』教學段落，說明哪些檔案不可提交、如何管理，非本 skill 實際讀取或外洩憑證檔案。
-- hash: sha256:05fdc5bfaef8bc5e0b9ae3a6cdf4219488020b188fc6027f04618b4d812d6c79
+  reason: "自我指涉誤判：security-and-hardening 是安全強化教學文件，169.254.169.254 雲端 metadata 端點是 SSRF 防禦範例程式碼的教學說明，非本 skill 實際發出的請求。"
+- hash: sha256:c081fb712819a85d87d75af5b2b477289091ecc99cfdfdb82dfbcddec17072f9
   rule_id: EA2
+  skill: source-driven-development
   file: SKILL.md
-  reason: 自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。
-- hash: sha256:92d89f0892d8383ff1a3c46e2b1a9a103f12c677e9deca89a78ed73a162b8228
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:02d524695f3fe4218735535c992e6a7faee49ff1d5d15fd79bedfc5d85178577
   rule_id: AR2
+  skill: shipping-and-launch
   file: SKILL.md
-  reason: 自我指涉誤判：shipping-and-launch 的 checklist 項目是『測試通過、build 無警告、lint 通過』等發佈前檢查清單，字面提到 warnings/lint
-    是要求做到而非省略，被規則誤判為『省略警告／免責聲明』。
-- hash: sha256:eea9cd0af622063a6b7e08d05e2d21cb0efc7344d301c40081cfd686faa704b0
-  rule_id: RP1
-  file: SKILL.md
-  reason: 自我指涉誤判：文件中的『npx <pkg>@latest』等安裝／CI 指令範例是說明給使用者參考的文件範例，非本 skill 綁定執行且未鎖版號的 MCP／CLI 設定。
-- hash: sha256:09320ccd1c9cbac8f80ea919851569d4b758e6af9ce2f53a8219021aaf59ec14
-  rule_id: YR4
-  file: SKILL.md
-  reason: 自我指涉誤判：browser-testing-with-devtools／security-and-hardening／source-driven-development 的安全教學段落內文示範字串觸發
-    YARA 駭客工具樣式規則，均為教學範例非真實攻擊工具。
-- hash: sha256:70d85f880705f57058022249bb822f823e402770cc24efee0bb4d8e5788521fb
+  reason: "自我指涉誤判：shipping-and-launch 的 checklist 項目是『測試通過、build 無警告、lint 通過』等發佈前檢查清單，字面提到 warnings/lint 是要求做到而非省略，被規則誤判為『省略警告／免責聲明』。"
+- hash: sha256:13b9fee653ba3fa1dcd5beaed2df163a2726da9463f54971ea706aefc04be0ce
   rule_id: P1
+  skill: source-driven-development
   file: SKILL.md
-  reason: 自我指涉誤判：文中示範『ignore previous instructions』等字面範例是教導 agent 把此類字串當成不可信資料的防禦說明，非真實的指令覆寫攻擊。
-- hash: sha256:90dfa82c1c286580fa64ab1d083146a59cd17e752d78fdf999ef60776a164920
+  reason: "自我指涉誤判：文中示範『ignore previous instructions』等字面範例是教導 agent 把此類字串當成不可信資料的防禦說明，非真實的指令覆寫攻擊。"
+- hash: sha256:68c99add5bee988361d6fea28372cf2ae50126751adb1cea20173ba2afe6b4b0
   rule_id: EA2
+  skill: spec-driven-development
   file: SKILL.md
-  reason: 自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。
-- hash: sha256:401b8ad1f25127008cd5646885f800e6ba4ddee08bdca23c1a29d1a08caed15a
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:d9972c265d3bed25b2dd30db3c7da415d5889280850eaff3ecea223d732b2239
   rule_id: EA2
+  skill: test-driven-development
   file: SKILL.md
-  reason: 自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。
-- hash: sha256:ec33ea67ff7da7156906f3e240ec245e77958e9d18b6d04d0b4f3cb61bd885bb
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:8d356358ab2d018380076a490ff44c5fae309a1ef18dc532f18f31ab907fea41
   rule_id: AS3
+  skill: spec-driven-development
   file: SKILL.md
-  reason: 自我指涉誤判：spec-driven-development 在自身流程文字中以相對路徑引用同倉庫其他 skill（如 skills/incremental-implementation/SKILL.md）是刻意設計的技能編排／組合機制，非執行期間窺探其他已安裝
-    skill 的內容。
-- hash: sha256:88e9ab1f0c4b88001ee884e03ca21826f217029090cfbe3c0f6ab8f7c8eea36f
+  reason: "自我指涉誤判：spec-driven-development 在自身流程文字中以相對路徑引用同倉庫其他 skill（如 skills/incremental-implementation/SKILL.md）是刻意設計的技能編排／組合機制，非執行期間窺探其他已安裝 skill 的內容。"
+- hash: sha256:0d42ee37d01c35ed6bdb09c0a2dc2dbb65e4a6e5e8844b599bf9537a610c4d00
   rule_id: AS3
+  skill: spec-driven-development
   file: SKILL.md
-  reason: 自我指涉誤判：spec-driven-development 在自身流程文字中以相對路徑引用同倉庫其他 skill（如 skills/incremental-implementation/SKILL.md）是刻意設計的技能編排／組合機制，非執行期間窺探其他已安裝
-    skill 的內容。
-- hash: sha256:9b9f0ac53fa98e97ce9dc823382479761f193898bb2fcd62c9ebe0c694adeb2a
+  reason: "自我指涉誤判：spec-driven-development 在自身流程文字中以相對路徑引用同倉庫其他 skill（如 skills/incremental-implementation/SKILL.md）是刻意設計的技能編排／組合機制，非執行期間窺探其他已安裝 skill 的內容。"
+- hash: sha256:c6d83f0c7cfb979b0cea77db64a761f96bb406ffa758c31597626ba7cdd8b4b6
   rule_id: AS3
+  skill: spec-driven-development
   file: SKILL.md
-  reason: 自我指涉誤判：spec-driven-development 在自身流程文字中以相對路徑引用同倉庫其他 skill（如 skills/incremental-implementation/SKILL.md）是刻意設計的技能編排／組合機制，非執行期間窺探其他已安裝
-    skill 的內容。
-- hash: sha256:c5a39b73cc630e24c9e06ab0b7139559f696eadf6ed81ce4d15c0cb2076824ce
+  reason: "自我指涉誤判：spec-driven-development 在自身流程文字中以相對路徑引用同倉庫其他 skill（如 skills/incremental-implementation/SKILL.md）是刻意設計的技能編排／組合機制，非執行期間窺探其他已安裝 skill 的內容。"
+- hash: sha256:5763219ef23cb2db70db42bebd69cb7de77a88d89a604a78edfdad2b7572bf04
   rule_id: EA2
+  skill: using-agent-skills
   file: SKILL.md
-  reason: 自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。
-- hash: sha256:b8a521c8658f82f5c5ac21b0804f9a831acd5687673ce9ffb38d8fccb8f9bf78
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:da448d85fa6fefe5d0ea49e3ca858d7884bcd5e796538fd02844a5e6d8b97999
   rule_id: EA2
+  skill: using-agent-skills
   file: SKILL.md
-  reason: 自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。
-- hash: sha256:116c6afccdf2afd72e540e6cc6740f6d2b3e92f94ccad88eebd6777577031c4e
-  rule_id: EA2
-  file: SKILL.md
-  reason: 自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。
-
-# --- 2026-09-05 補件：baseline 首次產生時漏掉的 4 筆 ---
-# 這 4 筆在原始 baseline 缺席，導致 gate 在乾淨樹上仍紅。已逐筆讀過原文行確認，
-# 全部是「教材寫的是安全主題本身」造成的誤判，不是 skill 真的在做壞事。
-# 判準：finding 指向的那一行是在描述／警告某個攻擊手法，而不是在執行它。
-- hash: sha256:f2912693933b66917637688259f28c4ae7741739305675003cbe93053500c3f0
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:24825d6af8392a000fbb8e3d16db4f9fac4d0c9ad805c78e7351833083d54a5c
   rule_id: YR4
+  skill: security-and-hardening
   file: SKILL.md
-  reason: >-
-    自我指涉誤判（security-and-hardening/SKILL.md:21）。YARA 規則 agent_skill_prompt_
-    injection_hidden_instructions 跨行拼出 'Model; disable security'，實際原文是標題 '
-    ## Process: Threat Model First' 加下一段講安全約束的散文。威脅建模教材必然同時出現 Model 與 secu
-    rity 這兩個詞，屬跨行比對的產物。
-- hash: sha256:b347c9ec989c7a6ea1492690e251b85992c73131a3c6e303bad0ca543eedb3aa
-  rule_id: SSRF1
-  file: SKILL.md
-  reason: >-
-    自我指涉誤判（security-and-hardening/SKILL.md:218）。命中 169.254.169.254，但原文正是在教
-    『要擋掉雲端 metadata endpoint，這是頭號 SSRF 目標』。講 SSRF 防禦而不寫出那個位址，教材就沒有可操作性。
-- hash: sha256:32452e3f22ee303b1d8607d092c1988ed6be22106036abebe7f74c357c5e166a
+  reason: "自我指涉誤判（security-and-hardening/SKILL.md:21）。YARA 規則 agent_skill_prompt_ injection_hidden_instructions 跨行拼出 'Model; disable security'，實際原文是標題 ' ## Process: Threat Model First' 加下一段講安全約束的散文。威脅建模教材必然同時出現 Model 與 secu rity 這兩個詞，屬跨行比對的產物。"
+- hash: sha256:570290cce9cefd6d4569452044901b431546c3e8f518938f503ac53f2d37fecb
   rule_id: EA2
+  skill: security-and-hardening
   file: SKILL.md
-  reason: >-
-    自我指涉誤判（security-and-hardening/SKILL.md:506）。命中 'no consent'，原文是一條警告：PI
-    I 未經同意就送給 analytics／廣告／LLM 廠商是要避免的事。規則想抓的是宣告自己不需要同意，這裡語意剛好相反。
-- hash: sha256:f51877c65237ce40e7cd74ed6c1ff46b0fa6e3deacf2dd256f11f1361d17b0a4
-  rule_id: AR2
-  file: SKILL.md
-  reason: >-
-    誤判（shipping-and-launch/SKILL.md:25）。AR2（Anti-Refusal Statement）命中 'no 
-    warnings'，原文是發佈檢查表的一項 'Build succeeds with no warnings'——指編譯器警告，不是叫模型忽
-    略安全警告。
+  reason: "自我指涉誤判（security-and-hardening/SKILL.md:506）。命中 'no consent'，原文是一條警告：PI I 未經同意就送給 analytics／廣告／LLM 廠商是要避免的事。規則想抓的是宣告自己不需要同意，這裡語意剛好相反。"

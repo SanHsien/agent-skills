@@ -20,6 +20,10 @@
 
 - **CodeQL action 重釘 v4.37.9 → v4.38.0**（commit SHA `b96794f`，由 annotated tag `v4.38.0` 解出）。依賴新鮮度檢查對 fork 持有的 `codeql.yml` 報 `REVIEW UPDATE`，下次排程會紅。
 
+### 修復
+
+- **本機自我掃描自掃描器升版起就一直是紅的。** baseline 記的是 `scanner_version: 2.11.0`，PATH 上的 `skillspector` 已是 2.11.2；精確 fingerprint 綁掃描器版本，46 筆因此全部失效，每次 gate 都把 baseline 裡的 finding 報成新的。CI 不安裝掃描器，所以只有本機看得到。以 2.11.2 重產成 26 筆（16 筆 RP1／PE3 已由既有規則涵蓋、4 筆是對到同一 finding 的重複項），理由逐字保留，並在每筆記下所屬 skill。細節見 [`docs/DECISIONS.md`](docs/DECISIONS.md)。
+
 ## [Unreleased] - 2026-09-09
 
 ### 修復

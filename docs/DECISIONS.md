@@ -154,3 +154,35 @@ merge 本身在 `--stat` 對照下沒有額外內容。
 
 **baseline**：commit 推進到 `6ca0cd7`（upstream `main` HEAD）；PR 水位到 **#567**；issue 水位到
 **#565**。
+
+## 2026-09-12：SkillSpector baseline 重產到 2.11.2，並在每筆記下所屬 skill
+
+**問題**：`.skillspector-baseline.yaml` 的 `scanner_version` 還是 `2.11.0`，PATH 上的
+`skillspector` 已是 `2.11.2`。精確 fingerprint 由 `suppression.finding_fingerprint` 同時雜湊
+掃描器版本、元件內容與 finding，所以升版讓 46 筆全部失效——本機 `tools/dev_check.ps1` 的自我掃描
+把每一筆 baseline 裡的 finding 都報成新的，這道關卡自升版起就一直是紅的。CI 不安裝掃描器
+（`ci.yml` 只裝 `requirements-dev.txt`），自我掃描在 CI 走「skipped: not found on PATH」，
+所以紅燈只出現在本機，沒有人看見。
+
+**決定**：以 2.11.2 重產，46 筆 → 26 筆，理由逐字保留，並在每筆加上 `skill:` 欄位。
+
+**逐項理由**：
+
+- **16 筆 RP1／PE3 fingerprint 移除**：本檔頂部的兩條 id-only `rules` 已涵蓋這兩類。實際重掃
+  25 個 skill，RP1／PE3 的 finding 全部落在 rule 抑制側（`ci-cd-and-automation` 5 筆、
+  `security-and-hardening` 2 筆等，共 16 筆），沒有任何一筆需要 fingerprint。留著等於替 rule
+  影子重算雜湊，移除不放寬任何東西：規則本身沒動。
+- **4 筆重複項移除**：`AR2`（shipping-and-launch）、`EA2`（security-and-hardening）、
+  `SSRF1`（security-and-hardening）、`YR4`（security-and-hardening）各有兩筆對到同一個 finding
+  ——一筆是分類式理由、一筆是後來補的逐行理由。2.11.2 對這些位置各只產生一個 finding，多出來的
+  那筆永遠對不到任何雜湊。保留內容較穩定的分類式理由（逐行理由寫死行號，內容一動就過期）。
+- **26 筆換新雜湊**：一對一對應，rule_id 與 skill 都相同，沒有任何一組數量增加，也就沒有需要
+  重新審查的新 finding。
+- **新增 `skill:` 欄位**：每個 skill 各自掃描，`file` 永遠是 `SKILL.md`，只靠 `(rule_id, file)`
+  無法分辨是哪個 skill——通用重產工具就是因此中止的。掃描器忽略未知欄位（`baseline_from_dict`
+  只讀 `hash`／`reason`），所以這個欄位純粹是給維護者與工具用的。
+
+**驗證**：`pwsh -NoProfile -File tools\dev_check.ps1` 全綠，自我掃描 25 個 skill 無新 finding。
+
+**觸發條件**：下次掃描器升版時重跑同一流程；若某一組 finding 數量增加，那是真的新 finding，
+要逐筆審查後才准加 fingerprint。
