@@ -1,0 +1,26 @@
+---
+description: PR、push、release 一律指向 SanHsien/agent-skills；回貢上游需要當次對話明確同意
+alwaysApply: true
+---
+
+# 對外只打本 fork
+
+本 repo fork 自 [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills)（MIT）。
+PR、push、release 一律指向 `SanHsien/agent-skills`。
+
+**根因是機制不是粗心：** `gh` 在 fork clone 的預設 repo 就是上游，裸跑 `gh pr create` 必然打上去。
+
+```powershell
+gh repo set-default SanHsien/agent-skills   # 每個 clone 先跑一次
+gh repo set-default --view                 # 必須回 SanHsien/agent-skills
+gh pr create --repo SanHsien/agent-skills --base main --head <分支>
+```
+
+建完**讀輸出的 URL**，owner 必須是 `SanHsien`。不是就立刻 `gh pr close` 留言道歉說明開錯 repo，
+再對 origin 重開，並主動告訴維護者。
+
+**唯一例外：** 維護者在**這次對話**明確同意回貢上游。fork、建環境、開 PR、比照其他 repo、
+合併回 main、「所有專案都照做」都不是例外。判準見 [`FORK.md`](../../FORK.md)：
+修的是上游的 bug 就送回去，這裡獨創的文件與 Windows 維護骨架留在這裡。
+
+也不要 push 到 `upstream` remote，不要 force-push `main`，不要刪 `upstream` remote。

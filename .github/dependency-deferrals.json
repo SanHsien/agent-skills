@@ -1,0 +1,15 @@
+{
+  "_comment": "Reviewed-but-not-now decisions for tools/check_dependency_freshness.py. Each entry needs deferredLatest so it expires by itself once upstream moves past the release it was reviewed against. A permanent policy belongs on the declaring line as `# freshness-hold:` instead.",
+  "deferrals": {
+    "actions/checkout": {
+      "deferredLatest": "7.0.1",
+      "reason": "只有上游自有的 .github/workflows/test-plugin-install.yml 還釘 v6；該檔屬上游產品內容，重新釘選是上游的決定，本 fork 不改。本線自有的工作流程已釘 v7.0.1 的 SHA。",
+      "reviewedOn": "2026-09-04"
+    },
+    "actions/setup-node": {
+      "deferredLatest": "7.0.0",
+      "reason": "同上：v6 只出現在上游自有的 test-plugin-install.yml。本線自有的 ci.yml 已釘 v7.0.0 的 SHA。",
+      "reviewedOn": "2026-09-04"
+    }
+  }
+}

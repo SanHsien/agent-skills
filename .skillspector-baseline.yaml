@@ -1,0 +1,166 @@
+# SkillSpector baseline for this repository's own skills/ (release gate ratchet).
+# Every entry below is an ALREADY-REVIEWED finding accepted at baseline creation time.
+# New findings are NOT suppressed automatically -- they fail tools/dev_check.ps1 until
+# someone reviews them and adds a fingerprint + reason here (or fixes the skill).
+# Regenerate a skill's entries with: skillspector baseline skills/<name> --no-llm --reason '...'
+#
+# Exact fingerprints hash the scanner version together with the content and the finding, so a
+# scanner upgrade invalidates all of them by design. Each entry records the `skill` it belongs
+# to (the scanner ignores the field) because every skill is scanned as its own directory and
+# `file` alone is always `SKILL.md`, which made an earlier regeneration ambiguous.
+#
+# `rules` (glob, id-only) for RP1 and PE3: `skillspector baseline` was verified to under-
+# enumerate exact fingerprints when a single SKILL.md has several near-identical lines
+# matching the same rule (e.g. a multi-line .env tree diagram, or several unrelated `npx
+# ...@latest` examples) -- re-running `baseline` on the same unmodified file deterministically
+# skips some occurrences every time (reproduced on ci-cd-and-automation/SKILL.md and
+# security-and-hardening/SKILL.md; see the implementation report for this baseline's origin
+# task). Since 2026-09-12 the two `rules` carry RP1/PE3 alone: a fresh scan showed every RP1
+# and PE3 hit already suppressed by them, so the 16 per-occurrence fingerprints that shadowed
+# the rules were dropped rather than rehashed. Scope/blast-radius note: because every skill
+# is scanned as its own directory, a baseline `path` glob cannot distinguish "SKILL.md in
+# skill X" from "SKILL.md in skill Y", so these rules apply repo-wide to rule RP1 (unpinned
+# `npx ...@latest` install-command examples) and PE3 (.env/.env.local path mentions in
+# secrets-management docs) for every skill, present and future, not just the two above. This
+# is an intentional, reviewed tradeoff for this specific repo (an engineering-practices skill
+# corpus where writing about CI tooling and secrets management is the core subject matter, so
+# these two categories are structurally expected to keep recurring as false positives) -- not
+# a blanket "ignore everything" suppression. Re-review periodically with `--show-suppressed`.
+version: 2
+scanner_version: 2.11.2
+rules:
+  - id: "RP1"
+    reason: "自我指涉誤判類別：文件中『npx <pkg>@latest』等安裝／CI 指令範例是給使用者參考的文件文字，非本 skill 綁定執行的未鎖版號設定；規則層級豁免（見上方 rules 區塊說明的成因與範圍）。"
+  - id: "PE3"
+    reason: "自我指涉誤判類別：.env／.env.local 等憑證路徑字樣出現在祕密管理教學段落，說明檔案該不該提交，非本 skill 實際讀取或外洩憑證；規則層級豁免（見上方 rules 區塊說明的成因與範圍）。"
+fingerprints:
+- hash: sha256:e6de85ff64a6dd264b6ce4582b80465ba7827627005d016d2fc31e2323570477
+  rule_id: TM1
+  skill: api-and-interface-design
+  file: SKILL.md
+  reason: "自我指涉誤判：api-and-interface-design 的 REST 端點列表（如 DELETE /api/tasks/:id）與 git-workflow-and-versioning 提到的 `git reset --hard HEAD` 是 API 設計／復原操作的教學範例文字，非本 skill 實際執行的危險指令。"
+- hash: sha256:ae86223cff1f846ea71812849b3c3106435c16cc15d533c82c1a7e993f5eebfd
+  rule_id: YR1
+  skill: browser-testing-with-devtools
+  file: SKILL.md
+  reason: "自我指涉誤判：browser-testing-with-devtools 的 Security Boundaries 段落教導 agent 把瀏覽器內容視為不可信資料，文中示範字串觸發 YARA 惡意樣式規則，並非真實惡意程式碼。"
+- hash: sha256:bf4ade841fc02659088b8a6f525c79c98067808a8059d98da3fe9ee974a88837
+  rule_id: P1
+  skill: browser-testing-with-devtools
+  file: SKILL.md
+  reason: "自我指涉誤判：文中示範『ignore previous instructions』等字面範例是教導 agent 把此類字串當成不可信資料的防禦說明，非真實的指令覆寫攻擊。"
+- hash: sha256:a0f0e4ba2f36f6aab7f4b49318abc2eca9c179b19f553ac3afb9ef20e5cba748
+  rule_id: YR4
+  skill: browser-testing-with-devtools
+  file: SKILL.md
+  reason: "自我指涉誤判：browser-testing-with-devtools／security-and-hardening／source-driven-development 的安全教學段落內文示範字串觸發 YARA 駭客工具樣式規則，均為教學範例非真實攻擊工具。"
+- hash: sha256:0550a2be1d589567741f06cb13f7fa3bac5cface400c70dd71b4468f3d4236b0
+  rule_id: RA1
+  skill: code-simplification
+  file: SKILL.md
+  reason: "自我指涉誤判：code-simplification 描述的是 agent 依指示編輯『使用者專案程式碼』的標準簡化流程（移除死碼、內聯包裝函式等），不是技能對自身定義或設定的執行期自我修改。"
+- hash: sha256:9d94fa04813dcc9161f783f76a809a169d964fb5ae3d0bab0c7e9d4b476ec5ee
+  rule_id: EA3
+  skill: code-simplification
+  file: SKILL.md
+  reason: "自我指涉誤判：code-simplification 的『Scope to What Changed』段落是限制 agent 只改動相關範圍的邊界說明，非技能自身擴權或範圍蔓延。"
+- hash: sha256:4a4d3963864fe4171453a4a07cc0737680a2c1ea01d9c81e9ac23b2f4f446a64
+  rule_id: EA2
+  skill: context-engineering
+  file: SKILL.md
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:1650861cad2c5b2b37efe6d95910579fe480ed458e2974bd62aae6c07cafc6e4
+  rule_id: EA2
+  skill: context-engineering
+  file: SKILL.md
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:ee2c244539dc4cb0c45b30c14e63e11d5da104c698023d60b9975404dd453b32
+  rule_id: EA5
+  skill: doubt-driven-development
+  file: SKILL.md
+  reason: "自我指涉誤判：doubt-driven-development 文件中列出以 codex/gemini CLI 進行對抗性複查是明確揭露、使用者可見的既定作法，非隱藏的模型／帳務切換。"
+- hash: sha256:8b00310434573de003bdfad85f6a04e497dbdb3435785bb1db58cbac2ca5c163
+  rule_id: TM1
+  skill: git-workflow-and-versioning
+  file: SKILL.md
+  reason: "自我指涉誤判：api-and-interface-design 的 REST 端點列表（如 DELETE /api/tasks/:id）與 git-workflow-and-versioning 提到的 `git reset --hard HEAD` 是 API 設計／復原操作的教學範例文字，非本 skill 實際執行的危險指令。"
+- hash: sha256:49353986e904979f8de929270aedf773beff0abad6ddfaeecbd0a14d8cdfec59
+  rule_id: EA2
+  skill: planning-and-task-breakdown
+  file: SKILL.md
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:2172e8fb119366a0a994d1760caac9c6b7f87bae02f971e808ef5eb72c3acd5e
+  rule_id: EA2
+  skill: planning-and-task-breakdown
+  file: SKILL.md
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:813393f194bbe387ca7469a2c201fc8eff0a6ec9a73c605c07b658cc760edac5
+  rule_id: YR4
+  skill: source-driven-development
+  file: SKILL.md
+  reason: "自我指涉誤判：browser-testing-with-devtools／security-and-hardening／source-driven-development 的安全教學段落內文示範字串觸發 YARA 駭客工具樣式規則，均為教學範例非真實攻擊工具。"
+- hash: sha256:ddd8769e1e6eaaf32287ceb2c39204abd7732fdeef00faa8426dee2d79dc6c01
+  rule_id: SSRF1
+  skill: security-and-hardening
+  file: SKILL.md
+  reason: "自我指涉誤判：security-and-hardening 是安全強化教學文件，169.254.169.254 雲端 metadata 端點是 SSRF 防禦範例程式碼的教學說明，非本 skill 實際發出的請求。"
+- hash: sha256:c081fb712819a85d87d75af5b2b477289091ecc99cfdfdb82dfbcddec17072f9
+  rule_id: EA2
+  skill: source-driven-development
+  file: SKILL.md
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:02d524695f3fe4218735535c992e6a7faee49ff1d5d15fd79bedfc5d85178577
+  rule_id: AR2
+  skill: shipping-and-launch
+  file: SKILL.md
+  reason: "自我指涉誤判：shipping-and-launch 的 checklist 項目是『測試通過、build 無警告、lint 通過』等發佈前檢查清單，字面提到 warnings/lint 是要求做到而非省略，被規則誤判為『省略警告／免責聲明』。"
+- hash: sha256:13b9fee653ba3fa1dcd5beaed2df163a2726da9463f54971ea706aefc04be0ce
+  rule_id: P1
+  skill: source-driven-development
+  file: SKILL.md
+  reason: "自我指涉誤判：文中示範『ignore previous instructions』等字面範例是教導 agent 把此類字串當成不可信資料的防禦說明，非真實的指令覆寫攻擊。"
+- hash: sha256:68c99add5bee988361d6fea28372cf2ae50126751adb1cea20173ba2afe6b4b0
+  rule_id: EA2
+  skill: spec-driven-development
+  file: SKILL.md
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:d9972c265d3bed25b2dd30db3c7da415d5889280850eaff3ecea223d732b2239
+  rule_id: EA2
+  skill: test-driven-development
+  file: SKILL.md
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:8d356358ab2d018380076a490ff44c5fae309a1ef18dc532f18f31ab907fea41
+  rule_id: AS3
+  skill: spec-driven-development
+  file: SKILL.md
+  reason: "自我指涉誤判：spec-driven-development 在自身流程文字中以相對路徑引用同倉庫其他 skill（如 skills/incremental-implementation/SKILL.md）是刻意設計的技能編排／組合機制，非執行期間窺探其他已安裝 skill 的內容。"
+- hash: sha256:0d42ee37d01c35ed6bdb09c0a2dc2dbb65e4a6e5e8844b599bf9537a610c4d00
+  rule_id: AS3
+  skill: spec-driven-development
+  file: SKILL.md
+  reason: "自我指涉誤判：spec-driven-development 在自身流程文字中以相對路徑引用同倉庫其他 skill（如 skills/incremental-implementation/SKILL.md）是刻意設計的技能編排／組合機制，非執行期間窺探其他已安裝 skill 的內容。"
+- hash: sha256:c6d83f0c7cfb979b0cea77db64a761f96bb406ffa758c31597626ba7cdd8b4b6
+  rule_id: AS3
+  skill: spec-driven-development
+  file: SKILL.md
+  reason: "自我指涉誤判：spec-driven-development 在自身流程文字中以相對路徑引用同倉庫其他 skill（如 skills/incremental-implementation/SKILL.md）是刻意設計的技能編排／組合機制，非執行期間窺探其他已安裝 skill 的內容。"
+- hash: sha256:5763219ef23cb2db70db42bebd69cb7de77a88d89a604a78edfdad2b7572bf04
+  rule_id: EA2
+  skill: using-agent-skills
+  file: SKILL.md
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:da448d85fa6fefe5d0ea49e3ca858d7884bcd5e796538fd02844a5e6d8b97999
+  rule_id: EA2
+  skill: using-agent-skills
+  file: SKILL.md
+  reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
+- hash: sha256:24825d6af8392a000fbb8e3d16db4f9fac4d0c9ad805c78e7351833083d54a5c
+  rule_id: YR4
+  skill: security-and-hardening
+  file: SKILL.md
+  reason: "自我指涉誤判（security-and-hardening/SKILL.md:21）。YARA 規則 agent_skill_prompt_ injection_hidden_instructions 跨行拼出 'Model; disable security'，實際原文是標題 ' ## Process: Threat Model First' 加下一段講安全約束的散文。威脅建模教材必然同時出現 Model 與 secu rity 這兩個詞，屬跨行比對的產物。"
+- hash: sha256:570290cce9cefd6d4569452044901b431546c3e8f518938f503ac53f2d37fecb
+  rule_id: EA2
+  skill: security-and-hardening
+  file: SKILL.md
+  reason: "自我指涉誤判（security-and-hardening/SKILL.md:506）。命中 'no consent'，原文是一條警告：PI I 未經同意就送給 analytics／廣告／LLM 廠商是要避免的事。規則想抓的是宣告自己不需要同意，這裡語意剛好相反。"
