@@ -72,7 +72,7 @@ test('fails when a skill links the shared checklist as if it were colocated', ()
   assert.match(result.stdout, /1 skills checked — 1 error\(s\) — FAILED/);
   assert.match(
     result.stdout,
-    /L1: references\/definition-of-done\.md — resolves to skills[\\/]using-agent-skills[\\/]references[\\/]definition-of-done\.md/
+    /L1: references\/definition-of-done\.md — resolves to skills\/using-agent-skills\/references\/definition-of-done\.md/
   );
   assert.match(result.stdout, /use `\.\.\/\.\.\/references\/<file>\.md`/);
 });
