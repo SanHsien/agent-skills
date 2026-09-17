@@ -10,6 +10,16 @@
 
 ---
 
+## [Unreleased] - 2026-09-17
+
+### 同步
+
+- **上游批次審查到 `be4e44a`（PR #578、issue #572）。** 採用 context-engineering 的 Restartable Session Boundaries、adapter 對照表（英文鏡像 README）、spec 外部產物歸屬、既有專案不需遷移、原生 host 避免雙重路由、穩定的 browser skill 名稱與教學連結；文件中的命令數更正為 9 並補上 `/constraints`。本批上游改過的檔案除繁中 README 外都已與上游一致。
+
+### 修復
+
+- **reference-link 驗證器在 Windows 印反斜線路徑。** 本機 `validate-reference-links-test.js` 7 個測試 1 個失敗；採用未合併的上游 PR #573，把輸出路徑統一成 `/`，7/7 通過。
+
 ## [Unreleased] - 2026-09-11
 
 ### 同步

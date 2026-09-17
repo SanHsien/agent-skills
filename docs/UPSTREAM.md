@@ -71,3 +71,14 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 - #561、#562 已關閉且是提交者個人開發機殘留分支，與本 repo 無關；#564 是作者明講不求合併的
   展示 PR；#566（新 skill）、#567（下游改名相容指引）都是未合併且不是 fork 現有缺陷，等上游
   定稿後再評估。issue #565 是感謝信，無需動作。完整逐筆理由見 [`DECISIONS.md`](DECISIONS.md)。
+
+## 2026-09-17：17 commits／PR #568–#578／issue #569、#572 bounded review
+
+- commit baseline：`be4e44a9fbc5e8df0beaefadbb28bd22ee61cc39`
+- PR：已看到 **#578**；issue：已看到 **#572**
+- 採用：五筆 docs cherry-pick；`a1c9bd6`（restartable session boundaries）與 `17d8e52`（adapter 對照表，
+  落在英文鏡像 `README.en.md`；命令數 8 → 9）最小重做。本批上游改過的檔案除繁中 `README.md` 外，
+  都已與 `upstream/main` 逐位元組相同。
+- 採用未合併 #573：reference-link 驗證器在 Windows 印反斜線，本機 7 個測試 1 個失敗；一行修正後 7/7。
+- 延後至合併：#570、#574（含 issue #569）、#568、#571、#576、#577、#578。逐筆理由見
+  [`DECISIONS.md`](DECISIONS.md)。

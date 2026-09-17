@@ -11,6 +11,16 @@ lives in its own history and in the review ledger at
 
 ---
 
+## [Unreleased] - 2026-09-17
+
+### Synced
+
+- **Upstream batch review through `be4e44a` (PR #578, issue #572).** Adopted Restartable Session Boundaries in context-engineering, the adapter table (in the English README mirror), external artifact ownership for specs, no-migration setup for existing projects, avoiding double routing on native hosts, the stable browser skill name and the tutorial links; the docs now count 9 commands and list `/constraints`. Every upstream-changed file in this batch except the Traditional Chinese README matches upstream.
+
+### Fixed
+
+- **The reference-link validator printed backslash paths on Windows.** Locally `validate-reference-links-test.js` failed 1 of 7; adopted unmerged upstream PR #573, which reports paths with `/`, and all 7 pass.
+
 ## [Unreleased] - 2026-09-11
 
 ### Synced

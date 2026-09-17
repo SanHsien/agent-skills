@@ -186,3 +186,41 @@ merge 本身在 `--stat` 對照下沒有額外內容。
 
 **觸發條件**：下次掃描器升版時重跑同一流程；若某一組 finding 數量增加，那是真的新 finding，
 要逐筆審查後才准加 fingerprint。
+
+## 2026-09-17：審完 17 個 upstream commits、PR #568–#578、issue #569／#572
+
+commit 水位 `6ca0cd7` → `be4e44a`；PR 水位 567 → 578；issue 水位 565 → 572。
+
+**採用（cherry-pick，保留原作者）**：`674921c`（穩定的 browser skill 名稱）、`4fd76c6`（既有專案
+不需遷移）、`5b98a0b`（可執行的 workflow 教學連結）、`a71eb51`（原生會路由 skill 的 host 不要再疊
+一層 `using-agent-skills`）、`15af65e`（spec 的外部產物歸屬）。
+
+**採用（最小重做）**：
+- `a1c9bd6`（Restartable Session Boundaries）：本 fork 的 `context-engineering/SKILL.md` 已帶
+  2026-09-11 採用的 Context Budget Management，插入點前後文不同而衝突；段落文字逐字取用，只換位置。
+- `17d8e52`（shared core → native adapters）：上游改的是英文 `README.md`，本 fork 的 `README.md`
+  是繁中入口，所以結構表落在英文鏡像 `README.en.md`；繁中 README 沒有專案結構段，無需同步。
+  `docs/` 三份的命令數 8 → 9 與 `/constraints` 列照收——本 fork 在 `commands/`、`.gemini/commands/`、
+  `.claude/commands/` 各有 9 個 wrapper，舊的「8」在這裡也是錯的。
+
+**已涵蓋**：`e6a58d5`（#563）已於 2026-09-11 cherry-pick。8 個 merge commit 沒有額外 diff。
+**驗證**：本批上游改動過的每個檔案，除了繁中 `README.md` 外，現在都與 `upstream/main` 逐位元組相同。
+
+**採用未合併 PR #573**（reference-link 驗證器在 Windows 輸出反斜線）：本 fork 在 Windows 實測
+`node --test scripts/validate-reference-links-test.js` 為 7 個測試 1 個失敗——驗證器用
+`path.relative` 印出 `skills\using-agent-skills\references\…`，測試比對的是 `/`。這是本 fork 可重現的
+缺陷，符合採用未合併 PR 的門檻。#573 的淨變更只有一行，把輸出路徑統一成 `/`；套用後 7/7 通過。
+issue #572 是同一問題，已由此解決。#575 已被上游關閉（同一修法的另一版本）。
+
+**延後至合併**：
+- #570（README 標題寫「All 24 Skills」，實際列 25 個）：本 fork 的 `README.en.md` 也有這個錯字，但它
+  同時改 `docs/adoption-guide.md` 的錨點；單獨採用會讓該檔與上游分岔，外觀問題不值得。上游合併後隨
+  commit 軸進來。
+- #574 與 issue #569（Claude Code plugin 在每次 SessionStart 注入 `using-agent-skills`，與剛採用的
+  `a71eb51`「不要雙重路由」互相矛盾）：矛盾是真的，但修法是改變 plugin 的 hook 行為，屬產品決策；
+  上游文件與 hook 目前也是同樣的矛盾狀態，本 fork 跟著上游定案。
+- #568、#571、#577（skill linter 的新規則與 CI）、#576（grader 依 id 綁定期望）、#578（simplify-ignore
+  hook 還原）：都是未合併的新功能或本 fork 未重現的缺陷——本機 `validate-skills.js` 通過。
+
+**fingerprint**：`context-engineering` 與 `spec-driven-development` 的 SKILL.md 內容改變，依
+`(skill, rule_id)` 對應重算雜湊；見提交紀錄。
