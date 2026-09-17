@@ -36,6 +36,7 @@
 ## 分支與 remote
 
 - `origin/main`：SanHsien 維護線，也是唯一長期分支。
+- 嚴格保持「單一最新分支、單一最新 release、單一最新 tag」：本倉庫在 GitHub 與本機只保留唯一最新版本之單一 tag 與 release（目前為 0.6.9），升版時清理舊 tag，不留歷史 tag 堆疊。
 - 日常修改直接推 `origin/main`。只有需要他人審查或高風險改動時才開 branch → PR。
 - `upstream/main`：Addy Osmani 原始專案，只追蹤、不推送。
 - Dependabot 或外部 fork 的變更同樣走 PR，讀 diff 並通過 CI 後再合併。

@@ -251,3 +251,16 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 補雜湊時要從未過濾清單算。
 
 **驗證**：`pwsh -NoProfile -File tools\dev_check.ps1` WINDOWS DEV CHECK GREEN，25 個 skill 無新 finding。
+
+## 2026-09-17：修復 squash 後缺乏可達 release tag 與 manifest 版本漂移問題
+
+**問題**：
+1. 本倉庫先前執行歷史 squash 初始化單一 root commit（`58e0269`）時，既有的歷史 release tag（`0.6.9`）未接續至新歷史上，GitHub Actions 的 `Test Plugin Installation / Validate skill content`（`scripts/validate-versions.js`）執行 `git describe --tags --abbrev=0` 時因無任何可達 tag 而拋出 `fatal: No tags can describe ...` 導致 CI 失敗。
+2. 同時 5 份 plugin manifest 在 squash 初始化時漂移回退為 `0.6.8`，而上游及本 fork 正式 release 均為 `0.6.9`。
+3. `CLAUDE.md` 與 `FORK.md` 遺失先前制訂之「單一最新分支、單一最新 release、單一最新 tag」政策條款。
+
+**決定與動作**：
+1. 將 5 份 plugin manifest（`plugin.json`、`.codex-plugin/plugin.json`、`.claude-plugin/plugin.json`、`.claude-plugin/marketplace.json`、`.agents/plugins/marketplace.json`）版本全面同步至 `0.6.9`。
+2. 補回 `CLAUDE.md` 與 `FORK.md` 之單一最新分支、Release 與 Tag 條款。
+3. 清理本機所有歷史 tag，在 `main` 最新提交重新建立 annotated tag `0.6.9`，並強制推送至 `origin`，使 `git describe --tags --abbrev=0` 正確返回 `0.6.9`。
+4. 驗證本機 `dev_check.ps1` 與 manifest version validator 全數通過。

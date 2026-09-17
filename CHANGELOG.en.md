@@ -22,6 +22,8 @@ lives in its own history and in the review ledger at
 
 ### Fixed
 
+- **Restore reachable release tag and align plugin manifests to 0.6.9 after squash.** Synchronized all 5 plugin manifests to 0.6.9; retagged the unique latest release tag `0.6.9` on `main` to fix CI `Test Plugin Installation / Validate skill content` failure in `validate-versions.js` (`git describe --tags --abbrev=0`).
+
 - **The reference-link validator printed backslash paths on Windows.** Locally `validate-reference-links-test.js` failed 1 of 7; adopted unmerged upstream PR #573, which reports paths with `/`, and all 7 pass.
 
 ## [Unreleased] - 2026-09-11

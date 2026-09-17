@@ -21,6 +21,8 @@
 
 ### 修復
 
+- **修復 squash 初始化後缺少可達 release tag 與 plugin manifest 漂移。** 將 5 份 plugin manifest 版本自 0.6.8 同步為 0.6.9；在 `main` 重新綁定唯一的最新 release tag `0.6.9`，修復 CI `Test Plugin Installation / Validate skill content` 中 `validate-versions.js` 的 `git describe --tags --abbrev=0` 失敗。
+
 - **reference-link 驗證器在 Windows 印反斜線路徑。** 本機 `validate-reference-links-test.js` 7 個測試 1 個失敗；採用未合併的上游 PR #573，把輸出路徑統一成 `/`，7/7 通過。
 
 ## [Unreleased] - 2026-09-11

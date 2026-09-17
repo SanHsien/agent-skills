@@ -65,6 +65,7 @@ PRs target the upstream repository's default branch. In a typical fork setup the
 
 - `origin/main` 是唯一長期分支，日常修改直接推上去；只有需要他人審查或高風險改動才開
   branch → PR。
+- repo 嚴格保持「單一最新分支（main）、單一最新 tag、單一最新 release」。發布新版本或 tag 時，舊 tag 須自 origin 與本機刪除，GitHub 與本地永遠只留唯一最新的單一 tag／release，不留歷史 tag 堆疊。
 - 不要 `git push upstream`。`upstream/main` 只用來 fetch、比對，不推送、不 force-push、不刪除。
 - PR、push、release 一律指向 `SanHsien/agent-skills`，除非維護者在**當次對話**明確同意回貢
   上游——回貢判準見 [`FORK.md`](FORK.md)。
