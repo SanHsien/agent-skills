@@ -224,3 +224,30 @@ issue #572 是同一問題，已由此解決。#575 已被上游關閉（同一�
 
 **fingerprint**：`context-engineering` 與 `spec-driven-development` 的 SKILL.md 內容改變，依
 `(skill, rule_id)` 對應重算雜湊；見提交紀錄。
+
+## 2026-09-17：SkillSpector 同步到 `82bbe8b` 後的 gate 調整
+
+**背景**：本機的 `skillspector`（uv tool）是 editable 安裝、指向 SkillSpector fork 的 checkout，所以 fork
+同步上游 53 個 commit（`82bbe8b`，版本號仍 2.11.2）後，這個 repo 的自我掃描立刻換成新版掃描器。
+
+**變數改名**：`tools/dev_check.ps1` 原本設 `SKILLSPECTOR_MAX_STATIC_SECONDS=86400`，那是 SkillSpector fork
+自己的變數，同步時已由上游 #522 的 `SKILLSPECTOR_MAX_STATIC_ANALYSIS_SECONDS_PER_ARTIFACT` 取代。
+改用新名稱；舊名稱在新版會被忽略，每檔預算就會退回 300 秒。
+
+**fingerprint**：新版改了 finding 的識別內容，4 筆既有項目雜湊漂移（`browser-testing-with-devtools` P1、
+`doubt-driven-development` EA5、`shipping-and-launch` AR2、`source-driven-development` P1），同 skill、同規則、
+同行、同證據，理由不變只換雜湊。
+
+**新增 2 筆 AE1（逐筆審查後接受）**：新版 `static_patterns_tool_misuse` 在
+`constraint-driven-development/references/floor-guard.md` 碰到有界解析器的跨度上限（ledger 記
+`static_parse_limit`），`SKILL.md` 第 216、258 行引用該檔時各回報一筆 AE1「referenced artifact not
+completely inspected」。收進 baseline 等於接受這塊沒被這個 analyzer 完整檢查，所以先人工逐行審閱該檔：
+一段 JS 參考實作，只以 `execFileSync` 的 argv 陣列呼叫 `git`（不經 shell），參數是固定字面值、`--base`
+參數與 `git ls-files` 輸出；沒有網路、寫檔或讀環境變數，輸出截斷到 120 字元。沒被完整覆蓋的是第 57、59 行
+兩條很長的正規表示式，內容無害。兩筆共用同一段審查理由。
+
+**工具教訓**：`skillspector baseline` 與掃描圖的 `filtered_findings` 都只給出第 216 行那筆的雜湊，第 258 行
+那筆只出現在未過濾的 `findings` 清單，而 CLI 報告兩筆都列。這正是本檔頭已記載的「近似行會少列指紋」問題；
+補雜湊時要從未過濾清單算。
+
+**驗證**：`pwsh -NoProfile -File tools\dev_check.ps1` WINDOWS DEV CHECK GREEN，25 個 skill 無新 finding。

@@ -44,7 +44,7 @@ fingerprints:
   skill: browser-testing-with-devtools
   file: SKILL.md
   reason: "自我指涉誤判：browser-testing-with-devtools 的 Security Boundaries 段落教導 agent 把瀏覽器內容視為不可信資料，文中示範字串觸發 YARA 惡意樣式規則，並非真實惡意程式碼。"
-- hash: sha256:bf4ade841fc02659088b8a6f525c79c98067808a8059d98da3fe9ee974a88837
+- hash: sha256:45ae45221807b959db153c7d85a427b30589235b892d01c711cbb23b87086656
   rule_id: P1
   skill: browser-testing-with-devtools
   file: SKILL.md
@@ -74,7 +74,7 @@ fingerprints:
   skill: context-engineering
   file: SKILL.md
   reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
-- hash: sha256:ee2c244539dc4cb0c45b30c14e63e11d5da104c698023d60b9975404dd453b32
+- hash: sha256:7eb77c4d1acd6a22abbf9f392c321820071c5cc91c14b3733ac011175159f44b
   rule_id: EA5
   skill: doubt-driven-development
   file: SKILL.md
@@ -109,12 +109,12 @@ fingerprints:
   skill: source-driven-development
   file: SKILL.md
   reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
-- hash: sha256:02d524695f3fe4218735535c992e6a7faee49ff1d5d15fd79bedfc5d85178577
+- hash: sha256:9c4bd8d50d0b5089d04df831508ed2de5863aec501900ead7b4dad7b1c693d74
   rule_id: AR2
   skill: shipping-and-launch
   file: SKILL.md
   reason: "自我指涉誤判：shipping-and-launch 的 checklist 項目是『測試通過、build 無警告、lint 通過』等發佈前檢查清單，字面提到 warnings/lint 是要求做到而非省略，被規則誤判為『省略警告／免責聲明』。"
-- hash: sha256:13b9fee653ba3fa1dcd5beaed2df163a2726da9463f54971ea706aefc04be0ce
+- hash: sha256:de81bdb841639af7b8c8e32f4e21d16878332c81a3005a5a9e978459a55d3dcf
   rule_id: P1
   skill: source-driven-development
   file: SKILL.md
@@ -164,3 +164,13 @@ fingerprints:
   skill: security-and-hardening
   file: SKILL.md
   reason: "自我指涉誤判（security-and-hardening/SKILL.md:506）。命中 'no consent'，原文是一條警告：PI I 未經同意就送給 analytics／廣告／LLM 廠商是要避免的事。規則想抓的是宣告自己不需要同意，這裡語意剛好相反。"
+- hash: sha256:3718bcc9c4bb1695a259363018a539883198fcf8185a757c56872405925a7320
+  rule_id: AE1
+  skill: constraint-driven-development
+  file: SKILL.md
+  reason: "已人工審查：新版掃描器的 static_patterns_tool_misuse 在 references/floor-guard.md 碰到有界解析器的跨度上限（ledger 記 static_parse_limit），SKILL.md 引用該檔時因此回報 AE1。人工逐行審閱該檔的 JS 參考實作：只以 execFileSync 的 argv 陣列呼叫 git（不經 shell），參數為固定字面值、--base 參數與 git ls-files 輸出；沒有網路、寫檔或讀環境變數，輸出截斷至 120 字元。未被靜態分析完整覆蓋的是兩條長正規表示式，內容無害。"
+- hash: sha256:9a7c2146308002f9f8d49308596ae8986665811ff78842a09af8555236ea5a69
+  rule_id: AE1
+  skill: constraint-driven-development
+  file: SKILL.md
+  reason: "已人工審查：新版掃描器的 static_patterns_tool_misuse 在 references/floor-guard.md 碰到有界解析器的跨度上限（ledger 記 static_parse_limit），SKILL.md 引用該檔時因此回報 AE1。人工逐行審閱該檔的 JS 參考實作：只以 execFileSync 的 argv 陣列呼叫 git（不經 shell），參數為固定字面值、--base 參數與 git ls-files 輸出；沒有網路、寫檔或讀環境變數，輸出截斷至 120 字元。未被靜態分析完整覆蓋的是兩條長正規表示式，內容無害。"

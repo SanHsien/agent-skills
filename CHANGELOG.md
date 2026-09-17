@@ -14,6 +14,9 @@
 
 ### 同步
 
+- **自我掃描跟上 SkillSpector `82bbe8b`。** 每檔時間預算改用上游變數名 `SKILLSPECTOR_MAX_STATIC_ANALYSIS_SECONDS_PER_ARTIFACT`（舊的 fork 變數在新版會被忽略）。新版識別方式讓 4 筆 fingerprint 換雜湊；`constraint-driven-development` 引用的 `floor-guard.md` 因解析器跨度上限未被完整檢查，人工審閱內容後以具體理由收錄 2 筆 AE1。見 [`docs/DECISIONS.md`](docs/DECISIONS.md)。
+
+
 - **上游批次審查到 `be4e44a`（PR #578、issue #572）。** 採用 context-engineering 的 Restartable Session Boundaries、adapter 對照表（英文鏡像 README）、spec 外部產物歸屬、既有專案不需遷移、原生 host 避免雙重路由、穩定的 browser skill 名稱與教學連結；文件中的命令數更正為 9 並補上 `/constraints`。本批上游改過的檔案除繁中 README 外都已與上游一致。
 
 ### 修復

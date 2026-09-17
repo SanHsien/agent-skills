@@ -15,6 +15,9 @@ lives in its own history and in the review ledger at
 
 ### Synced
 
+- **Self-scan follows SkillSpector `82bbe8b`.** The per-artifact time budget now uses upstream's `SKILLSPECTOR_MAX_STATIC_ANALYSIS_SECONDS_PER_ARTIFACT` (the old fork variable is ignored by the new build). The new finding identity rehashed 4 fingerprints; `floor-guard.md`, referenced by `constraint-driven-development`, hits a bounded-parser span limit, so its content was reviewed by hand and the two resulting AE1 findings are recorded with a specific reason. See [`docs/DECISIONS.md`](docs/DECISIONS.md).
+
+
 - **Upstream batch review through `be4e44a` (PR #578, issue #572).** Adopted Restartable Session Boundaries in context-engineering, the adapter table (in the English README mirror), external artifact ownership for specs, no-migration setup for existing projects, avoiding double routing on native hosts, the stable browser skill name and the tutorial links; the docs now count 9 commands and list `/constraints`. Every upstream-changed file in this batch except the Traditional Chinese README matches upstream.
 
 ### Fixed
