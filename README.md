@@ -109,7 +109,7 @@ npx skills add SanHsien/agent-skills --skill code-review-and-quality
 
 ## 全部 25 個 Skill（依生命週期分組）
 
-Commands 是入口；完整清單依 [`CLAUDE.md`](CLAUDE.md) 的分組如下（24 個生命週期 skill +
+Commands 是入口；完整清單依 [`AGENTS.md`](AGENTS.md) 的分組如下（24 個生命週期 skill +
 `using-agent-skills` 這個判斷該用哪個 skill 的 meta-skill）：
 
 - **Define（定義）**：`interview-me`、`idea-refine`、`spec-driven-development`、`constraint-driven-development`
