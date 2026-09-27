@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Taipei"
+    open-pull-requests-limit: 5
+    labels: ["dependencies", "github-actions"]
+    groups:
+      github-actions:
+        patterns: ["*"]
+
+# No npm or pip ecosystem is declared here: scripts/*.js are zero-dependency
+# Node validators (no package.json), and tools/*.py depend only on the
+# stdlib plus dev-only pytest/ruff, tracked separately by
+# tools/check_dependency_freshness.py rather than an installable manifest.
