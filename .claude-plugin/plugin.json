@@ -9,5 +9,8 @@
   "repository": "https://github.com/addyosmani/agent-skills",
   "license": "MIT",
   "commands": ["./.claude/commands", "./commands"],
-  "skills": "./skills"
+  "skills": "./skills",
+  "experimental": {
+    "evals": "evals/plugin"
+  }
 }

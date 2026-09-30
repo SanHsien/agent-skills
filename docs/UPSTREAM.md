@@ -82,3 +82,14 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 - 採用未合併 #573：reference-link 驗證器在 Windows 印反斜線，本機 7 個測試 1 個失敗；一行修正後 7/7。
 - 延後至合併：#570、#574（含 issue #569）、#568、#571、#576、#577、#578。逐筆理由見
   [`DECISIONS.md`](DECISIONS.md)。
+
+## 2026-09-30：78 commits／PR #579–#621／issue #581–#622 bounded review
+
+- commit baseline：`2686b620fc1fed2e8f60c704839c766b8594c6b6`（upstream 0.6.11）；PR：已看到 **#621**；issue：已看到 **#622**
+- 方法：本 repo 與上游無共同祖先，且上游變更檔（skills/、scripts/、hooks/、evals/、references/、四份 docs、CONTRIBUTING.md、test-plugin-install.yml、manifests）在本 fork 與 `be4e44a` 逐位元組相同，故以 `git checkout upstream/main -- <paths>` 同步，等同 78 個 commit 中全部有實質 diff 者（其餘約 30 個為無 diff 的 merge commit）。
+- 採用（已合併的上游 PR，本機驗證：7 支 node 測試、3 支 hook shell 測試、`dev_check.ps1`）：#586、#587、#588、#594、#595、#596、#598、#600、#605、#607、#611、#612，以及 commit 範圍內的 #493／#496／#497／#498／#501／#510／#517／#545／#568／#570／#571／#573／#574／#576／#578（含 #569 的 SessionStart 不再自動注入）。`README.en.md` 標題 24 → 25（#570），中文 `README.md` 為維護索引不動。`.gitignore` 加 `evals/plugin/results/`。
+- **adoption pending: #579／#589（security-and-hardening 拆出 `references/hardening-patterns.md`）**：同步後 `dev_check.ps1` 的 SkillSpector 自掃描對該 skill 報 16 筆新 finding（YR4／EA2／MP3／SSRF1 為既有誤判類別改行號重生，另 11 筆 AE1「本地參考檔 partial」）。放行需把新 fingerprint 寫進 `.skillspector-baseline.yaml`，那是放寬安全掃描，需維護者明確核可；本輪保留 fork 現有版本（`skills/security-and-hardening/`、`references/security-checklist.md` 不動）。重查條件：維護者核可 baseline 條目，或掃描器對本地參考檔不再標 partial。
+- **release bump 不採用**：`c004a74`（0.6.10）、`2686b62`（0.6.11）。fork 只保留單一 tag／release（現為 0.6.9），升版需要刪舊 tag 與 release，屬維護者授權動作；manifests 內容（含 `experimental.evals`）已同步，版本維持 0.6.9。`validate-versions` 現以 root `plugin.json` 為準，五份一致。
+- 開放中、待上游合併（follow-upstream）：PR #580、#593、#603、#606、#608、#613、#614、#615、#616、#618、#621；#617（draft，Oh My Pi 整合，本 fork 不支援該 agent）。
+- 已關閉未合併：#582、#601、#609（新增 skill 投稿）、#592（安裝徽章宣傳）、#604、#610（上游拒收的 validator 功能）、#619（"Temp"）——不採用。
+- issue：#581、#585（→#588）、#591（→#598）、#599（→#600）已由上游修正隨同步抵達；#583、#584、#597、#602、#620、#622 為上游開放中的討論／使用問題，無可套用修正（#597 的「找不到 references」與 #579 的 skill-local references 相關，隨 #579 一併延後）。

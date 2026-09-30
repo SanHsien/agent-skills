@@ -264,3 +264,7 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 2. 補回 `CLAUDE.md` 與 `FORK.md` 之單一最新分支、Release 與 Tag 條款。
 3. 清理本機所有歷史 tag，在 `main` 最新提交重新建立 annotated tag `0.6.9`，並強制推送至 `origin`，使 `git describe --tags --abbrev=0` 正確返回 `0.6.9`。
 4. 驗證本機 `dev_check.ps1` 與 manifest version validator 全數通過。
+
+## 2026-09-30：同步上游 0.6.11 範圍，security-and-hardening 拆分與版本升號延後
+
+產品路徑以上游為準（見 `docs/UPSTREAM.md` 2026-09-30 段）。兩項刻意不採：(1) #579／#589——SkillSpector 自掃描會新增 16 筆需人工核可的 baseline 條目，等維護者核可；(2) 0.6.10／0.6.11 版本號——單一 tag 政策下升版需刪舊 tag，等維護者授權。Baseline 表示已審查，不表示已全數合併。
