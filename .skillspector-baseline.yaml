@@ -33,6 +33,9 @@ rules:
     reason: "自我指涉誤判類別：文件中『npx <pkg>@latest』等安裝／CI 指令範例是給使用者參考的文件文字，非本 skill 綁定執行的未鎖版號設定；規則層級豁免（見上方 rules 區塊說明的成因與範圍）。"
   - id: "PE3"
     reason: "自我指涉誤判類別：.env／.env.local 等憑證路徑字樣出現在祕密管理教學段落，說明檔案該不該提交，非本 skill 實際讀取或外洩憑證；規則層級豁免（見上方 rules 區塊說明的成因與範圍）。"
+  - id: "AE1"
+    message: "*references/hardening-patterns.md (partial)*"
+    reason: "掃描器限制：連到本 skill 自帶的 references/hardening-patterns.md（含 #anchor）的相對連結；該檔存在於同一目錄且一併被掃描（見其 SSRF1 條目），掃描器對 skill 內本地參考檔一律標 partial，並非規避分析。"
 fingerprints:
 - hash: sha256:e6de85ff64a6dd264b6ce4582b80465ba7827627005d016d2fc31e2323570477
   rule_id: TM1
@@ -99,11 +102,6 @@ fingerprints:
   skill: source-driven-development
   file: SKILL.md
   reason: "自我指涉誤判：browser-testing-with-devtools／security-and-hardening／source-driven-development 的安全教學段落內文示範字串觸發 YARA 駭客工具樣式規則，均為教學範例非真實攻擊工具。"
-- hash: sha256:ddd8769e1e6eaaf32287ceb2c39204abd7732fdeef00faa8426dee2d79dc6c01
-  rule_id: SSRF1
-  skill: security-and-hardening
-  file: SKILL.md
-  reason: "自我指涉誤判：security-and-hardening 是安全強化教學文件，169.254.169.254 雲端 metadata 端點是 SSRF 防禦範例程式碼的教學說明，非本 skill 實際發出的請求。"
 - hash: sha256:c081fb712819a85d87d75af5b2b477289091ecc99cfdfdb82dfbcddec17072f9
   rule_id: EA2
   skill: source-driven-development
@@ -154,16 +152,6 @@ fingerprints:
   skill: using-agent-skills
   file: SKILL.md
   reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
-- hash: sha256:24825d6af8392a000fbb8e3d16db4f9fac4d0c9ad805c78e7351833083d54a5c
-  rule_id: YR4
-  skill: security-and-hardening
-  file: SKILL.md
-  reason: "自我指涉誤判（security-and-hardening/SKILL.md:21）。YARA 規則 agent_skill_prompt_ injection_hidden_instructions 跨行拼出 'Model; disable security'，實際原文是標題 ' ## Process: Threat Model First' 加下一段講安全約束的散文。威脅建模教材必然同時出現 Model 與 secu rity 這兩個詞，屬跨行比對的產物。"
-- hash: sha256:570290cce9cefd6d4569452044901b431546c3e8f518938f503ac53f2d37fecb
-  rule_id: EA2
-  skill: security-and-hardening
-  file: SKILL.md
-  reason: "自我指涉誤判（security-and-hardening/SKILL.md:506）。命中 'no consent'，原文是一條警告：PI I 未經同意就送給 analytics／廣告／LLM 廠商是要避免的事。規則想抓的是宣告自己不需要同意，這裡語意剛好相反。"
 - hash: sha256:3718bcc9c4bb1695a259363018a539883198fcf8185a757c56872405925a7320
   rule_id: AE1
   skill: constraint-driven-development
@@ -174,3 +162,23 @@ fingerprints:
   skill: constraint-driven-development
   file: SKILL.md
   reason: "已人工審查：新版掃描器的 static_patterns_tool_misuse 在 references/floor-guard.md 碰到有界解析器的跨度上限（ledger 記 static_parse_limit），SKILL.md 引用該檔時因此回報 AE1。人工逐行審閱該檔的 JS 參考實作：只以 execFileSync 的 argv 陣列呼叫 git（不經 shell），參數為固定字面值、--base 參數與 git ls-files 輸出；沒有網路、寫檔或讀環境變數，輸出截斷至 120 字元。未被靜態分析完整覆蓋的是兩條長正規表示式，內容無害。"
+- hash: sha256:c103216819cd8be57079ede35bbe2c7e22649d501706ddf661af93562957db39
+  rule_id: YR4
+  skill: security-and-hardening
+  file: SKILL.md
+  reason: "自我指涉誤判（security-and-hardening/SKILL.md:21，上游 #579／#589 拆分後的版本）。YARA 規則 agent_skill_prompt_injection_hidden_instructions 跨行拼出 'Model; disable security'：原文是標題 '## Process: Threat Model First' 與後文 'Never disable security headers' 等防禦建議，語意是禁止停用安全機制。"
+- hash: sha256:c9c7b8eee6d79c34d8f223e0fdad18e38943b4a0aa9dfe4e3fecb2e4a1817c0f
+  rule_id: MP3
+  skill: security-and-hardening
+  file: SKILL.md
+  reason: "自我指涉誤判（security-and-hardening/SKILL.md:129）。命中 'purge history'，原文是祕密外洩後的補救步驟：先輪替金鑰，再清除 git 歷史中的祕密。與記憶／上下文投毒無關。"
+- hash: sha256:118854beea65564791bcbdc502b3119466cc9cc9a85f29bb6ea0905df30f20a1
+  rule_id: SSRF1
+  skill: security-and-hardening
+  file: references/hardening-patterns.md
+  reason: "自我指涉誤判（security-and-hardening/references/hardening-patterns.md:150）。169.254.169.254 出現在 SSRF 防禦範例的說明：assertSafeUrl 以 range() !== 'unicast' 擋下 link-local 雲端 metadata 位址，是要阻擋的目標，本 skill 不發出請求。"
+- hash: sha256:2a090cc731021758669fe7ea96f0f769adaf4cefd6168c577b0a7d3246ed28e4
+  rule_id: EA2
+  skill: security-and-hardening
+  file: SKILL.md
+  reason: "自我指涉誤判（security-and-hardening/SKILL.md:198）。命中 'no consent'，原文是要避免的風險清單：PII 未經同意或無資料處理協議就送給 analytics／廣告／LLM 廠商。語意是禁止而非授權。"
