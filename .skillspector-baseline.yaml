@@ -172,13 +172,48 @@ fingerprints:
   skill: security-and-hardening
   file: SKILL.md
   reason: "自我指涉誤判（security-and-hardening/SKILL.md:129）。命中 'purge history'，原文是祕密外洩後的補救步驟：先輪替金鑰，再清除 git 歷史中的祕密。與記憶／上下文投毒無關。"
-- hash: sha256:118854beea65564791bcbdc502b3119466cc9cc9a85f29bb6ea0905df30f20a1
+- hash: sha256:6c3e97f8f9ef4cb2b5c6a2f01842cd561e08c0de0e2455ecf2de49f9faf60d57
   rule_id: SSRF1
   skill: security-and-hardening
   file: references/hardening-patterns.md
-  reason: "自我指涉誤判（security-and-hardening/references/hardening-patterns.md:150）。169.254.169.254 出現在 SSRF 防禦範例的說明：assertSafeUrl 以 range() !== 'unicast' 擋下 link-local 雲端 metadata 位址，是要阻擋的目標，本 skill 不發出請求。"
+  reason: "自我指涉誤判（security-and-hardening/references/hardening-patterns.md:150）。169.254.169.254 出現在 SSRF 防禦範例的說明：assertSafeUrl 以 range() !== 'unicast' 擋下 link-local 雲端 metadata 位址，是要阻擋的目標，本 skill 不發出請求。2026-10-24：上游在同段補上 TOCTOU 說明，檔案內容變動，換雜湊。"
 - hash: sha256:2a090cc731021758669fe7ea96f0f769adaf4cefd6168c577b0a7d3246ed28e4
   rule_id: EA2
   skill: security-and-hardening
   file: SKILL.md
   reason: "自我指涉誤判（security-and-hardening/SKILL.md:198）。命中 'no consent'，原文是要避免的風險清單：PII 未經同意或無資料處理協議就送給 analytics／廣告／LLM 廠商。語意是禁止而非授權。"
+- hash: sha256:9258a602a3a89072b76a5d4bc7852ddd00863c2a7582f9a502535af904d40c41
+  rule_id: TM1
+  skill: api-and-interface-design
+  file: SKILL.md
+  reason: "自我指涉誤判（api-and-interface-design/SKILL.md:226）。命中的是 REST 範例表裡的 `DELETE /api/tasks/:id`，那是在教怎麼設計資源路由的文件表格，不是工具呼叫，skill 本身不發出任何請求。2026-10-24 隨上游 #628 的 throw statement 修正一起進來。"
+- hash: sha256:5ea5accd958a04133de8051210b10ddce361c2036c598b5ebdff9b24c894f3bd
+  rule_id: AR2
+  skill: shipping-and-launch
+  file: SKILL.md
+  reason: "自我指涉誤判（shipping-and-launch/SKILL.md:25）。命中的是上線前檢查清單（全部測試通過、建置無警告、lint 與型別檢查通過），語意是出貨門檻，不是叫 agent 忽略拒絕條件。"
+- hash: sha256:22d5f465a188ac0267d9139495def1a48ef6b3efb3a25c8672bb18cbfbd93cb6
+  rule_id: EA2
+  skill: spec-driven-development
+  file: SKILL.md
+  reason: "自我指涉誤判（spec-driven-development/SKILL.md:113）。命中的是三層邊界表的 Never do 那一列（不得提交祕密、不得改 vendor 目錄、未經核准不得移除失敗測試）。整張表是在限制自主行為，不是授予。"
+- hash: sha256:f80a338ab7fd6ede5cd3e2a2ea1c926363b4da55ab59aab26bce4c738526806d
+  rule_id: AS3
+  skill: spec-driven-development
+  file: SKILL.md
+  reason: "自我指涉誤判（spec-driven-development/SKILL.md:214，同一行三個命中之一）。Phase 4 以路徑交叉引用本 repo 自己的另外三個 skill（incremental-implementation、test-driven-development、context-engineering），這是技能包的結構說明，不是列舉宿主已安裝的技能。"
+- hash: sha256:dbb1f5eabc3fa06f8529acfd051ba2e52bf6bf57f715f4f1ff5b050502765687
+  rule_id: AS3
+  skill: spec-driven-development
+  file: SKILL.md
+  reason: "自我指涉誤判（spec-driven-development/SKILL.md:214，同一行三個命中之二）。同上：引用的是本 repo 內的 skill 路徑。"
+- hash: sha256:c7c70b0c1228bae85759ff0aee2ffe91335613ef2e378f7fec93fcfb826898da
+  rule_id: AS3
+  skill: spec-driven-development
+  file: SKILL.md
+  reason: "自我指涉誤判（spec-driven-development/SKILL.md:214，同一行三個命中之三）。同上：引用的是本 repo 內的 skill 路徑。"
+- hash: sha256:0029bf81da81be60843f5be7ba9b2b58b61e8597e942203d4e8876eef4f647c5
+  rule_id: EA2
+  skill: test-driven-development
+  file: SKILL.md
+  reason: "自我指涉誤判（test-driven-development/SKILL.md:378）。命中的是 Red Flags 清單中「『全部測試通過』但其實沒跑過測試」這一條，語意是要抓出這種行為，不是宣稱自己有自主決策權。"

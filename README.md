@@ -43,6 +43,9 @@ CLI、Command Code、Kiro 等宿主使用。
 | 簡化程式碼 | `/code-simplify` | 清晰勝過取巧 |
 | 上線 | `/ship` | 快即是穩 |
 
+在 Claude Code 裡這些是 plugin command。名稱與內建 command 相同時（`/review` 就是）要用加上命名
+空間的寫法：`/agent-skills:review`。
+
 `/build auto` 會在你核准一次 plan 後自動產生任務並逐一實作——拿掉的是人在每個任務之間手動確認
 的步驟，不是驗證本身：每個任務仍是 test-driven 並個別提交，遇到失敗或高風險步驟會暫停。
 
@@ -80,8 +83,8 @@ skill（例如 `@spec-driven-development`）。
 ### 選項 3：Cursor
 
 把工作流程 skill 放到 `.cursor/skills/`（從本 repo 的 `skills/` 同步），短版政策放
-`.cursor/rules/*.mdc`——不要把整份 skill 貼進 rules。詳見
-[docs/cursor-setup.md](docs/cursor-setup.md)。
+`.cursor/rules/*.mdc`——不要把整份 skill 貼進 rules。這兩個目錄都在你自己的專案裡，本 repo 不
+附 `.cursor/` 資料夾。詳見 [docs/cursor-setup.md](docs/cursor-setup.md)。
 
 ### 其他宿主
 
@@ -93,6 +96,7 @@ Gemini CLI、Windsurf、OpenCode、GitHub Copilot、Antigravity CLI、Command Co
 [copilot-setup.md](docs/copilot-setup.md)、[copilot-cli-setup.md](docs/copilot-cli-setup.md)、
 [antigravity-setup.md](docs/antigravity-setup.md)、
 [commandcode-setup.md](docs/commandcode-setup.md)。這些是上游文件，本 fork 不重寫安裝指令。
+能安裝這套 skill 但上面沒列到的宿主，見 [docs/other-hosts.md](docs/other-hosts.md)。
 
 ### 只想裝單一 skill
 

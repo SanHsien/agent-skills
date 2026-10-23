@@ -11,6 +11,12 @@ lives in its own history and in the review ledger at
 
 ---
 
+## [Unreleased] - 2026-10-24
+
+### Synced
+
+- **Upstream batch synced through `aeac41d` (0.6.13; PR #718, issue #717).** The 112 commits touch 61 files; the only ones this fork owns are the 5 plugin manifests and the Traditional Chinese `README.md`. The other 55 (9 of them new upstream files) now match upstream; the manifests take upstream's content but, per the standing decision, stay at version 0.6.9 (the 0.6.12/0.6.13 release bumps are not adopted). `README.en.md` is rebuilt from upstream's current README; the Chinese `README.md` gains three translated passages: the plugin-command namespace (`/agent-skills:review`), that both `.cursor/` directories live in the user's project, and the `docs/other-hosts.md` pointer. On the PR axis, the 28 merged items came in with this sync, 14 closed-unmerged ones need nothing, and the rest wait for merge. The 8 new self-scan findings are all self-referential false positives from the new upstream text, each reviewed and recorded. See [`docs/DECISIONS.md`](docs/DECISIONS.md).
+
 ## [Unreleased] - 2026-09-17
 
 ### Synced

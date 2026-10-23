@@ -268,3 +268,23 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 ## 2026-09-30：同步上游 0.6.11 範圍，security-and-hardening 拆分與版本升號延後
 
 產品路徑以上游為準（見 `docs/UPSTREAM.md` 2026-09-30 段）。兩項刻意不採：(1) #579／#589——SkillSpector 自掃描會新增 16 筆需人工核可的 baseline 條目，等維護者核可；(2) 0.6.10／0.6.11 版本號——單一 tag 政策下升版需刪舊 tag，等維護者授權。Baseline 表示已審查，不表示已全數合併。
+
+## 2026-10-24：上游批次同步到 `aeac41d`（0.6.13；PR #718、issue #717）
+
+**決定**：112 個 commit 的範圍只動到 61 個檔案，逐檔比對後發現本 fork 自己持有的只有 5 份 plugin manifest（差別僅版本號）與繁中 `README.md`。其餘 55 個檔案（含 9 個上游新增檔）直接取上游版本；5 份 manifest 的內容也取上游，但依 2026-09-30 的既有決策，版本號維持 0.6.9。
+
+**理由**：本 fork 的定位是「產品內容以上游為準、維護骨架自持」。這批上游改動集中在 `skills/`、`scripts/`、`evals/`、`hooks/`、`docs/` 與 `.claude/commands/`，全部屬於產品側；逐 commit 重做只會製造分岔。比對確認本 fork 沒有在這 60 個檔案上疊過任何修改，所以 fast-forward 到上游是零資訊損失的做法。
+
+**README 兩份的處理**：`README.en.md` 是上游英文 README 的逐字鏡像，以上游現行版重建並保留頂部語言列。繁中 `README.md` 補譯上游本批的三處改動——Claude Code 裡這些是 plugin command、與內建同名時要用 `/agent-skills:review`；`.cursor/skills/` 與 `.cursor/rules/` 都在使用者自己的專案裡，本 repo 不附 `.cursor/` 資料夾；能安裝但未列出的宿主見 `docs/other-hosts.md`。上游第四處（在格式規格段落補 `docs/advanced-per-agent-configuration.md` 連結）對應的段落繁中版本來就沒有，不為此新增。
+
+**PR 與 issue 軸**：#622–#718 共 86 筆。28 筆已合併，隨本次 commit 同步進來；14 筆 closed 未合併，不處理；其餘 open 的依慣例等合併。issue 軸 #573–#717 沒有一筆需要本 fork 單獨處置，全部對應到 open PR 或已 closed。
+
+**自我掃描**：上游新文件讓五個 skill 冒出 8 筆 finding，逐筆讀過命中的原文後確認全是自我指涉誤判，以具體理由收錄，沒有為了過掃描改上游內容：
+
+- `api-and-interface-design` 的 TM1 命中 REST 範例表的 `DELETE /api/tasks/:id`，那是路由設計教學表格。
+- `security-and-hardening` 的 SSRF1 命中 SSRF 防禦範例在說明 `169.254.169.254` 是頭號攻擊目標；這筆本來就已收錄，是上游在同段補了 TOCTOU 說明才換雜湊。
+- `shipping-and-launch` 的 AR2 命中上線前檢查清單。
+- `spec-driven-development` 的 EA2 命中三層邊界表的「Never do」那一列；三筆 AS3 命中同一行對本 repo 另外三個 skill 的路徑引用。
+- `test-driven-development` 的 EA2 命中 Red Flags 裡「宣稱全部測試通過、但其實沒跑過測試」。
+
+**release bump 不採用**：`a06bc63`（0.6.12）、`aeac41d`（0.6.13）。本 fork 只保留單一 tag／release（現為 0.6.9），升版需要刪舊 tag 與 release，屬維護者授權動作，與 2026-09-30 對 0.6.10／0.6.11 的處理相同。上游已把 tag 檢查從 `scripts/validate-versions.js` 移除，五份 manifest 版本一致即通過。
