@@ -117,12 +117,22 @@ function Invoke-SkillSpectorSelfScan {
     $env:SKILLSPECTOR_MAX_WORKFLOW_SECONDS = "86400"
     try {
     Write-Host "==> SkillSpector self-scan (skills\*)"
+    if ($PSVersionTable.PSVersion -lt [version]"7.4") {
+        throw ("The self-scan redirects SkillSpector's JSON from stdout, which keeps " +
+            "the bytes intact only on PowerShell 7.4+; this is " +
+            "$($PSVersionTable.PSVersion). Run the gate with pwsh 7.4 or newer.")
+    }
     $skillDirs = Get-ChildItem -LiteralPath $SkillsRoot -Directory
     $failedSkills = @()
     foreach ($skill in $skillDirs) {
         $reportPath = Join-Path $reportDir "$($skill.Name).json"
+        # SkillSpector 2.12.0 refuses `--output` where O_NOFOLLOW/dir_fd are missing
+        # (Windows) and asks for stdout redirection instead. PowerShell 7.4+ writes a
+        # native command's redirected stdout as raw bytes, so the UTF-8 JSON survives.
+        # The report goes to a fresh file under $reportDir, outside the scanned skill.
+        Remove-Item -LiteralPath $reportPath -Force -ErrorAction SilentlyContinue
         & $skillSpectorCmd.Source scan $skill.FullName --no-llm --format json `
-            --output $reportPath --baseline $baselinePath
+            --baseline $baselinePath > $reportPath
         if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 1) {
             throw ("skillspector scan crashed on skill '$($skill.Name)' " +
                 "(exit code $LASTEXITCODE); see $reportPath")

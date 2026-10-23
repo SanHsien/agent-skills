@@ -14,6 +14,8 @@
 
 ### 同步
 
+- **自我掃描跟上 SkillSpector 2.12.0。** 2.12.0 在 Windows 拒絕 `--output`，gate 改用 stdout 導向寫報告（需 PowerShell 7.4+，gate 會檢查）；指紋以新舊兩個版本號對同一 finding 計算後原地換新，保留理由，刪除 7 筆過期條目。見 [`docs/DECISIONS.md`](docs/DECISIONS.md)。
+
 - **上游批次同步到 `aeac41d`（0.6.13；PR #718、issue #717）。** 112 個 commit 只動到 61 個檔案；本 fork 自己持有的只有 5 份 plugin manifest 與繁中 `README.md`，其餘 55 個（含 9 個新增檔）直接取上游版本；manifest 內容取上游、版本依既有決策維持 0.6.9（0.6.12／0.6.13 的 release bump 不採用）。`README.en.md` 以上游現行 README 重建；繁中 `README.md` 補譯三處：plugin command 命名空間（`/agent-skills:review`）、`.cursor/` 兩個目錄在使用者專案內、未列出的宿主見 `docs/other-hosts.md`。PR 軸 28 筆已合併者隨本次進來，14 筆 closed 不處理，其餘等合併。自我掃描新增的 8 筆 finding 全為上游新文件造成的自我指涉誤判，逐筆審閱後收錄。見 [`docs/DECISIONS.md`](docs/DECISIONS.md)。
 
 ## [Unreleased] - 2026-09-17

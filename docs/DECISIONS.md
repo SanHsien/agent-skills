@@ -288,3 +288,14 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 - `test-driven-development` 的 EA2 命中 Red Flags 裡「宣稱全部測試通過、但其實沒跑過測試」。
 
 **release bump 不採用**：`a06bc63`（0.6.12）、`aeac41d`（0.6.13）。本 fork 只保留單一 tag／release（現為 0.6.9），升版需要刪舊 tag 與 release，屬維護者授權動作，與 2026-09-30 對 0.6.10／0.6.11 的處理相同。上游已把 tag 檢查從 `scripts/validate-versions.js` 移除，五份 manifest 版本一致即通過。
+
+## 2026-10-24：自我掃描跟上 SkillSpector 2.12.0
+
+**決定**：本機 gate 改用 PATH 上的 SkillSpector 2.12.0（`uv tool install --editable C:\GitHub\SkillSpector`，對應 SanHsien/SkillSpector `350e638`），指紋逐筆搬移，報告改由 stdout 導向寫檔。
+
+**理由與做法**：
+
+- **報告寫檔**：2.12.0 在沒有 `O_NOFOLLOW`／`dir_fd` 的平台（Windows）拒絕 `--output`，要求改用 stdout 導向，這是上游防止輸出路徑被換成 symlink 的安全設計。`tools/dev_check.ps1` 改成 `skillspector scan … > 報告檔`；PowerShell 7.4 起原生指令導向會原樣保留位元組，UTF-8 JSON 不會被主控台編碼轉壞，gate 會先檢查版本。報告寫在 `.skillspector-reports/`，不在被掃描的 skill 裡。
+- **指紋搬移**：指紋綁掃描器版本。對 2.12.0 回報的每個 finding 分別以 2.11.2 與 2.12.0 計算，舊雜湊對上已審條目的原地換新、保留理由（27 筆）。`constraint-driven-development` 那兩筆 `floor-guard.md` 連帶的 AE1 因規則識別方式改變而重新計算；`floor-guard.md` 今天隨上游 `aa68c3e` 改過，重讀後判斷不變。不再產生的 7 筆過期條目刪除。
+
+**驗證**：`tools/dev_check.ps1` 綠燈，25 個 skill 無新 finding。
