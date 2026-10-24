@@ -105,3 +105,9 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 - 開放中、待上游合併：#623、#643、#646、#647、#650、#657、#665、#667、#668、#670、#671、#683–#692、#694–#714、#718。
 - issue：已關閉者隨對應 PR 解決或為使用問題；開放中的 #583、#584、#597、#602、#620、#654、#660、#693、#715、#717 都對應 open PR 或上游討論，本 fork 不單獨處置。
 - 驗證：`node scripts/validate-skills.js`（25 skills + 4 personas）、`validate-commands.js`（9 commands）、`validate-versions.js`（五份 0.6.9）通過；`tools/dev_check.ps1` 綠燈。自我掃描新增 8 筆自我指涉誤判，逐筆審閱收錄，見 [`DECISIONS.md`](DECISIONS.md)。
+
+## 2026-10-25：PR #719–#731 bounded review
+
+- commit baseline 不變（`aeac41d`，上游 main 無新 commit）；PR：已看到 **#731**；issue：仍為 **#717**（無新增）
+- 13 筆全是 open 未合併，皆為產品側文件／範例修正：accessibility checklist（#719、#720、#725）、performance（#721、#727）、webperf 指令與 persona（#722）、cursor 文件連結（#723）、idea-refine 路徑（#724）、security 範例（#726）、source-driven 引文（#728）、gitleaks 指令（#729）、error handler（#730）、worktree 範例（#731）。
+- 缺陷在本 fork 皆存在（產品檔與上游逐位元組相同，見 `DECISIONS.md` 的 grep 證據），但依慣例不單獨摘取未合併 PR；等上游合併後隨 commit 軸同步。

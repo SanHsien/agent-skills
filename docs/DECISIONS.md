@@ -307,3 +307,24 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 **暴露面**：輸出只用來和連結的 `#fragment` 比對 heading anchor，不寫進 HTML，也不輸出給瀏覽器。單次剝除會殘留的只有未閉合的 `<`（例如 `a <script`）；`slugify()` 最後的字元過濾本來就會丟掉 `<`、`>`，所以 slug 對任何輸入都不變。實測 repo 內 1408 個 heading 的 slug，修正前後逐行一致。
 
 **例外說明**：`scripts/` 依 fork 規則以上游為準；這是 security alert 修正，範圍限一個函式，上游同步時若上游改了同一段，以上游版為準再確認 alert 是否仍成立。
+
+## 2026-10-25：審完上游 PR #719–#731，reviewed_pr_through 推到 #731
+
+**決定**：13 筆 PR 全部讀完整 diff，全是 open 未合併，不採用、等上游合併後隨 commit 軸同步。`reviewed_pr_through` 718 → 731；commit 軸無新增（`aeac41d`），issue 軸無新增（#717）。
+
+**證據**：本 fork 的產品檔與上游逐位元組相同，所以這些缺陷在本線同樣存在，下次同步時會自然被修掉。實測：
+
+- #719 `references/accessibility-checklist.md` 仍有 2 處 `htmlFor`（HTML 範例應為 `for`）；#720 仍寫 `npx axe-core`（第 127 行）；#725 兩處 `aria-busy` 缺 `role="status"`。
+- #721 `skills/performance-optimization/SKILL.md:209` 仍是 `npx lhci autorun`；#727 `references/performance-checklist.md:195` 仍是 `https://localhost:3000`。
+- #722 `lighthouse_audit --output-format` 在 commands／agents 仍有 7 處未帶頁面 id；#723 `docs/cursor-setup.md` 仍有 `docs.cursor.com` 連結。
+- #724 `skills/idea-refine/SKILL.md:32` 仍是 `bash skills/idea-refine/scripts/idea-refine.sh`；#729 `constraint-driven-development` 仍有 3 處 `gitleaks detect`（issue #717 的同源問題）；#731 `git-workflow-and-versioning` 第 153–154 行 worktree 範例仍缺 `-b`；#728 引文第 161 行仍是舊句；#726、#730 的範例片段仍是舊版。
+
+**不採用的理由**：不單獨摘取未合併 PR（它們可能在審查中改寫，已摘取的會與日後合併版本分岔），與 2026-09-17、2026-10-24 的處理一致。
+
+**觸發條件**：任一筆合併時，下次 commit 軸同步自動帶入；若 #729／#717 長期不動，再評估是否因 secret 值外洩到 agent 日誌而提前採用。
+
+## 2026-10-25：依賴新鮮度紅燈的處理
+
+- GitHub Actions 重新釘 SHA（本線自有 workflow）：`actions/setup-node` 7.0.0 → 7.1.0、`actions/setup-python` 7.0.0 → 7.1.0、`github/codeql-action` 4.38.2 → 4.39.1。讀過發版說明，都是功能與依賴更新，沒有破壞性變更。
+- `actions/setup-node` 的 deferral 更新到 7.1.0：v6 仍只出現在上游自有的 `test-plugin-install.yml`。
+- `ruff>=0.16` 加 `# freshness-hold`：下限是相容承諾，不是追新。以 ruff 0.17.2 實測 `ruff check --select E9,F` 與 pytest 32 項全過；沒有提高下限來消紅燈。

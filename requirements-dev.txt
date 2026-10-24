@@ -1,2 +1,2 @@
 pytest>=9.1
-ruff>=0.16
+ruff>=0.16  # freshness-hold: 下限是相容承諾，不是追新；0.17.2 已實測 ruff E9,F 與 pytest 32 項全過，既有環境不必被迫升級
