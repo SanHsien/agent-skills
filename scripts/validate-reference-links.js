@@ -59,12 +59,17 @@ const SKILLS_DIR = path.join(ROOT, 'skills');
 // `#fragment` is captured separately.
 const REFERENCE_LINK_RE = /(?<![A-Za-z0-9._/-])((?:\.\.\/)*references\/[A-Za-z0-9._-]+\.md)(?:#([\p{L}\p{N}_-]+))?/gu;
 
+// Inline HTML renders no text. A single pass can leave a stray `<` or `>`
+// (an unclosed `<script`), so those are dropped too: no tag survives.
+function stripInlineHtml(text) {
+  return text.replace(/<[^>]+>/g, '').replace(/[<>]/g, '');
+}
+
 // GitHub's heading anchor: the rendered text, lowercased, with everything but
 // letters, numbers, `_`, `-` and spaces dropped, then spaces turned to hyphens.
 function slugify(heading) {
-  const text = heading
-    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1') // links and images keep their text
-    .replace(/<[^>]+>/g, '');                  // inline HTML renders no text
+  // Links and images keep their text.
+  const text = stripInlineHtml(heading.replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1'));
   return text.toLowerCase().replace(/[^\p{L}\p{M}\p{N}_\- ]/gu, '').replace(/ /g, '-');
 }
 
@@ -186,4 +191,6 @@ function main() {
   }
 }
 
-main();
+if (require.main === module) main();
+
+module.exports = { slugify, stripInlineHtml };

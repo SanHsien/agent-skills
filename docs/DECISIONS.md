@@ -299,3 +299,11 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 - **指紋搬移**：指紋綁掃描器版本。對 2.12.0 回報的每個 finding 分別以 2.11.2 與 2.12.0 計算，舊雜湊對上已審條目的原地換新、保留理由（27 筆）。`constraint-driven-development` 那兩筆 `floor-guard.md` 連帶的 AE1 因規則識別方式改變而重新計算；`floor-guard.md` 今天隨上游 `aa68c3e` 改過，重讀後判斷不變。不再產生的 7 筆過期條目刪除。
 
 **驗證**：`tools/dev_check.ps1` 綠燈，25 個 skill 無新 finding。
+
+## 2026-10-24：修正 CodeQL alert #1（`js/incomplete-multi-character-sanitization`）
+
+**決定**：`scripts/validate-reference-links.js` 的 `slugify()` 原本用單次 `.replace(/<[^>]+>/g, '')` 剝掉標題裡的 inline HTML，CodeQL 判定輸出仍可能含 `<script`。抽出 `stripInlineHtml()`：剝完標籤後再移除殘留的 `<`、`>`。另加 `require.main === module` 守門並匯出 `slugify`、`stripInlineHtml`，讓測試能直接呼叫。
+
+**暴露面**：輸出只用來和連結的 `#fragment` 比對 heading anchor，不寫進 HTML，也不輸出給瀏覽器。單次剝除會殘留的只有未閉合的 `<`（例如 `a <script`）；`slugify()` 最後的字元過濾本來就會丟掉 `<`、`>`，所以 slug 對任何輸入都不變。實測 repo 內 1408 個 heading 的 slug，修正前後逐行一致。
+
+**例外說明**：`scripts/` 依 fork 規則以上游為準；這是 security alert 修正，範圍限一個函式，上游同步時若上游改了同一段，以上游版為準再確認 alert 是否仍成立。
