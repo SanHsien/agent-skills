@@ -59,10 +59,15 @@ const SKILLS_DIR = path.join(ROOT, 'skills');
 // `#fragment` is captured separately.
 const REFERENCE_LINK_RE = /(?<![A-Za-z0-9._/-])((?:\.\.\/)*references\/[A-Za-z0-9._-]+\.md)(?:#([\p{L}\p{N}_-]+))?/gu;
 
-// Inline HTML renders no text. A single pass can leave a stray `<` or `>`
-// (an unclosed `<script`), so those are dropped too: no tag survives.
+// Inline HTML renders no text. Tags are stripped until none remain, then any
+// stray `<` or `>` (an unclosed `<script`) is dropped too: no tag survives.
 function stripInlineHtml(text) {
-  return text.replace(/<[^>]+>/g, '').replace(/[<>]/g, '');
+  let previous;
+  do {
+    previous = text;
+    text = text.replace(/<[^>]+>/g, '');
+  } while (text !== previous);
+  return text.replace(/[<>]/g, '');
 }
 
 // GitHub's heading anchor: the rendered text, lowercased, with everything but

@@ -302,7 +302,7 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 
 ## 2026-10-24：修正 CodeQL alert #1（`js/incomplete-multi-character-sanitization`）
 
-**決定**：`scripts/validate-reference-links.js` 的 `slugify()` 原本用單次 `.replace(/<[^>]+>/g, '')` 剝掉標題裡的 inline HTML，CodeQL 判定輸出仍可能含 `<script`。抽出 `stripInlineHtml()`：剝完標籤後再移除殘留的 `<`、`>`。另加 `require.main === module` 守門並匯出 `slugify`、`stripInlineHtml`，讓測試能直接呼叫。
+**決定**：`scripts/validate-reference-links.js` 的 `slugify()` 原本用單次 `.replace(/<[^>]+>/g, '')` 剝掉標題裡的 inline HTML，CodeQL 判定輸出仍可能含 `<script`。抽出 `stripInlineHtml()`：重複剝除標籤直到字串不再變化，再移除殘留的 `<`、`>`。只在單次 replace 後補 `[<>]` 過濾，CodeQL 仍會標同一行，所以兩者都做。另加 `require.main === module` 守門並匯出 `slugify`、`stripInlineHtml`，讓測試能直接呼叫。
 
 **暴露面**：輸出只用來和連結的 `#fragment` 比對 heading anchor，不寫進 HTML，也不輸出給瀏覽器。單次剝除會殘留的只有未閉合的 `<`（例如 `a <script`）；`slugify()` 最後的字元過濾本來就會丟掉 `<`、`>`，所以 slug 對任何輸入都不變。實測 repo 內 1408 個 heading 的 slug，修正前後逐行一致。
 
