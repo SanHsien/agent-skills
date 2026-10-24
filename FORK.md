@@ -18,7 +18,7 @@
 | 項目 | 說明 |
 |---|---|
 | `README.md` | 繁中主檔；英文原文在 `README.en.md` |
-| `AGENTS.md` / `CLAUDE.md` | 上游內容保留，尾端加一節本 fork 的維護規則 |
+| `AGENTS.md` | 上游內容保留，尾端加一節本 fork 的維護規則（上游的 `CLAUDE.md` 已刪除，只維護 `AGENTS.md`） |
 | `NOTICE.md` / `FORK.md` | 來源、授權與同步說明 |
 | `tools/dev_check.ps1` | Windows 本機一鍵 gate |
 | `tools/check_upstream_updates.py` | 上游 commit／PR／issue 三軸未審查追蹤 |
