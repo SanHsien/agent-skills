@@ -511,3 +511,22 @@ test('a duplicate skips a slug occupied by an earlier literal heading', () => {
   const result = run(root);
   assert.equal(result.status, 0, result.stdout + result.stderr);
 });
+
+// Heading text is stripped of inline HTML before slugging. One replace pass
+// can leave an unclosed tag behind, so the helper must not return `<script`.
+test('inline HTML stripping leaves no tag behind', () => {
+  const { stripInlineHtml } = require('./validate-reference-links');
+
+  assert.equal(stripInlineHtml('Use <code>x</code> here'), 'Use x here');
+  for (const input of ['<scr<script>ipt>', '<<a>script>', 'a <script', '<script<a>']) {
+    assert.doesNotMatch(stripInlineHtml(input), /<script/i, input);
+  }
+});
+
+test('slugs of ordinary headings are unchanged by HTML stripping', () => {
+  const { slugify } = require('./validate-reference-links');
+
+  assert.equal(slugify('Use <code>x</code> here'), 'use-x-here');
+  assert.equal(slugify('[Link](a.md) and <b>bold</b>'), 'link-and-bold');
+  assert.equal(slugify('x > y'), 'x--y');
+});
