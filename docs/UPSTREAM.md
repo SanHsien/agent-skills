@@ -116,3 +116,5 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 
 - commit baseline 不變（`aeac41d`）；PR：已看到 **#732**；issue：仍為 **#717**
 - #732 開放中，只改 `skills/frontend-ui-engineering/SKILL.md`（Workflow、widget 鍵盤／ARIA 合約、驗證不另裝工具）；依慣例等上游合併後隨 commit 軸同步，見 `DECISIONS.md`。
+
+- 補審 **#733**（open）：contrast 門檻與 resize 穩定檢查，動 evals、accessibility-checklist、browser-testing-with-devtools；等上游合併後同步。PR 水位 **#733**。

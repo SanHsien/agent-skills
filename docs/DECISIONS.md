@@ -334,3 +334,8 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 **上游 #732**（open 未合併，只動 `skills/frontend-ui-engineering/SKILL.md`）：加 5 步 Workflow、Interactive Widget Contracts 表（menu button、dialog、tabs、disclosure、listbox/combobox 的 role／ARIA／鍵盤行為）、Verification 改成「用專案既有工具驗證、不為了驗證另裝工具」。本 fork 該檔與上游逐位元組相同，所以這是新增內容而非本線缺陷。依既有慣例不單獨摘取未合併 PR；觸發條件同上：合併時隨 commit 軸帶入。commit 軸仍是 `aeac41d`，issue 軸仍是 #717。
 
 **dev_check 補檢查**：`tools/dev_check.ps1` 原本只跑 validate-skills／validate-commands，CI（`test-plugin-install.yml`）多跑的 `validate-versions`、`validate-reference-links`、`validate-artifact-paths`、`run-evals --min-rank1 95` 與 7 個 `node --test` 檔，本機推送前看不到。補進去，讓本機綠燈等於 CI 的 Node 部分綠燈。`hooks/*-test.sh` 是 bash 腳本，仍只在 CI 跑。
+
+
+## 2026-10-25：補審上游 PR #733，reviewed_pr_through 推到 #733
+
+#733（open 未合併）：修 WCAG 對比門檻與 resize 穩定檢查，動 `evals/cases/` 兩個 case、新增兩個 eval fixture（`contrast.html`、`resize.html`）、`references/accessibility-checklist.md`、`skills/browser-testing-with-devtools/SKILL.md`。本 fork 這兩份產品檔與上游逐位元組相同，所以是新增內容。新增 eval case 屬上游測試資產，未合併前不單獨摘取；觸發條件：合併時隨 commit 軸帶入。commit 軸仍是 `aeac41d`，issue 軸仍是 #717。
