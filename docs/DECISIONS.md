@@ -328,3 +328,9 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 - GitHub Actions 重新釘 SHA（本線自有 workflow）：`actions/setup-node` 7.0.0 → 7.1.0、`actions/setup-python` 7.0.0 → 7.1.0、`github/codeql-action` 4.38.2 → 4.39.1。讀過發版說明，都是功能與依賴更新，沒有破壞性變更。
 - `actions/setup-node` 的 deferral 更新到 7.1.0：v6 仍只出現在上游自有的 `test-plugin-install.yml`。
 - `ruff>=0.16` 加 `# freshness-hold`：下限是相容承諾，不是追新。以 ruff 0.17.2 實測 `ruff check --select E9,F` 與 pytest 32 項全過；沒有提高下限來消紅燈。
+
+## 2026-10-25：補審上游 PR #732，reviewed_pr_through 推到 #732；dev_check 補上 CI 專有的 Node 檢查
+
+**上游 #732**（open 未合併，只動 `skills/frontend-ui-engineering/SKILL.md`）：加 5 步 Workflow、Interactive Widget Contracts 表（menu button、dialog、tabs、disclosure、listbox/combobox 的 role／ARIA／鍵盤行為）、Verification 改成「用專案既有工具驗證、不為了驗證另裝工具」。本 fork 該檔與上游逐位元組相同，所以這是新增內容而非本線缺陷。依既有慣例不單獨摘取未合併 PR；觸發條件同上：合併時隨 commit 軸帶入。commit 軸仍是 `aeac41d`，issue 軸仍是 #717。
+
+**dev_check 補檢查**：`tools/dev_check.ps1` 原本只跑 validate-skills／validate-commands，CI（`test-plugin-install.yml`）多跑的 `validate-versions`、`validate-reference-links`、`validate-artifact-paths`、`run-evals --min-rank1 95` 與 7 個 `node --test` 檔，本機推送前看不到。補進去，讓本機綠燈等於 CI 的 Node 部分綠燈。`hooks/*-test.sh` 是 bash 腳本，仍只在 CI 跑。

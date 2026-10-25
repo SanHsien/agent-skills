@@ -111,3 +111,8 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 - commit baseline 不變（`aeac41d`，上游 main 無新 commit）；PR：已看到 **#731**；issue：仍為 **#717**（無新增）
 - 13 筆全是 open 未合併，皆為產品側文件／範例修正：accessibility checklist（#719、#720、#725）、performance（#721、#727）、webperf 指令與 persona（#722）、cursor 文件連結（#723）、idea-refine 路徑（#724）、security 範例（#726）、source-driven 引文（#728）、gitleaks 指令（#729）、error handler（#730）、worktree 範例（#731）。
 - 缺陷在本 fork 皆存在（產品檔與上游逐位元組相同，見 `DECISIONS.md` 的 grep 證據），但依慣例不單獨摘取未合併 PR；等上游合併後隨 commit 軸同步。
+
+## 2026-10-25：補審 PR #732
+
+- commit baseline 不變（`aeac41d`）；PR：已看到 **#732**；issue：仍為 **#717**
+- #732 開放中，只改 `skills/frontend-ui-engineering/SKILL.md`（Workflow、widget 鍵盤／ARIA 合約、驗證不另裝工具）；依慣例等上游合併後隨 commit 軸同步，見 `DECISIONS.md`。

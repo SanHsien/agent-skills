@@ -53,6 +53,24 @@ Invoke-Step -Label "Pytest" -Exe $pythonExe -Arguments @("-m", "pytest", "tests"
 $nodeExe = (Get-Command node -ErrorAction Stop).Source
 Invoke-Step -Label "Validate skills" -Exe $nodeExe -Arguments @("scripts\validate-skills.js")
 Invoke-Step -Label "Validate commands" -Exe $nodeExe -Arguments @("scripts\validate-commands.js")
+Invoke-Step -Label "Validate manifest versions" -Exe $nodeExe -Arguments @("scripts\validate-versions.js")
+Invoke-Step -Label "Validate reference links" -Exe $nodeExe -Arguments @("scripts\validate-reference-links.js")
+Invoke-Step -Label "Validate artifact paths" -Exe $nodeExe -Arguments @("scripts\validate-artifact-paths.js")
+Invoke-Step -Label "Run skill evals (trigger + routing)" -Exe $nodeExe -Arguments @(
+    "scripts\run-evals.js", "--min-rank1", "95"
+)
+# Same test files as .github/workflows/test-plugin-install.yml, so a red CI run
+# on the validators is reproducible here before pushing.
+Invoke-Step -Label "Node validator tests" -Exe $nodeExe -Arguments @(
+    "--test",
+    "scripts\lib\skill-lint-test.js",
+    "scripts\validate-versions-test.js",
+    "scripts\run-evals-test.js",
+    "scripts\validate-reference-links-test.js",
+    "scripts\validate-commands-test.js",
+    "scripts\validate-artifact-paths-test.js",
+    "scripts\floor-guard-reference-test.js"
+)
 
 Invoke-Step -Label "Check Markdown links" -Exe $pythonExe -Arguments @(
     "tools\check_links.py"
