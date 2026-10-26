@@ -349,3 +349,14 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 **觸發條件**：任一筆合併時，下次 commit 軸同步自動帶入。
 
 補充：#742–#744 另動 `evals/README.md`；#743 新增 `scripts/lib/execution-status.js`、#744 新增 `scripts/lib/skill-resources.js`。
+
+## 2026-10-26：補審上游 PR #745–#748，reviewed_pr_through 推到 #748
+
+取每筆**目前**的 head 讀完 diff（#745 `00d044d`、#746 `480a538`、#747 `de0fb0f`、#748 `2e927ca`；時間軸上沒有 force-push），並掃過隱藏內容（`\S\s{40,}\S`、`eval`／`new Function`／`global.`／base64／hex 長字串、超長單行），無命中。
+
+- **#745**（closed，未合併）：同一作者把它拆成 #747（文件）與 #748（驗證器）後自己關掉，內容分別在下面兩筆，不另處理。
+- **#748**（open）`scripts/validate-reference-links.js` +14/-4、測試 +28：`REFERENCE_LINK_RE` 的 fragment 字元集加入 `%`，比對 heading 前先 `decodeURIComponent`，壞的跳脫序列回報為 violation 而不崩潰。**缺陷在本 fork 存在**，實測 `REFERENCE_LINK_RE`（第 60 行，字元集 `[\p{L}\p{N}_-]` 不含 `%`）：`references/patterns.md#caf%C3%A9` 只抓到 `caf`（對 `## Café` 誤報找不到 heading）、`references/patterns.md#%70atterns` 抓不到 fragment（整段略過，無效錨點被放行）。但 `grep -rnE 'references/[^ )]+\.md#[^ )]*%' skills references docs README*.md` 在本線 0 筆命中，沒有任何現存連結踩到。本 fork 在同一個檔案另有 `stripInlineHtml` 的自有修正（與上游分歧 +16/-4），照抄會與上游日後合併版本分岔。**不採用**，等上游合併。
+- **#747**（open）`docs/antigravity-setup.md` +3/-1：不再叫使用者把本 repo 的貢獻者 `AGENTS.md` 複製到自己的專案，改為自建專案專屬 `AGENTS.md`，並連到 `CONTRIBUTING.md#repo-scoped-files`。本 fork 該檔與上游逐位元組相同，第 110 行仍是「copy or link `AGENTS.md`」，所以是新增內容而非本線缺陷。**不採用**，等上游合併。
+- **#746**（open）`plugin.json` +1：加 `"$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"`（URL 實測回 200 `application/json`）。`plugin.json` 是本 fork 持有的 manifest（版本維持 0.6.9，與上游分歧），作者只以第三方規格頁面主張「必填」，沒有上游維護者回應，也不是本線任何 gate 的要求。**不採用**，等上游表態。
+
+**觸發條件**：#747／#748 任一合併 → 下次 commit 軸同步自動帶入（#748 合併後 `validate-reference-links.js` 需與本線的 `stripInlineHtml` 手動合併）；本線出現 `references/*.md#...%XX` 形式的連結或 CJK 標題錨點 → 提前採用 #748；#746 被上游合併 → 同步時一併處理並確認 5 份 manifest 一致。commit 軸仍是 `aeac41d`、issue 軸仍是 #717，無新增。
