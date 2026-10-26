@@ -71,3 +71,35 @@ def test_bilingual_readmes_cross_link_each_other() -> None:
 
     assert "README.en.md" in zh
     assert "README.md" in en
+
+
+def test_link_title_is_not_part_of_the_path(tmp_path: Path) -> None:
+    # `[text](path "title")` is standard Markdown; the title is not a filename.
+    doc = ROOT / "docs" / "_title_probe.md"
+    doc.write_text('[a](../FORK.md "title") [b](<../FORK.md>)\n', encoding="utf-8")
+    try:
+        assert check_links.check_document(doc) == []
+    finally:
+        doc.unlink()
+
+
+def test_links_inside_code_are_examples_not_links() -> None:
+    doc = ROOT / "docs" / "_code_probe.md"
+    doc.write_text(
+        "```md\n[x](does-not-exist.md)\n```\n\nInline `[y](also-missing.md)` too.\n",
+        encoding="utf-8",
+    )
+    try:
+        assert check_links.check_document(doc) == []
+    finally:
+        doc.unlink()
+
+
+def test_missing_link_outside_code_is_still_reported() -> None:
+    doc = ROOT / "docs" / "_real_probe.md"
+    doc.write_text("```\n[x](a.md)\n```\n[z](missing-real.md)\n", encoding="utf-8")
+    try:
+        problems = check_links.check_document(doc)
+    finally:
+        doc.unlink()
+    assert len(problems) == 1 and "missing-real.md" in problems[0]
