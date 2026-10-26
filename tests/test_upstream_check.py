@@ -106,3 +106,16 @@ def test_baseline_matches_decisions_record() -> None:
     assert baseline["reviewed_through"][:7] in (
         Path(__file__).parents[1] / "docs" / "UPSTREAM.md"
     ).read_text(encoding="utf-8")
+
+
+def test_missing_gh_binary_reports_not_checked_instead_of_crashing(monkeypatch) -> None:
+    def no_gh(*_args, **_kwargs):
+        raise FileNotFoundError("gh")
+
+    monkeypatch.setattr(checker.subprocess, "run", no_gh)
+
+    result = checker.collect_new_tickets(
+        {"repo": "https://github.com/example/upstream.git"}, "pr"
+    )
+
+    assert result is None

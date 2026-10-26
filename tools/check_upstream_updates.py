@@ -131,7 +131,25 @@ def collect_new_tickets(baseline: dict, kind: str) -> list[dict] | None:
     if not slug:
         return None
     watermark = int(baseline.get(f"reviewed_{kind}_through", 0) or 0)
-    result = subprocess.run(
+    try:
+        result = _run_gh(kind, slug)
+    except OSError:
+        # `gh` is not installed (FileNotFoundError) or not executable.
+        return None
+    if result.returncode != 0:
+        return None
+    try:
+        items = json.loads(result.stdout)
+    except ValueError:
+        return None
+    return sorted(
+        (item for item in items if item["number"] > watermark),
+        key=lambda item: item["number"],
+    )
+
+
+def _run_gh(kind: str, slug: str) -> subprocess.CompletedProcess:
+    return subprocess.run(
         [
             "gh", kind, "list", "--repo", slug, "--state", "all",
             "--limit", "1000", "--json", "number,title",
@@ -144,16 +162,6 @@ def collect_new_tickets(baseline: dict, kind: str) -> list[dict] | None:
         # undecodable byte raises UnicodeDecodeError and the whole upstream
         # check dies instead of reporting the tickets it did read.
         errors="replace",
-    )
-    if result.returncode != 0:
-        return None
-    try:
-        items = json.loads(result.stdout)
-    except ValueError:
-        return None
-    return sorted(
-        (item for item in items if item["number"] > watermark),
-        key=lambda item: item["number"],
     )
 
 
