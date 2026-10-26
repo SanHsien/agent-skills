@@ -339,3 +339,13 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 ## 2026-10-25：補審上游 PR #733，reviewed_pr_through 推到 #733
 
 #733（open 未合併）：修 WCAG 對比門檻與 resize 穩定檢查，動 `evals/cases/` 兩個 case、新增兩個 eval fixture（`contrast.html`、`resize.html`）、`references/accessibility-checklist.md`、`skills/browser-testing-with-devtools/SKILL.md`。本 fork 這兩份產品檔與上游逐位元組相同，所以是新增內容。新增 eval case 屬上游測試資產，未合併前不單獨摘取；觸發條件：合併時隨 commit 軸帶入。commit 軸仍是 `aeac41d`，issue 軸仍是 #717。
+
+## 2026-10-26：補審上游 PR #734–#744，reviewed_pr_through 推到 #744
+
+11 筆全為 open 未合併，逐筆取 head 讀完 diff，並掃過隱藏內容（`eval`／`new Function`／`global.`／base64／長空白後接程式／超長單行），無命中。內容：#734、#742–#744 動 `scripts/run-evals.js`（stemmer 縮寫比對、單案例選取、不完整 executor 串流拒絕、skill 資源暫存位置）；#735 `hooks/SDD-CACHE.md` 措辭；#736–#741 為 skill 文件加固與對應 eval case／fixture。
+
+**決定**：不單獨摘取，等上游合併後隨 commit 軸同步（與 2026-10-25 慣例一致：未合併 PR 可能在審查中改寫）。commit 軸仍是 `aeac41d`、issue 軸仍是 #717，無新增。
+
+**觸發條件**：任一筆合併時，下次 commit 軸同步自動帶入。
+
+補充：#742–#744 另動 `evals/README.md`；#743 新增 `scripts/lib/execution-status.js`、#744 新增 `scripts/lib/skill-resources.js`。
