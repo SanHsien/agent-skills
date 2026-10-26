@@ -226,3 +226,59 @@ def test_a_token_is_sent_when_the_environment_has_one(monkeypatch) -> None:
     checker.fetch_github_release("actions/checkout")
     authorization = next(value for key, value in seen.items() if key.lower() == "authorization")
     assert authorization == "Bearer secret-token"
+
+
+def test_sha_pin_without_version_comment_is_not_read_as_a_version() -> None:
+    # A bare commit SHA that starts with digits used to parse as version "93",
+    # so a pin with no declared release scored OK against any latest <= 93.
+    text = "      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd\n"
+
+    packages = checker.parse_workflow_actions(text, "ci.yml")
+    rows = checker.collect_status(packages, lambda _name: "4.2.0", {})
+
+    assert packages[0]["minimum"] == ""
+    assert rows[0]["check_failed"] is True
+
+
+def test_hold_on_a_floating_tag_keeps_its_declared_version() -> None:
+    text = "      - uses: actions/setup-node@v4 # freshness-hold: stay on 4\n"
+
+    packages = checker.parse_workflow_actions(text, "ci.yml")
+    rows = checker.collect_status(packages, lambda _name: "6.0.0", {})
+
+    assert packages[0]["minimum"] == "4"
+    assert rows[0]["outdated"] is True
+    assert rows[0]["check_failed"] is False
+    assert not checker.needs_review(rows[0])
+
+
+def test_hold_without_any_declared_version_is_not_a_failed_check() -> None:
+    text = (
+        "      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+        " # freshness-hold: pinned\n"
+    )
+
+    rows = checker.collect_status(
+        checker.parse_workflow_actions(text, "ci.yml"), lambda _name: "7.0.1", {}
+    )
+
+    assert rows[0]["check_failed"] is False
+
+
+def test_quoted_uses_value_is_still_tracked() -> None:
+    text = '      - uses: "actions/cache@v4"\n'
+
+    packages = checker.parse_workflow_actions(text, "ci.yml")
+
+    assert [p["name"] for p in packages] == ["actions/cache"]
+    assert packages[0]["minimum"] == "4"
+
+
+def test_yaml_extension_workflows_are_scanned(tmp_path: Path) -> None:
+    workflows = tmp_path / ".github" / "workflows"
+    workflows.mkdir(parents=True)
+    (workflows / "a.yaml").write_text("      - uses: actions/checkout@v6\n", encoding="utf-8")
+
+    actions = checker.load_workflow_actions(tmp_path)
+
+    assert [a["name"] for a in actions] == ["actions/checkout"]

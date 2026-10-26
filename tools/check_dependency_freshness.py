@@ -41,7 +41,7 @@ _RELEASE_RE = re.compile(r"^[0-9]+(?:\.[0-9]+)*")
 # in a repo that publishes several. Matching only `owner/repo` silently skipped
 # every one of those, which is how a CodeQL pin ages without anything noticing.
 _USES_RE = re.compile(
-    r"^\s*(?:-\s*)?uses:\s*([\w.\-]+/[\w.\-]+(?:/[\w.\-]+)*)@([0-9a-fA-F]{40}|\S+)"
+    r"""^\s*(?:-\s*)?uses:\s*["']?([\w.\-]+/[\w.\-]+(?:/[\w.\-]+)*)@([0-9a-fA-F]{40}|[^\s"']+)["']?"""
     r"(?:\s*#\s*(.*))?\s*$",
     re.MULTILINE,
 )
@@ -148,10 +148,15 @@ def parse_workflow_actions(text: str, source: str) -> list[dict[str, str]]:
         hold = comment[len(HOLD_MARKER):].strip() if comment.startswith(HOLD_MARKER) else ""
         # A pinned SHA carries its declared version in the trailing comment
         # (`# v7.0.1`); an unpinned floating tag (`@v6`) carries it in the ref
-        # itself. Either is a real declaration worth tracking -- only a hold
-        # or a comment/ref with no parseable number leaves `minimum` empty.
-        version_source = comment if comment else ref
-        version_match = _RELEASE_RE.match(version_source.lstrip("vV")) if not hold else None
+        # itself. A bare SHA with no version comment declares no version: its
+        # leading hex digits must not be read as one ("93cb6ef..." is not 93).
+        # A hold marker is not a version either, but the ref still is.
+        is_sha = re.fullmatch(r"[0-9a-fA-F]{40}", ref) is not None
+        if hold or not comment:
+            version_source = "" if is_sha else ref
+        else:
+            version_source = comment
+        version_match = _RELEASE_RE.match(version_source.lstrip("vV"))
         minimum = version_match.group(0) if version_match else ""
         packages.append(
             {
@@ -193,7 +198,7 @@ def load_workflow_actions(root: Path = REPO_ROOT) -> list[dict[str, str]]:
     if not workflows_dir.is_dir():
         raise DependencyCheckError("missing .github/workflows directory")
     merged: dict[tuple[str, str], dict[str, str]] = {}
-    for path in sorted(workflows_dir.glob("*.yml")):
+    for path in sorted([*workflows_dir.glob("*.yml"), *workflows_dir.glob("*.yaml")]):
         text = path.read_text(encoding="utf-8")
         for package in parse_workflow_actions(text, path.name):
             key = (package["name"].lower(), package["minimum"] or package["requirement"])
@@ -306,7 +311,9 @@ def collect_status(
                 **package,
                 "latest": latest or "unknown",
                 "outdated": bool(minimum and latest and is_newer_version(latest, minimum)),
-                "check_failed": not minimum or latest is None or incomparable,
+                "check_failed": (not minimum and not package.get("hold"))
+                or latest is None
+                or incomparable,
                 "deferred_reason": reason if deferred else "",
             }
         )
