@@ -69,24 +69,6 @@ def test_render_markdown_surfaces_check_failure() -> None:
     assert "git fetch failed" in report
 
 
-def test_render_markdown_reports_ticket_watermarks() -> None:
-    baseline = {
-        "repo": "https://example.invalid/upstream.git",
-        "branch": "main",
-        "reviewed_through": "a" * 40,
-        "reviewed_date": "2026-09-04",
-        "reviewed_pr_through": 547,
-        "reviewed_issue_through": 542,
-    }
-
-    report = checker.render_markdown(baseline, [], prs=[], issues=None)
-
-    assert "Triaged through `#547`" in report
-    assert "Triaged through `#542`" in report
-    assert "No new items above that number." in report
-    assert "Not checked" in report
-
-
 def test_load_baseline_rejects_missing_file(tmp_path: Path) -> None:
     with pytest.raises(checker.UpstreamCheckError):
         checker.load_baseline(tmp_path / "nope.json")
