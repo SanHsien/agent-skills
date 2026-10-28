@@ -360,3 +360,14 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 - **#746**（open）`plugin.json` +1：加 `"$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"`（URL 實測回 200 `application/json`）。`plugin.json` 是本 fork 持有的 manifest（版本維持 0.6.9，與上游分歧），作者只以第三方規格頁面主張「必填」，沒有上游維護者回應，也不是本線任何 gate 的要求。**不採用**，等上游表態。
 
 **觸發條件**：#747／#748 任一合併 → 下次 commit 軸同步自動帶入（#748 合併後 `validate-reference-links.js` 需與本線的 `stripInlineHtml` 手動合併）；本線出現 `references/*.md#...%XX` 形式的連結或 CJK 標題錨點 → 提前採用 #748；#746 被上游合併 → 同步時一併處理並確認 5 份 manifest 一致。commit 軸仍是 `aeac41d`、issue 軸仍是 #717，無新增。
+
+## 2026-10-28：補審上游 PR #749，reviewed_pr_through 推到 #749
+
+取目前 head `ab8a5ca` 讀完 diff（+44/-35），並掃過隱藏內容（`\S\s{40,}\S`、`eval`／`new Function`／`globalThis`、base64／hex 長字串、超長單行），無命中。
+
+- **#749**（open，未合併）「Fix/user invoked commands」：在 `.claude/commands/` 的 9 個生命週期指令（build、code-simplify、constraints、plan、review、ship、spec、test、webperf）frontmatter 加 `disable-model-invocation: true`，讓這些指令只能由使用者觸發，底下的 skill 仍可被模型路由。理由是 Claude Code 把 command 檔當 skill 看待，模型可能自行觸發 `/build auto`、`/ship` 這類有副作用的流程。本 fork 這 9 個檔與上游逐位元組相同（`ship.md` blob `fa7b7ef` 兩邊一致），`git grep disable-model-invocation` 無命中，所以行為在本線一樣存在。
+- **#749 的其他改動**（逐字比對 head 版本與本線，PR 說明沒有提）：`skills/using-agent-skills/SKILL.md` 只是技能清單的欄位對齊空白；另有 5 個指令檔的說明被改寫並刪掉防護文字——`build.md` 拿掉「每個任務自己一個 commit」等句子，並把「無法用 `git revert` 復原」換成 `git reset --hard`／`git checkout --` 的說法；`constraints.md` 拿掉 gitleaks（一律 `--redact`）等工具清單；`ship.md` 拿掉 persona 彼此獨立所以平行安全的說明；`spec.md` 拿掉「依相依順序逐一寫各模組的 spec」；`webperf.md` 刪減 Chrome DevTools MCP 用法。這些改寫是削弱，不是修正。
+
+**決定**：不單獨摘取，等上游合併後隨 commit 軸同步（與 2026-10-25 起的慣例一致：未合併 PR 可能在審查中改寫）。
+
+**觸發條件**：#749 合併 → 經 commit 軸同步時，上述 5 個指令檔的說明改寫要逐行審，不整檔照收；本線實際發生模型自行觸發 `/ship`、`/build auto` → 提前採用時只移植 9 行 `disable-model-invocation: true`（移植做法不是 diff），不帶入說明改寫。
