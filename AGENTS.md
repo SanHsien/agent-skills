@@ -160,3 +160,7 @@ PRs target the upstream repository's default branch. In a typical fork setup the
   `references/`、`evals/`、`scripts/` 與既有 `docs/*.md` 以上游為準，不因本線需求改寫成維護索引。
 - 上游同步、決策記錄、開發環境細節見 [`FORK.md`](FORK.md)、[`docs/UPSTREAM.md`](docs/UPSTREAM.md)、
   [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md)。
+
+## Roadmap
+
+- `ROADMAP.md` is the single source of truth for this repository's next work. When you finish or add work, update it in the same commit: delete finished rows, add new ones. Do not keep a to-do list in any other file.
