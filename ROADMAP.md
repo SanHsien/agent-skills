@@ -1,18 +1,18 @@
 # 路線圖
 
 > 本 repo 後續工作的單一真相源。做完一項，就在同一個 commit 刪掉那一列；新工作只加在這裡。
-> 現況段的數字是 2026-10-29 依 `main` `0529bdfe764f` 查的快照，開工前先重查 GitHub。
+> 現況段的數字是 2026-10-30 依 `main` 查的快照，開工前先重查 GitHub。
 
 ## 現況
 
-這是 addyosmani/agent-skills（AI coding agent 工程技能包）的 Windows-first 維護型 fork；在 GitHub 上它不是 fork 關係，但上游基線都指向該 repo（`tools/upstream_baseline.json`）。維護面健康：`main` 上 CI、CodeQL、Test Plugin Installation、Upstream check 最近一次皆 success，open PR 0 筆、Dependabot 與 Code scanning 告警 0 筆；issue 功能已停用，issue 數「未查到」不是 0（2026-10-29 `gh` 查詢）。commit 軸水位 `aeac41d4d005`（上游 0.6.13）與上游最新 commit 一致，issue 水位 717 為上游最新；PR 水位 749，但上游已出現 #750、#751、#752（皆 open，`gh pr list -R addyosmani/agent-skills --state all`），尚未審。
+這是 addyosmani/agent-skills（AI coding agent 工程技能包）的 Windows-first 維護型 fork；在 GitHub 上它不是 fork 關係，但上游基線都指向該 repo（`tools/upstream_baseline.json`）。維護面健康：`main` 上 CI、CodeQL、Test Plugin Installation 最近一次皆 success；Upstream check 會因下列待審項目轉紅（`check_upstream_updates.py --strict` 實跑 exit 1），open PR 0 筆、Dependabot 與 Code scanning 告警 0 筆；issue 功能已停用，issue 數「未查到」不是 0（2026-10-29 `gh` 查詢）。commit 軸水位 `aeac41d4d005`（上游已發布 0.6.14 `eb07f19`，落後 70 commit 待同步）；issue 水位 717（上游最新已出現 #765 待審）；PR 水位已審至 752（#750 open，#751、#752 closed；上游最新已出現 #753–#766 尚未審）。
 
 ## 近期：可以直接動手
 
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| 審上游 PR #750、#751、#752 並推進 `reviewed_pr_through` | 編號在水位 749 之後，`Upstream check` 會因此轉紅。#752 新增整個 formal model checking skill，要掃隱藏內容並逐字比對，不只看 PR 說明（#749 就發生過說明沒提的防護文字刪減） | 讀當前 head 的完整 diff 並掃隱藏內容；結論（等合併／提前採用＋觸發條件）寫入 `docs/DECISIONS.md`；`tools/upstream_baseline.json` 的 `reviewed_pr_through` 推進；`python tools/check_upstream_updates.py --strict` exit 0；`tools\dev_check.ps1` 綠（其中 `Invoke-SkillSpectorSelfScan` 對 `.skillspector-baseline.yaml` 以外無新 finding，`tools/dev_check.ps1:79`） | Claude Sonnet | `gh pr list -R addyosmani/agent-skills --state all`；`docs/DECISIONS.md` 2026-10-28 條目；`tools/upstream_baseline.json` |
 | 維護者決定是否授權升版到上游 0.6.13 | 本 fork 維持單一 tag／release（0.6.9），上游已到 0.6.13（commit `aeac41d` 已同步產品檔，但版本號沒採用）；升版需要刪舊 tag 與 release，屬維護者授權動作 | 在 `docs/DECISIONS.md` 記決定。若授權：五份 plugin manifest 版本一致、新 tag／release 存在、舊 tag 處理方式寫明、`validate-versions` 與 `tools\dev_check.ps1` 綠；若不授權：寫明理由並保留單一 tag 政策 | 維護者 | `docs/DECISIONS.md:290`；`gh release list -R SanHsien/agent-skills` |
+| 審上游 0.6.14 commit 軸（`aeac41d..eb07f19`，落後 70 commit）、PR #753–#766、issue #765 | 審完 #752 時上游已再前進；不審的話 Upstream check 會一直紅，水位與實際脫節 | 逐項在 `docs/DECISIONS.md` 記採用／不採用與理由；`tools/upstream_baseline.json` 三軸水位推進；`python tools/check_upstream_updates.py --strict` exit 0；`tools\dev_check.ps1` 綠 | Antigravity | `python tools/check_upstream_updates.py --strict`（2026-10-30 exit 1）；`tools/upstream_baseline.json` |
 
 ## 中期：等條件成立再做
 

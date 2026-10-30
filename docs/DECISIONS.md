@@ -371,3 +371,17 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 **決定**：不單獨摘取，等上游合併後隨 commit 軸同步（與 2026-10-25 起的慣例一致：未合併 PR 可能在審查中改寫）。
 
 **觸發條件**：#749 合併 → 經 commit 軸同步時，上述 5 個指令檔的說明改寫要逐行審，不整檔照收；本線實際發生模型自行觸發 `/ship`、`/build auto` → 提前採用時只移植 9 行 `disable-model-invocation: true`（移植做法不是 diff），不帶入說明改寫。
+
+## 2026-10-30：審查上游 PR #750、#751、#752，reviewed_pr_through 推到 #752
+
+取每筆目前 head（#750 `2b14012`、#751 `1cb26d0`、#752 `0c85514`）讀完 diff 並掃過隱藏內容（`\S\s{40,}\S`、`eval`／`new Function`／`globalThis`、base64／hex 長字串、超長單行）：
+- #750、#751 無命中。
+- #752 命中兩處：一處為 `evals` 出現在文件表格文字、一處為 markdown 說明中的長網址，皆屬正常文件字串，無惡意注入或隱藏指令。
+
+- **#750**（open，未合併）`docs(tdd): exercise the real boundary for crash and rollback tests`（diff +166/-0）：在 `skills/test-driven-development/SKILL.md` 的「Prefer Real Implementations Over Mocks」段落增加一句：「For crash or rollback behavior, exercise the real boundary: an injected exception is not process termination, and a mocked transaction call is not a database rollback.」；並新增 `evals/cases/test-driven-development.json`（case 4）、`evals/fixtures/test-driven-development-persistence/`（BUG.md、README.md、test_vault.py、vault.py）與離線 oracle `scripts/test-driven-development-fixture-test.py`。上游維護者（addyosmani）已要求作者收斂到僅保留該句提醒，作者已於 `2b14012` 配合修改；eval case 與 fixture 仍保留（作者於 PR 留言說明）。此為文件強化與 eval 資產擴充，本線無急迫缺陷。
+- **#751**（closed，未合併）`docs(review): verify formal evidence against its scope`（diff +165/-0）：在 `skills/code-review-and-quality/SKILL.md` 新增對 formal-proof／model-checking 證據的審查原則，並提供驗證 fixture 與 oracle 測試。因上游維護者駁回 #752，認定若無 formal model checking 技能則該 review 指引亦無單獨保留必要，已於 2026-10-29 關閉。
+- **#752**（closed，未合併）`feat(skills): add bounded formal model checking workflow`（diff +493/-10）：新增第 26 個技能 `formal-model-checking`、相關 fixture／eval 及文件索引。上游維護者於 2026-10-29 明確拒絕並關閉（指出此為利基型技能，維持 catalog 只包含多數團隊通用工作流，建議做成外部 standalone skill）。
+
+**決定**：#750 不單獨摘取，等上游合併後隨 commit 軸同步；#751 與 #752 因已被上游明確拒絕並關閉，本線遵循上游產品核心邊界，不採用。
+
+**觸發條件**：#750 被上游合併 → 經 commit 軸同步自動帶入；若本線日後由維護者授權引進 formal verification 類工作流 → 重新評估 #751／#752 或改為獨立外掛。
