@@ -118,3 +118,21 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 - #732 開放中，只改 `skills/frontend-ui-engineering/SKILL.md`（Workflow、widget 鍵盤／ARIA 合約、驗證不另裝工具）；依慣例等上游合併後隨 commit 軸同步，見 `DECISIONS.md`。
 
 - 補審 **#733**（open）：contrast 門檻與 resize 穩定檢查，動 evals、accessibility-checklist、browser-testing-with-devtools；等上游合併後同步。PR 水位 **#733**。
+
+## 2026-10-30：70 commits／PR #753–#767／issue #765 bounded review
+
+- commit baseline：`eb07f19f52c2669f2364897aaa293e2aaddd7b1c`（upstream 0.6.14）；PR：已看到 **#767**；issue：已看到 **#765**
+- 上游發布 0.6.14，合併 #463、#668、#688、#690、#691、#692、#696、#698、#699、#702、#704、#705、#706、#707、#708、#710、#711、#712、#713、#714、#719、#720、#721、#723、#724、#725、#726、#727、#728、#729、#735、#743、#747 等 PR。
+- 0.6.14 release bump 不採用（單一 tag 政策維持 0.6.9，待維護者授權）；產品檔案變更經比對審查確認健康無害，已於 2026-10-31 同步（見下節）。
+- PR #753–#766（13 筆）全為 open 未合併，等上游合併後隨 commit 軸同步；#764 為大型技能新增 proposal，且目前 head 把 `.claude-plugin/marketplace.json` 的來源改成作者個人 fork，不單獨摘取、等上游合併後重審；#767（修改 plugin 來源為個人 fork）已 closed 未合併，不採用。
+- issue #765 回報 `hooks/simplify-ignore.sh` 缺陷，對應伴隨 PR #766，等上游合併後同步。
+- 逐筆審查理由與證據見 [`DECISIONS.md`](DECISIONS.md)。
+
+## 2026-10-31：同步上游 0.6.14 產品檔（`aeac41d..eb07f19`）
+
+- 已合併水位與已審查水位分開：**已審查**到 `eb07f19`（2026-10-30，見上節）；**已合併**（產品檔內容）也到 `eb07f19`，唯一例外是版本號——5 份 plugin manifest 維持 0.6.9。baseline 的 `reviewed_through` 不因此再動，只把 `reviewed_date` 記為這次重讀 #764、#766 目前 head 的日期。
+- 方法：上游範圍內動到 53 個檔案。逐檔比對本線與 `aeac41d`：48 個檔案（含 6 個新增檔）本線與 `aeac41d` 逐位元組相同，直接取 `eb07f19` 內容（`git show eb07f19:<path>` 寫入工作樹，不 merge）；其餘 5 個是 plugin manifest，本線與 `aeac41d` 只差版本號（0.6.9），其中 4 份上游這段範圍內也只改了版本號，故不動；`plugin.json` 取上游新內容（`$schema`、author、homepage、repository、license、keywords，#463）並把版本維持 0.6.9。
+- 同步後與 `eb07f19` 內容不同的檔案只有登記的分岔檔：5 份 manifest（版本號）、繁中 `README.md`、`AGENTS.md`（尾端 fork 規則）、`.gitignore`、`scripts/validate-reference-links.js` 與其測試（CodeQL `stripInlineHtml` 修正）、不存在的 `CLAUDE.md`。
+- 自我掃描：15 筆因檔案內容變動而換雜湊的既有條目（7 個 skill）原地取代，沒有新種類 finding，見 [`DECISIONS.md`](DECISIONS.md) 2026-10-31 條目。
+- 逐 PR 裁決（33 個 merge、36 個非 merge commit）也在 [`DECISIONS.md`](DECISIONS.md) 2026-10-30 條目第一節。
+- 仍追蹤的 open PR：#722、#730–#733、#736、#739、#742、#744、#750、#753–#764、#766（2026-10-31 以 `gh pr view` 逐一確認 open）；#748 已 closed 未合併。

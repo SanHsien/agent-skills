@@ -385,3 +385,115 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 **決定**：#750 不單獨摘取，等上游合併後隨 commit 軸同步；#751 與 #752 因已被上游明確拒絕並關閉，本線遵循上游產品核心邊界，不採用。
 
 **觸發條件**：#750 被上游合併 → 經 commit 軸同步自動帶入；若本線日後由維護者授權引進 formal verification 類工作流 → 重新評估 #751／#752 或改為獨立外掛。
+
+## 2026-10-30：審查上游 0.6.14 commit 軸（aeac41d..eb07f19）、PR #753–#767、issue #765
+
+### 一、Commit 軸審查（aeac41d..eb07f19，落後 70 commit）
+
+上游發布 0.6.14（commit `eb07f19f52c2669f2364897aaa293e2aaddd7b1c`），包含 70 個 commit，涉及 53 個檔案變更。
+
+**逐項審查與決策**：
+1. **Release bump 0.6.14（`eb07f19`）**：**不採用**。本 fork 嚴格維持「單一最新分支（main）、單一最新 tag、單一最新 release」（現為 0.6.9）政策。升版需刪除舊 tag 與 release，屬維護者專屬授權動作（見路線圖近期第一列待辦）。5 份 plugin manifest（`plugin.json`、`.agents/plugins/marketplace.json`、`.claude-plugin/marketplace.json`、`.claude-plugin/plugin.json`、`.codex-plugin/plugin.json`）版本號維持 0.6.9。
+2. **上游合併之 PR 改動（共 33 項實質變更與其 merge commit）**：
+   以下每項為「#PR / 該 PR 的 commit、最後一個是 merge commit」；共 33 個 PR（33 個 merge）、36 個非 merge commit（另有 release bump `eb07f19`，見第 1 項）。逐項裁決格式：`#NNN：採用，已同步；衝突：無／<檔案>`。「衝突」指該 PR 動到本 fork 自持的檔案（5 份 manifest、繁中 `README.md`、`AGENTS.md`、`.gitignore`、`scripts/validate-reference-links*.js`）。
+   - **#463 / fb4c9ff、2f06a51、9d00489**：root `plugin.json` 符合 Agent Plugins 1.0.0 規範（加入 `$schema`、author、homepage、repository、license、keywords）與 Copilot CLI 文件說明（`docs/copilot-cli-setup.md`）。#463：採用，已同步；衝突：`plugin.json`（fork 持有的 manifest；內容取上游，版本維持 0.6.9）。
+   - **#668 / 46a73df、e4572ef、dae1f9d、3e1f929**：evals 路由修正，處理縮寫、名詞化與 auth case 防護。#668：採用，已同步；衝突：無。
+   - **#688 / 70e6fdd、59142df**：testing-patterns 的 Playwright 列表項目改依文字過濾。#688：採用，已同步；衝突：無。
+   - **#690 / 0004999、311cc3a**：skills 修正傳入 `--fix` 至 linter 的語法。#690：採用，已同步；衝突：無。
+   - **#691 / 7230f52、076030d**：ci-cd-and-automation 的 rollback 版本改由環境變數傳入以防注入。#691：採用，已同步；衝突：無。
+   - **#692 / 081b915、11d3171**：frontend-ui-engineering 補齊 empty-state action prop 宣告。#692：採用，已同步；衝突：無。
+   - **#696 / f1f6fbf、b8a70d2**：code-simplification 支援貼上 inline 程式碼時觸發（#620）。#696：採用，已同步；衝突：無。
+   - **#698 / 9f91cc4、2579798**：deprecation-and-migration 的 adapter 範例型別修正。#698：採用，已同步；衝突：無。
+   - **#699 / 8622a3d、f215ac6**：performance-checklist 的 onINP import alias 修正。#699：採用，已同步；衝突：無。
+   - **#702 / 2b5e8a6、49ec30b**：validate-artifact-paths 完整檔名比對，避免將 test-plan.md 誤判為 plan.md。#702：採用，已同步；衝突：無。
+   - **#704 / 089edac、9d75719**：Windsurf setup 規則檔寫入實體換行分隔。#704：採用，已同步；衝突：無。
+   - **#705 / efeb9ab、84fce3b**：Gemini CLI MCP 設定指向 settings.json。#705：採用，已同步；衝突：無。
+   - **#706 / 6720a51、f97d842**：frontend-ui-engineering 向 TaskItem 傳遞 toggle 與 delete handler。#706：採用，已同步；衝突：無。
+   - **#707 / 8e6726d、4c28939**：documentation-and-adrs 註解與 fixed-window 實作對齊。#707：採用，已同步；衝突：無。
+   - **#708 / 29e567f、b209085**：floor-guard 從獨立欄位讀取 ratchet 方向。#708：採用，已同步；衝突：無。
+   - **#710 / 63128d0、35870a2**：api-and-interface-design 冪等守衛回傳標準 error shape。#710：採用，已同步；衝突：無。
+   - **#711 / d3ffa3c、a4a21f6**：ci-cd-and-automation 修正 setup-node 快取標的說明（npm cache 非 node_modules）。#711：採用，已同步；衝突：無。
+   - **#712 / 60b218f、e36949e**：debugging-and-error-recovery 採用 Jest 30 位置參數測試篩選。#712：採用，已同步；衝突：無。
+   - **#713 / 27e6020、82be2f5**：constraint-driven-development 補充 Vitest coverage provider 安裝提示。#713：採用，已同步；衝突：無。
+   - **#714 / 0929438、fdbc55a**：9 個生命週期指令（build、code-simplify、constraints、plan、review、ship、spec、test、webperf）frontmatter 加 `disable-model-invocation: true`。**經逐行比對確認**：上游只新增該 9 行，未包含先前 #749 中刪改指令說明文字與削弱防護（每任務一個 commit、gitleaks `--redact`、ship 平行 fan-out 句）之內容，健康無害。#714：採用，已同步；衝突：無。
+   - **#719 / 6f9906e、09a9144**：accessibility-checklist 將 HTML label 關聯至控制項（`htmlFor` 換 `for`）。#719：採用，已同步；衝突：無。
+   - **#720 / 07e0a68、9ec85eb**：accessibility-checklist 改呼叫具備 binary 的 axe CLI。#720：採用，已同步；衝突：無。
+   - **#721 / ee3e850、6ace7d6**：performance-optimization 改呼叫 Lighthouse CI（`@lhci/cli`）。#721：採用，已同步；衝突：無。
+   - **#723 / 07ff519、2bac5b6**：Cursor setup 文件連結更新。#723：採用，已同步；衝突：無。
+   - **#724 / 24596ab、9c555fa**：idea-refine 從已安裝 skill 目錄執行 helper。#724：採用，已同步；衝突：無。
+   - **#725 / d14cf2d、2ba5de2**：accessibility loading 區域補齊 `role="status"`。#725：採用，已同步；衝突：無。
+   - **#726 / ab15a85、efab8ba**：security-and-hardening 在 task 不存在時先回傳 404 再做擁有權檢查。#726：採用，已同步；衝突：無。
+   - **#727 / 0c65ba7、d7cc2cc**：performance-checklist 將 Lighthouse 指向 `http://localhost`。#727：採用，已同步；衝突：無。
+   - **#728 / 76cbb8a、974738b**：source-driven-development 引文對齊 React 19 原文。#728：採用，已同步；衝突：無。
+   - **#729 / 0b7d58a、604b258**：constraint-driven-development 的 gitleaks 指令從 `gitleaks detect` 改為 `gitleaks dir .`，掃工作目錄而不是只掃已 commit 的歷史（`0b7d58a` 只改這個，`--redact` 本來就有）。issue #717 上游仍 open，本輪不宣稱解決（#729 內文沒提 #717）。同步後 `rg "gitleaks detect" skills` 無命中。#729：採用，已同步；衝突：無。
+   - **#735 / 2db4f1c、2ddba6f**：SDD-CACHE.md 一致使用 reuse 術語。#735：採用，已同步；衝突：無。
+   - **#743 / 2807f14、2669c40**：evals 在評分前拒絕不完整的執行器 stream。#743：採用，已同步；衝突：無。
+   - **#747 / de0fb0f、a06c46d**：Antigravity setup 採用專案專屬 AGENTS.md。#747：採用，已同步；衝突：無。
+3. **安全與自有修正比對**：
+   - 比對確認 `scripts/validate-reference-links.js` 在本次 70 commit 範圍內上游未動，本 fork 針對 CodeQL alert #1 的 `stripInlineHtml` 自有修正繼續保留。
+   - SkillSpector 自我掃描（2026-10-31 同步後實跑，SkillSpector 2.12.0、`--no-llm`、套用現行 `.skillspector-baseline.yaml`）：上游動到的 14 個 skill 逐一掃描，7 個（ci-cd-and-automation、debugging-and-error-recovery、deprecation-and-migration、documentation-and-adrs、frontend-ui-engineering、idea-refine、performance-optimization）0 筆新 finding；另 7 個共 15 筆未被基準涵蓋（api-and-interface-design 1、code-simplification 2、constraint-driven-development 2、context-engineering 2、security-and-hardening 1、source-driven-development 3、spec-driven-development 4）。逐筆讀過命中的原文與位置，15 筆都是已審條目因檔案內容變動而換雜湊（指紋綁內容），判斷不變、沒有新種類 finding；已用 `skillspector baseline --no-llm -o -` 取得新雜湊，原地取代 15 筆過期條目並更新理由與行號，沒有新增條目、沒有為過掃描改上游內容。受影響原文的上游改動：#710 冪等守衛 error shape（TM1）、#696 code-simplification description（RA1、EA3）、#708 floor-guard 正規式與 #729 gitleaks 指令（constraint-driven-development 兩筆 AE1，仍是 git hook 範例，只以 argv 陣列呼叫 git）、#726 在範例補 404（SSRF1，命中的 TOCTOU 句子不變）、#690／#728 等文字調整（context-engineering、source-driven-development、spec-driven-development 的教學性反面範例）。更新後 25 個 skill 完整掃描結果見 2026-10-31 條目。
+
+### 二、PR 軸審查（PR #753–#767，共 14 筆，13 筆 OPEN、1 筆 CLOSED 狀態）
+
+逐筆檢視目前 head 並掃描隱藏內容（`\S\s{40,}\S`、`eval`／`new Function`／`globalThis`、base64／hex 長字串、超長單行），均無惡意注入：
+- **#753**（open）：`docs(ci): preserve verification contract during optimization`（CybotTM，head `c7d81190`，+85/-7，3 檔：`skills/ci-cd-and-automation/SKILL.md` +35/-7、`evals/cases/ci-cd-and-automation.json` +17、`evals/fixtures/ci-quality-contract/brief.md` +33）。在 ci-cd-and-automation 加入優化時不破壞驗證合約之規範。依慣例等上游合併後隨 commit 軸同步，不單獨摘取。
+- **#754**（open）：`docs(doubt): keep contradicting caller evidence in the review unit`（CybotTM，+2/-0）。在 doubt-driven-development 補充審查單元保留衝突呼叫證據。等上游合併後同步。
+- **#755**（open）：`docs(planning): choose continuation by worker lifecycle`（CybotTM，head `12bbc3fc`，+87/-0，5 檔：`skills/planning-and-task-breakdown/SKILL.md` +7、`evals/cases/planning-and-task-breakdown.json` +33、`evals/fixtures/worker-lifecycle/` 3 個 fixture 共 +47）。在 planning-and-task-breakdown 補充依 worker lifecycle 決策接續。等上游合併後同步。
+- **#756**（open）：`fix(evals): drop command names from the skill-fired graders after #714; record the re-run`（ayobamiseun）。在 #714 合併後自 grader 移除指令名稱。等上游合併後同步。
+- **#757**（open）：`fix(debugging-and-error-recovery): say the skill applies when the diff or stack trace is pasted inline (#620)`（ayobamiseun）。技能描述增加貼上 diff / stack trace 觸發。等上游合併後同步。
+- **#758**（open）：`fix(git-workflow-and-versioning): say the skill applies when the diff is pasted inline (#620)`（ayobamiseun）。技能描述增加貼上 diff 觸發。等上游合併後同步。
+- **#759**（open）：`fix(security-and-hardening): name session cookies in the description`（ayobamiseun）。技能描述補充 session cookies。等上游合併後同步。
+- **#760**（open）：`feat(evals): name a positive prompt that passes top_k without ranking first`（ayobamiseun）。eval 工具回報 top_k 但非第一名的正向提示詞。等上游合併後同步。
+- **#761**（open）：`docs(evals): add a ledger of the description clauses measured so far`（ayobamiseun）。補充 eval 量測條款帳本。等上游合併後同步。
+- **#762**（open）：`fix(test-driven-development): re-tune the pasted-code clause for the 2.1.312 router (#620)`（ayobamiseun）。微調貼上程式碼條款以適配 router。等上游合併後同步。
+- **#763**（open）：`fix(code-review-and-quality): say the review may look quick and what the skill adds (#620)`（ayobamiseun）。微調 review 描述。等上游合併後同步。
+- **#764**（open）：`Review evidence and reliability`（Jeddy2023，head `07ab1b58`，+694/-97，38 檔，3 個 commit；2026-10-31 依目前 head 重讀整份 diff，隱藏內容掃描無命中）。提議新增第 26 個技能 `backend-reliability-review`（含 `integration-and-job-checks.md`）、`references/review-evidence-standard.md`、eval case 與 fixture，並改寫 build／plan／review／ship／spec 五個指令（`.claude/commands/`、`commands/*.toml`、`.gemini/commands/`）、三個 persona、`spec-driven-development`、`code-review-and-quality` 等 skill 與 README／docs 的技能數字。**目前 head 另有兩類本線不能照收的改動**：(1) `.claude-plugin/marketplace.json` 把 marketplace 名稱改為 `kenj-agent-skills`、來源 repo 改為 `Jeddy2023/agent-skills`（作者個人 fork），與已 closed 的 #767 同類；(2) 五份 manifest 版本改 0.7.0。persona 檔改寫審查守則（code-reviewer 守則 6 條改 9 條，Verdict 加 HOLD，「What's Done Well」變成可省略）；`agents/security-auditor.md` 與 `agents/test-engineer.md` 各有一處兩條規則被黏在同一行（`otherwise5.`、`functions6.`，缺換行），目前 head 的排版有損壞。動到核心 catalog 結構與指令行為，屬大型 proposal，需由上游維護者決策。**不單獨摘取，等上游合併後重審**（合併版若仍含 marketplace 來源或版本改動，同步時不收）。
+- **#766**（open）：`fix(hooks): preserve re-indented placeholders and harden Stop cleanup in simplify-ignore.sh`（Quinnod345，head `52acec00`，+123/-10，2 檔：`hooks/simplify-ignore.sh` +38/-9、`hooks/simplify-ignore-test.sh` +85/-1；2026-10-31 依目前 head 重讀 diff，隱藏內容掃描無命中）。修復 Issue #765：JSON 解析失敗時 `exit 0`、重新縮排後的 placeholder 與改過 reason 的還原、Stop 清理的 `rmdir ... || true`（`set -e` 下不再因缺少 lock 目錄中斷）、`grep -qF --`。只動 hook 與其測試，無網路、`eval` 或寫出專案外的行為。缺陷在本線存在（`hooks/simplify-ignore.sh` 與上游逐位元組相同），但尚未造成本線損害，不符合「單獨摘取」的例外條件。**不單獨摘取，等上游合併後同步**。
+- **#767**（closed）：`chore: point Claude Code plugin source at this fork`（ChrisMacpherson，+4/-4）。修改 plugin 來源指向個人 fork，已由作者關閉，上游未合併，不採用。
+
+**決定**：PR #753–#766 共 13 筆全為 open 未合併，依慣例不單獨摘取，等上游合併後隨 commit 軸同步；PR #767 為 closed 未合併不採用。`reviewed_pr_through` 推進至 767。
+
+### 三、Issue 軸審查（Issue #765，1 筆，OPEN 狀態）
+
+- **#765**（open）：`bug(hooks): simplify-ignore.sh corrupts re-indented placeholders and aborts Stop cleanup when .lock dir is missing`。Quinn O'Donnell 回報 `hooks/simplify-ignore.sh` 三處問題（縮排還原語法損壞、`set -euo pipefail` 下缺少 lock 目錄造成 Stop 迴圈中斷、grep 缺乏 `--` 造成 SQL/Lua 註解誤報），並附伴隨 PR #766。本 fork 產品檔案維持上游標準，不單獨處置，等上游合併 #766 後隨 commit 軸同步。`reviewed_issue_through` 推進至 765。
+
+### 四、三軸水位推進與驗證
+
+- `tools/upstream_baseline.json` 水位更新：
+  - `reviewed_through`: `eb07f19f52c2669f2364897aaa293e2aaddd7b1c`
+  - `reviewed_date`: `2026-10-31`（初審 2026-10-30；2026-10-31 重讀 #764、#766 目前 head）
+  - `reviewed_pr_through`: 767
+  - `reviewed_issue_through`: 765
+- `python tools/check_upstream_updates.py --strict` 實跑 exit code 0。
+- `tools\dev_check.ps1` 實跑 exit code 0（WINDOWS DEV CHECK GREEN）。
+
+## 2026-10-31：同步上游 0.6.14 產品檔（`aeac41d..eb07f19`）
+
+**決定**：把 2026-10-30 審查過的 70 個 commit（動 53 個檔案）同步進本線；版本號不採用，維持單一 tag／release 0.6.9。逐 PR 裁決見上節第一節第 2 項。
+
+**方法**（不 merge、不動 HEAD）：
+
+1. `git fetch upstream main`，確認 `upstream/main` 是 `eb07f19`。
+2. 逐檔比對 53 個檔案在本線與 `aeac41d` 的 blob：48 個相同（含 6 個新增檔）、5 個不同（5 份 plugin manifest，只差 `version` 0.6.9）。
+3. 48 個相同的檔案用 `git show eb07f19:<path>` 寫入工作樹。5 份 manifest 中 4 份上游這段範圍內只改了版本號（0.6.13 → 0.6.14），不動；`plugin.json` 取上游新內容（#463：`$schema`、author、homepage、repository、license、keywords），版本維持 0.6.9。
+4. 逐檔驗證：53 檔中 48 檔與 `eb07f19` 的 blob 相同（`git hash-object --no-filters` 對 `git rev-parse eb07f19:<path>`），其餘 5 檔只差版本號。全樹（223 個檔案）再比對一次，與 `eb07f19` 不同的只有下列登記的分岔檔。 全樹比對只涵蓋上游路徑，本線獨有檔另列。
+
+**分岔登記（同步後未與 `eb07f19` 一致的檔案與理由）**：
+
+| 檔案 | 理由 |
+| --- | --- |
+| `plugin.json`、`.claude-plugin/plugin.json`、`.claude-plugin/marketplace.json`、`.agents/plugins/marketplace.json`、`.codex-plugin/plugin.json` | 版本維持 0.6.9（單一 tag 政策，升版需刪舊 tag 與 release，屬維護者授權；見路線圖近期第一列）。`plugin.json` 其餘內容與上游一致 |
+| `README.md` | 繁中主檔，英文原文在 `README.en.md` |
+| `AGENTS.md`、`.gitignore` | `AGENTS.md` 尾端 fork 維護規則；`.gitignore` 多出 fork 本機工具輸出（`.venv/`、`.pytest_cache/`、`.ruff_cache/`、兩份檢查報告、`.skillspector-reports/`） |
+| `scripts/validate-reference-links.js`、`scripts/validate-reference-links-test.js` | CodeQL alert #1 的 `stripInlineHtml` 自有修正（2026-10-24）；這 70 個 commit 上游沒動這兩個檔 |
+| `CLAUDE.md`（本線不存在） | 只維護 `AGENTS.md` |
+| `hooks/hooks.json`（上游已刪、本線仍在） | 上游 `a598aab`（#569）刪除，本線未跟進，非刻意分岔；是否刪除見路線圖近期表 |
+
+**#729 與 issue #717**：`rg "gitleaks detect" skills` 同步後無命中。issue #717 上游仍 open，本輪不宣稱解決。
+
+**#748**：2026-10-29 已 closed 未合併，不再等上游合併；本線出現 `references/*.md#...%XX` 連結或 CJK 標題錨點時才最小重做（路線圖中期表）。
+
+**驗證**（實跑）：
+
+- SkillSpector 自我掃描：同步前（舊基準）上游動到的 14 個 skill 有 15 筆未涵蓋 finding（7 個 skill），全為既有已審條目換雜湊；原地取代後，`tools\dev_check.ps1` 的 25 個 skill 完整掃描為 0 筆新 finding。
+- `pwsh -NoProfile -File tools/dev_check.ps1` exit 0；`python tools/check_upstream_updates.py --strict` exit 0；`git diff --check` exit 0。
