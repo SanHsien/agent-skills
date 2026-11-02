@@ -11,6 +11,14 @@ lives in its own history and in the review ledger at
 
 ---
 
+## [Unreleased] - 2026-11-02
+
+### Synced and decided
+
+- Reviewed all 21 commits in `eb07f19..7947664` individually and synchronized 30 product files, including filename-only staged-secret scans, React children typing, contrast thresholds, settled resize checks, and eval diagnostics; version remains 0.6.9. Also reviewed closed-unmerged PR #768 and did not adopt it.
+- Retained `hooks/hooks.json` for compatibility and reversibility, recording duplicate-routing costs and reconsideration conditions; deletion requires separate maintainer authorization.
+- Tested pytest 9.2.0 in the repo-local environment while retaining the 9.1 compatibility floor, with a release-specific deferral rationale. Added example regression tests and the staged-secret local gate; evidence is in [`docs/DECISIONS.md`](docs/DECISIONS.md).
+
 ## [Unreleased] - 2026-10-24
 
 ### Synced

@@ -10,6 +10,14 @@
 
 ---
 
+## [Unreleased] - 2026-11-02
+
+### 同步與決策
+
+- 逐筆審查 `eb07f19..7947664` 的 21 筆 commit，同步 30 個產品檔，包含 staged-secret 只印檔名、React children 型別、對比門檻、resize 等待與 eval 診斷；版本維持 0.6.9；補審已關閉未合併的 PR #768，不採用。
+- 保留 `hooks/hooks.json`，記錄相容性理由、雙重路由成本與重看條件；刪檔需維護者另行授權。
+- repo 專用環境採 pytest 9.2.0，維持最低相容宣告 9.1，依 deferrals 記錄本版審查理由。新增範例回歸測試與 staged-secret 本機 gate；證據見 [`docs/DECISIONS.md`](docs/DECISIONS.md)。
+
 ## [Unreleased] - 2026-10-24
 
 ### 同步

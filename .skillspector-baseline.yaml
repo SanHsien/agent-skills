@@ -37,21 +37,21 @@ rules:
     message: "*references/hardening-patterns.md (partial)*"
     reason: "掃描器限制：連到本 skill 自帶的 references/hardening-patterns.md（含 #anchor）的相對連結；該檔存在於同一目錄且一併被掃描（見其 SSRF1 條目），掃描器對 skill 內本地參考檔一律標 partial，並非規避分析。"
 fingerprints:
-- hash: sha256:9d96ef59746804284b90e2735562e861470b7db8a0ffdded1d40e05f72ee0c23
+- hash: sha256:b1e20836a2e58eab4ead739afde3ebc5b95f4c5a1e2280012c723c0b917e0685
   rule_id: YR1
   skill: browser-testing-with-devtools
   file: SKILL.md
-  reason: "自我指涉誤判：browser-testing-with-devtools 的 Security Boundaries 段落教導 agent 把瀏覽器內容視為不可信資料，文中示範字串觸發 YARA 惡意樣式規則，並非真實惡意程式碼。"
-- hash: sha256:73833a5619fc7e024262020c1a6f2b5cf107cfa75d9c6165263927be0fbdab3b
+  reason: "自我指涉誤判：browser-testing-with-devtools 的 Security Boundaries 段落教導 agent 把瀏覽器內容視為不可信資料，文中示範字串觸發 YARA 惡意樣式規則，並非真實惡意程式碼。 2026-11-02：本批上游改動僅改既述產品內容，重新產生精準指紋；誤判種類與裁決不變。"
+- hash: sha256:e0857ff9197df311a59d2fa7377222ef69c0b72c73c20af225037b4a59605f7f
   rule_id: P1
   skill: browser-testing-with-devtools
   file: SKILL.md
-  reason: "自我指涉誤判：文中示範『ignore previous instructions』等字面範例是教導 agent 把此類字串當成不可信資料的防禦說明，非真實的指令覆寫攻擊。"
-- hash: sha256:d715379ec94230f896936c2983cedcbaa3cf520c48ee5aa18719230b1c175c13
+  reason: "自我指涉誤判：文中示範『ignore previous instructions』等字面範例是教導 agent 把此類字串當成不可信資料的防禦說明，非真實的指令覆寫攻擊。 2026-11-02：本批上游改動僅改既述產品內容，重新產生精準指紋；誤判種類與裁決不變。"
+- hash: sha256:c91792027d41df2f4d52c8ed20c5815f3f9b4713aab7b31e6a2f7b95e4050059
   rule_id: YR4
   skill: browser-testing-with-devtools
   file: SKILL.md
-  reason: "自我指涉誤判：browser-testing-with-devtools／security-and-hardening／source-driven-development 的安全教學段落內文示範字串觸發 YARA 駭客工具樣式規則，均為教學範例非真實攻擊工具。"
+  reason: "自我指涉誤判：browser-testing-with-devtools／security-and-hardening／source-driven-development 的安全教學段落內文示範字串觸發 YARA 駭客工具樣式規則，均為教學範例非真實攻擊工具。 2026-11-02：本批上游改動僅改既述產品內容，重新產生精準指紋；誤判種類與裁決不變。"
 - hash: sha256:017974650d974479544bb6f26f1b2cefcfa66e0479345e3f8456cad13cd0d1c5
   rule_id: RA1
   skill: code-simplification
@@ -62,26 +62,26 @@ fingerprints:
   skill: code-simplification
   file: SKILL.md
   reason: "自我指涉誤判（code-simplification/SKILL.md:103）：code-simplification 的『Scope to What Changed』段落是限制 agent 只改動相關範圍的邊界說明，非技能自身擴權或範圍蔓延。2026-10-31 隨上游 0.6.14 同步換雜湊（檔案內容變動，指紋綁內容）。段落本身未動。"
-- hash: sha256:ca6d078213d5977d9eab917f63216643470e9ccd0ead6bc826d3d62b4a4cee01
+- hash: sha256:368206995efe1969412174e972f79611202207c69c4149e46f978ff228f52917
   rule_id: EA2
   skill: context-engineering
   file: SKILL.md
-  reason: "自我指涉誤判（context-engineering/SKILL.md:66）。命中的是範例 rules 檔 Boundaries 清單的『Never add dependencies without checking bundle size impact』，是限制 agent 的規則範例，語意是禁止而非授權自主決策。2026-10-31 隨上游 0.6.14 同步換雜湊（檔案內容變動，指紋綁內容）。"
-- hash: sha256:fc5a2d12f9821eb694e1d7e9531ebf7cb04de94ec413af05ab2f02d6c48d383c
+  reason: "自我指涉誤判：此 skill 的兩筆 EA2 分別命中 SKILL.md:66 的 Never add dependencies without checking bundle size impact（限制 agent）與 :342 的 External data files or config treated as trusted instructions without verification（警覺風險清單）；均非授權任意操作或採信外部指令。 2026-11-02：本批上游改動僅改既述產品內容，重新產生精準指紋；誤判種類與裁決不變。"
+- hash: sha256:5053c06afaeb948f1499afe00a2d944acd326f102e7bbde7bd52331ea92fe810
   rule_id: EA2
   skill: context-engineering
   file: SKILL.md
-  reason: "自我指涉誤判（context-engineering/SKILL.md:342）。命中的是 Red Flags 清單的『External data files or config treated as trusted instructions without verification』，是列出要警覺的壞行為，不是授權 agent 不經驗證採信外部資料。2026-10-31 隨上游 0.6.14 同步換雜湊（檔案內容變動，指紋綁內容）。"
-- hash: sha256:d53365f1109547459e817d9ce3c6890f18862e5f5198e3854889ead7f99be9b5
+  reason: "自我指涉誤判：此 skill 的兩筆 EA2 分別命中 SKILL.md:66 的 Never add dependencies without checking bundle size impact（限制 agent）與 :342 的 External data files or config treated as trusted instructions without verification（警覺風險清單）；均非授權任意操作或採信外部指令。 2026-11-02：本批上游改動僅改既述產品內容，重新產生精準指紋；誤判種類與裁決不變。"
+- hash: sha256:6ad625370e61ee25433e4df197f18b52a4135129c1552a9450a948d51a74dba9
   rule_id: EA5
   skill: doubt-driven-development
   file: SKILL.md
-  reason: "自我指涉誤判：doubt-driven-development 文件中列出以 codex/gemini CLI 進行對抗性複查是明確揭露、使用者可見的既定作法，非隱藏的模型／帳務切換。"
-- hash: sha256:09ec9262000f5e21e59601c112862cc7d1f611bdf2b172359906cdae8d465b4e
+  reason: "自我指涉誤判：doubt-driven-development 文件中列出以 codex/gemini CLI 進行對抗性複查是明確揭露、使用者可見的既定作法，非隱藏的模型／帳務切換。 2026-11-02：本批上游改動僅改既述產品內容，重新產生精準指紋；誤判種類與裁決不變。"
+- hash: sha256:7a53f0d6840a45c8ec45e03b36cc1a30aef8f155b0796e58c58f3615ab099667
   rule_id: TM1
   skill: git-workflow-and-versioning
   file: SKILL.md
-  reason: "自我指涉誤判：api-and-interface-design 的 REST 端點列表（如 DELETE /api/tasks/:id）與 git-workflow-and-versioning 提到的 `git reset --hard HEAD` 是 API 設計／復原操作的教學範例文字，非本 skill 實際執行的危險指令。"
+  reason: "自我指涉誤判：api-and-interface-design 的 REST 端點列表（如 DELETE /api/tasks/:id）與 git-workflow-and-versioning 提到的 `git reset --hard HEAD` 是 API 設計／復原操作的教學範例文字，非本 skill 實際執行的危險指令。 2026-11-02：本批上游改動僅改既述產品內容，重新產生精準指紋；誤判種類與裁決不變。"
 - hash: sha256:ba6ccb73343682e6d549d476cd1abfcad98e9847cad5e85268a4f9b7f62665ed
   rule_id: EA2
   skill: planning-and-task-breakdown
@@ -127,36 +127,36 @@ fingerprints:
   skill: constraint-driven-development
   file: SKILL.md
   reason: "2026-10-31 隨上游 0.6.14 同步換雜湊（SKILL.md:258，SKILL.md 內容變動）；理由同 SKILL.md:216 那一筆：references/floor-guard.md 只改兩條正規式（#708），仍是 git hook 範例文件，只以 execFileSync 的 argv 陣列呼叫 git，無網路、寫檔或讀環境變數。"
-- hash: sha256:faebebf40f1b2a79251f95f383747353339dd18cfbd2472f8ea86967059c7619
+- hash: sha256:f841ceb98b549a3f6d98d06dab2f17311864e013a660bcffdc4cdd3e0cadc38c
   rule_id: YR4
   skill: security-and-hardening
   file: SKILL.md
-  reason: "自我指涉誤判（security-and-hardening/SKILL.md:21，上游 #579／#589 拆分後的版本）。YARA 規則 agent_skill_prompt_injection_hidden_instructions 跨行拼出 'Model; disable security'：原文是標題 '## Process: Threat Model First' 與後文 'Never disable security headers' 等防禦建議，語意是禁止停用安全機制。"
-- hash: sha256:3f5c5987e073bae04797db393d524a6ac69f3cbdee34942812c75330b5fc6edf
+  reason: "自我指涉誤判（security-and-hardening/SKILL.md:21，上游 #579／#589 拆分後的版本）。YARA 規則 agent_skill_prompt_injection_hidden_instructions 跨行拼出 'Model; disable security'：原文是標題 '## Process: Threat Model First' 與後文 'Never disable security headers' 等防禦建議，語意是禁止停用安全機制。 2026-11-02：本批上游改動僅改既述產品內容，重新產生精準指紋；誤判種類與裁決不變。"
+- hash: sha256:a537e0f76e6f45c1fa2650a21baec31a51eec98bbd2cba647621367f03fbf61b
   rule_id: MP3
   skill: security-and-hardening
   file: SKILL.md
-  reason: "自我指涉誤判（security-and-hardening/SKILL.md:129）。命中 'purge history'，原文是祕密外洩後的補救步驟：先輪替金鑰，再清除 git 歷史中的祕密。與記憶／上下文投毒無關。"
-- hash: sha256:0252b40ec2688e3315a66beda5c63159d35146a99aa107520550244623338850
+  reason: "自我指涉誤判（security-and-hardening/SKILL.md:129）。命中 'purge history'，原文是祕密外洩後的補救步驟：先輪替金鑰，再清除 git 歷史中的祕密。與記憶／上下文投毒無關。 2026-11-02：本批上游改動僅改既述產品內容，重新產生精準指紋；誤判種類與裁決不變。"
+- hash: sha256:f088c3e330de9604c8c4b45bfa371d057e15418e2e07ec64c88da169e0ecb7ca
   rule_id: SSRF1
   skill: security-and-hardening
   file: references/hardening-patterns.md
-  reason: "自我指涉誤判（security-and-hardening/references/hardening-patterns.md:155）。169.254.169.254 出現在 SSRF 防禦範例的說明：assertSafeUrl 以 range() !== 'unicast' 擋下 link-local 雲端 metadata 位址，是要阻擋的目標，本 skill 不發出請求。2026-10-31 隨上游 0.6.14 同步換雜湊（檔案內容變動，指紋綁內容）。上游 #726 在 PATCH 範例補上 task 不存在時的 404 回應（5 行），行號 150 → 155，命中的句子不變。"
-- hash: sha256:12e74e8d4256a8a15e501249025b89b63ccdd2116664206673887f7cea493165
+  reason: "自我指涉誤判（security-and-hardening/references/hardening-patterns.md:155）。169.254.169.254 出現在 SSRF 防禦範例的說明：assertSafeUrl 以 range() !== 'unicast' 擋下 link-local 雲端 metadata 位址，是要阻擋的目標，本 skill 不發出請求。2026-10-31 隨上游 0.6.14 同步換雜湊（檔案內容變動，指紋綁內容）。上游 #726 在 PATCH 範例補上 task 不存在時的 404 回應（5 行），行號 150 → 155，命中的句子不變。 2026-11-02：本批上游改動僅改既述產品內容，重新產生精準指紋；誤判種類與裁決不變。"
+- hash: sha256:7e8631cb32e4c254452d30aa6510ce688af6ad49337eb08d7dd2935d5a463014
   rule_id: EA2
   skill: security-and-hardening
   file: SKILL.md
-  reason: "自我指涉誤判（security-and-hardening/SKILL.md:198）。命中 'no consent'，原文是要避免的風險清單：PII 未經同意或無資料處理協議就送給 analytics／廣告／LLM 廠商。語意是禁止而非授權。"
+  reason: "自我指涉誤判（security-and-hardening/SKILL.md:198）。命中 'no consent'，原文是要避免的風險清單：PII 未經同意或無資料處理協議就送給 analytics／廣告／LLM 廠商。語意是禁止而非授權。 2026-11-02：本批上游改動僅改既述產品內容，重新產生精準指紋；誤判種類與裁決不變。"
 - hash: sha256:e10e91b164e66a3dbc3d3fdc639f3985508435495dc8c417090afe847f5b3bba
   rule_id: TM1
   skill: api-and-interface-design
   file: SKILL.md
   reason: "自我指涉誤判（api-and-interface-design/SKILL.md:228）。命中的是 REST 範例表裡的 `DELETE /api/tasks/:id`，那是在教怎麼設計資源路由的文件表格，不是工具呼叫，skill 本身不發出任何請求。2026-10-31 隨上游 0.6.14 同步換雜湊（檔案內容變動，指紋綁內容）。上游 #710 在冪等守衛補上標準 error shape，行號 226 → 228，命中的表格列不變。"
-- hash: sha256:60f1859e3928df74579c3ae1701ebd5c2afb8be09dfd1db806b4883a93ac890c
+- hash: sha256:2335fa46616483093e3f498f3b9ef23e351add87bac50ec898f3b7126c116baa
   rule_id: AR2
   skill: shipping-and-launch
   file: SKILL.md
-  reason: "自我指涉誤判（shipping-and-launch/SKILL.md:25）。命中的是上線前檢查清單（全部測試通過、建置無警告、lint 與型別檢查通過），語意是出貨門檻，不是叫 agent 忽略拒絕條件。"
+  reason: "自我指涉誤判（shipping-and-launch/SKILL.md:25）。命中的是上線前檢查清單（全部測試通過、建置無警告、lint 與型別檢查通過），語意是出貨門檻，不是叫 agent 忽略拒絕條件。 2026-11-02：本批上游改動僅改既述產品內容，重新產生精準指紋；誤判種類與裁決不變。"
 - hash: sha256:77172d179939ea4ab5362d5845249eca6a2c5f139d523efeddbf8a160e1f9d75
   rule_id: EA2
   skill: spec-driven-development

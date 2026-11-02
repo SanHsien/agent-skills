@@ -345,6 +345,27 @@ test('rejects incomplete or inconsistent grader summaries', () => {
   }
 });
 
+test('names a positive prompt that passes top_k but does not rank first', () => {
+  const root = makeSandbox();
+  writeSkill(root, 'alpha-skill', 'Handles alpha widgets. Use when changing alpha widgets.');
+  writeSkill(root, 'beta-skill', 'Tunes widget caches. Use when tuning the widget cache for alpha.');
+  writeJson(
+    path.join(root, 'evals', 'cases', 'alpha-skill.json'),
+    completeCase('alpha-skill', 'tune the alpha widget cache', 3),
+  );
+  writeJson(
+    path.join(root, 'evals', 'cases', 'beta-skill.json'),
+    completeCase('beta-skill', 'tune the widget cache', 1),
+  );
+
+  const result = run(root);
+
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stdout, /alpha-skill: positive prompt ranked #2, inside top 3 but not first/);
+  assert.match(result.stdout, /#1: beta-skill \(\d\.\d{3}\) vs \d\.\d{3}/);
+  assert.match(result.stdout, /rank-1 rate: 50% \(3\/6/);
+});
+
 test('fails when a skill has no eval case file', () => {
   const root = makeSandbox();
   writeSkill(root, 'alpha-skill', 'Handles alpha widgets. Use when changing alpha widgets.');

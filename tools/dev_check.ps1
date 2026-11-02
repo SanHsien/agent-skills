@@ -69,7 +69,8 @@ Invoke-Step -Label "Node validator tests" -Exe $nodeExe -Arguments @(
     "scripts\validate-reference-links-test.js",
     "scripts\validate-commands-test.js",
     "scripts\validate-artifact-paths-test.js",
-    "scripts\floor-guard-reference-test.js"
+    "scripts\floor-guard-reference-test.js",
+    "scripts\staged-secret-scan-test.js"
 )
 
 Invoke-Step -Label "Check Markdown links" -Exe $pythonExe -Arguments @(

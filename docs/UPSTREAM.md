@@ -136,3 +136,21 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 - 自我掃描：15 筆因檔案內容變動而換雜湊的既有條目（7 個 skill）原地取代，沒有新種類 finding，見 [`DECISIONS.md`](DECISIONS.md) 2026-10-31 條目。
 - 逐 PR 裁決（33 個 merge、36 個非 merge commit）也在 [`DECISIONS.md`](DECISIONS.md) 2026-10-30 條目第一節。
 - 仍追蹤的 open PR：#722、#730–#733、#736、#739、#742、#744、#750、#753–#764、#766（2026-10-31 以 `gh pr view` 逐一確認 open）；#748 已 closed 未合併。
+
+## 2026-11-02：逐筆審查 21 commits 並同步至 `7947664`
+
+- 範圍：`eb07f19f52c2669f2364897aaa293e2aaddd7b1c..794766453133319119c7d10170af7fa1d37ea1c4`，21 筆 SHA 的個別採用／不採用理由見 [`DECISIONS.md`](DECISIONS.md) 同日表格，不能以本段摘要代替逐筆清冊。
+- 方法：只讀既有 Git objects；先確認 30 個路徑的本線內容等於 `eb07f19`，再以 `git show` 寫入最終 tip。30/30 路徑逐位元組相同，包含上游自有 `test-plugin-install.yml` 的新增安全回歸步驟；不手改該 workflow。上游中間新增後自行移除的暫存 grader 不落地，本線既有檔案無刪除。
+- 已合併 PR：#683、#718、#733、#739、#754、#756、#758、#759、#760。#718 已隨 commit 軸採用，三份安全文件只輸出匹配檔名，完成原路線圖 #717 的安全範例驗收。
+- 保留分岔：五份 manifest 版本仍為 0.6.9；`hooks/hooks.json` 依維護者授權保留並登記理由與重看條件，其內容未改。其餘既有分岔沿用 2026-10-31 登記。
+- PR／issue 水位見本節「本輪驗收完成」（768／765）；沒有把已知 PR 的合併當成新 PR／issue 的完整審查，也沒有發布或重跑遠端 CI。
+- pytest 9.2.0 已安裝在 repo 專用 `.venv`（Python 3.14.10）；最低相容宣告維持 9.1，依 dependency deferrals 記錄 9.2.0 的具體審查理由；`check_dependency_freshness.py --strict` exit 0。
+- 完整本機 gate 完成後才推進 `reviewed_through`；結果與自我掃描逐項裁決見本輪驗證補記。
+
+### 本輪驗收完成
+
+- 正式 `pwsh -NoProfile -File tools/dev_check.ps1` exit 0，結尾 `WINDOWS DEV CHECK GREEN`；43 Python、243 Node、150 routing checks 通過；25 skills 自我掃描 0 新 finding。12 個既有誤判指紋精準替換，無新增規則。首次中止的 gate 屬 incomplete（exit -1），不計成功。
+- 通過完整 gate 後，commit 水位推進至 `794766453133319119c7d10170af7fa1d37ea1c4`，reviewed_date 為 2026-11-02。
+- strict 檢查另發現 #768（head `a257fbf870bf0699ac05b34ae327b7784ac207fa`）；讀完三份 build 指令 diff，確認 CLOSED 未合併，依慣例不採用，逐筆理由見 DECISIONS。本輪 PR 水位補至 768；issue 維持 765（無新增）。
+
+- 最終 `check_upstream_updates.py --strict` exit **1**：PR 768／issue 765 以上無新項目，但最新 upstream tip 已為 `301b02b`，指定 `7947664` 之後尚有 14 個 commit。這段未審、未同步，保留在 ROADMAP；不能把已指定的 21 筆完成誤報成最新上游全綠。

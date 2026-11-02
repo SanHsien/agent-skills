@@ -220,7 +220,7 @@ issue #572 是同一問題，已由此解決。#575 已被上游關閉（同一�
   `a71eb51`「不要雙重路由」互相矛盾）：矛盾是真的，但修法是改變 plugin 的 hook 行為，屬產品決策；
   上游文件與 hook 目前也是同樣的矛盾狀態，本 fork 跟著上游定案。
 - #568、#571、#577（skill linter 的新規則與 CI）、#576（grader 依 id 綁定期望）、#578（simplify-ignore
-  hook 還原）：都是未合併的新功能或本 fork 未重現的缺陷——本機 `validate-skills.js` 通過。
+  simplify-ignore hook 修正）：都是未合併的新功能或本 fork 未重現的缺陷——本機 `validate-skills.js` 通過。
 
 **fingerprint**：`context-engineering` 與 `spec-driven-development` 的 SKILL.md 內容改變，依
 `(skill, rule_id)` 對應重算雜湊；見提交紀錄。
@@ -497,3 +497,94 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 
 - SkillSpector 自我掃描：同步前（舊基準）上游動到的 14 個 skill 有 15 筆未涵蓋 finding（7 個 skill），全為既有已審條目換雜湊；原地取代後，`tools\dev_check.ps1` 的 25 個 skill 完整掃描為 0 筆新 finding。
 - `pwsh -NoProfile -File tools/dev_check.ps1` exit 0；`python tools/check_upstream_updates.py --strict` exit 0；`git diff --check` exit 0。
+
+## 2026-11-02：保留 hook 註冊與逐筆同步 `eb07f19..7947664`
+
+### Hook 保留決定
+
+**決定：保留 `hooks/hooks.json`，本輪不修改其內容或 hook 安全設定。** 維護者已授權採保守、可回復做法；刪檔須另行授權。這是刻意分岔，取代 2026-10-31 的「非刻意分岔、待決定」狀態。
+
+理由：保留既有宿主的 SessionStart 相容性與回復路徑，避免未經授權移除註冊。代價是原生路由宿主可能再次注入 meta-skill、每次多耗約 3.5k tokens；`hooks/session-start.sh` 第 5–8 行的「Not wired by the plugin」在本 fork 不成立。保留不代表認定衝突已修復，也不代表完成 live host 驗證。
+
+重看條件：維護者明確授權刪檔；或實際宿主證據確認重複路由／額外耗用；或上游提供可保持相容性的替代註冊方式。符合條件時先提出精準差異與驗收，再決定是否移除；本輪不變更註冊或全域設定。
+
+### Commit 軸逐筆裁決（21 筆）
+
+只讀本機 Git objects 的每筆 parent diff、merge remerge-diff 與最終樹；以 `git show <tip>:<path>` 寫入工作樹，不 merge、不 cherry-pick、不碰 index。30 個變更路徑同步到 `7947664`，既有內容均先確認等於 `eb07f19`；五份 manifest 未被這批改動，仍是 0.6.9。
+
+| SHA | 裁決 | 理由與產品落點 |
+| --- | --- | --- |
+| `dde32ac9be1b74bcc65bf489429e9f0a40c053bc` | 採用 | shipping-and-launch 的 React ErrorBoundary 宣告 PropsWithChildren，使 this.props.children 有明確型別。 |
+| `57bfe5ddc533f43bd5d65b9f83665fda4c329bf1` | 採用 | accessibility-checklist 改正大字對比門檻的 pt／CSS px；browser-testing-with-devtools 要求 fonts／resize observers 穩定後量測。 |
+| `c55b84224fa8d7baa3b4480ff7d9272f657df3ab` | 採用 | doubt-driven-development 明定移除推理但保留反證，避免審查單元遺失 caller／guard／test。 |
+| `26ed36c2ef3819b902a5a6590382150aad7ef8cd` | 採用 | evals/plugin 的 8 個 grader 移除已禁止模型呼叫的 lifecycle command 別名；誤帶的 debug／tmp grader 不落地，依下一筆清理採最終樹。 |
+| `6194c60db9d68e34064ecbace7484fef0d82c37f` | 採用 | 移除上一筆誤帶的 9 個 grader；本線原先沒有這些檔案，保持不存在，無刪除既有檔案。 |
+| `ed37778a450abd5da024f55b8345c6ec5f2dea20` | 採用 | evals/README.md 記錄 #714 後實測與 CLI 版本漂移，將歷史量測標明版本而非當作現況保證。 |
+| `9c3d3671f75da846647216e03d99b7d4607c8e4e` | 採用 | git-workflow description 補貼上 diff 的 commit-message／changelog／split 觸發，附正負向 eval 與 fixture，未變更提交授權。 |
+| `30187c1008863f9806758bcedc07d64b84c75dbb` | 採用 | 三處 staged-secret 範例改為 git pickaxe --name-only，只印檔名；新增可執行 sentinel 回歸與上游 workflow 測試步驟，修復 #717。 |
+| `725c3280f82b170437186aab4248b15834ed7203` | 採用 | context-engineering 改依 host 上限提前壓縮，移除通用 75% 門檻；context-budget fixture 保留 read-only 授權與活證據。 |
+| `78f00a4b2975245ec2979307382a624289f6a722` | 採用 | security-and-hardening description 明列 session cookies，覆蓋既有會話安全範圍。 |
+| `362edec61307f18dcc600013c9684655b2c75d6c` | 採用 | run-evals.js 顯示 top_k 內卻未列第一的 prompt 與分數；沿用 pass／rank-1 定義，附回歸測試。 |
+| `e99d76badf9f3397b7f777a504d019619c7c9b2c` | 採用 | 合併 #683，內容為 dde32ac；remerge-diff 無額外解衝突變更，以 tip 最終內容同步。 |
+| `e1e2df16061ac6950bacb6730afc49646071bd78` | 採用 | 合併 #718，內容為 30187c1；remerge-diff 無額外變更，三份安全文件與測試同步。 |
+| `6cd29391f5043888421fd17e59be59ec7cbd1aa6` | 採用 | 合併 #733，內容為 57bfe5d；remerge-diff 無額外變更，對比與 resize 修正同步。 |
+| `583df9afd8abd0e9cbe9f25c0927ed74c0c72028` | 採用 | 合併 #739，內容為 725c328；remerge-diff 無額外變更，host context-budget 指引同步。 |
+| `25bc6c682ac1d7a5e170e3fe6f6ceed35e9d1add` | 採用 | 合併 #754，內容為 c55b842；remerge-diff 無額外變更，保留反證規則同步。 |
+| `4066846dd5323144719655b0fc7a5838e154ed20` | 採用 | 合併 #756，內容為 26ed36c、6194c60、ed37778；採清理完成的 grader 與量測紀錄，remerge-diff 無額外變更。 |
+| `d051d8897653319682c42ab8fdbbd4c558f0d940` | 採用 | 合併 #759，內容為 78f00a4；remerge-diff 無額外變更，session cookies 描述同步。 |
+| `9dac2ad3d750d05c684680936b777f1e6502e9ba` | 採用 | 合併 #760，內容為 362edec；remerge-diff 無額外變更，rank-1 診斷與回歸同步。 |
+| `884f64649779cd92804417c0baf564813b111bfc` | 採用 | 把 main 合進 #758 分支；combined diff 僅 evals/README.md 同時保留 #756 與 #758 的量測段落，沒有丟掉任一側。 |
+| `794766453133319119c7d10170af7fa1d37ea1c4` | 採用 | 合併 #758；remerge-diff 無額外變更，最終樹涵蓋 gitflow 描述、正負向 case 與量測紀錄。 |
+
+26ed36c 採用清理後的內容；明確不採用隨後被上游自行移除的暫存 grader；最終 30 個產品路徑仍須逐位元組等於 tip。沒有新增 skill，沒有從 open PR 單獨摘取。PR／issue 水位見〈補審 PR #768〉（768／765），不以這批 commit 審查冒充新的 PR／issue 全量審查。
+
+### pytest 9.2.0 新鮮度裁決
+
+依 [官方 changelog](https://docs.pytest.org/en/stable/changelog.html#pytest-9-2-0-2026-10-27) 審查 `-c` 路徑錯誤、parametrize 的 indirect／ids／scope 改 keyword-only，以及 plugin import 失敗回傳碼；本 repo 為靜態文件與維護工具測試，沒有依賴上述舊行為。repo 專用 `.venv` 安裝 pytest 9.2.0 與 ruff 0.17.3 驗證。
+
+**決定：本機測試環境採用 9.2.0，宣告下限維持 `pytest>=9.1`。** 最低版本代表相容承諾；沒有新 API 需求，不因追新強迫原有使用者升級。依 `.github/dependency-deferrals.json` 加入 `deferredLatest: 9.2.0`，具體理由為 9.2.0 已實測相容而 9.1 下限仍有效；下一版會自動失效、重新審查，不是永久 hold，也不是調高下限消紅燈。
+
+### 驗收紀錄
+
+- 修正前：`node --test scripts/staged-secret-scan-test.js scripts/run-evals-test.js` exit 1，79 項中 77 pass／2 fail（缺少 --name-only 安全命令、缺少 rank-1 診斷）。fixture 僅使用明確假的 sentinel，未讀寫真實憑證；測試內的 Git 操作只作用於隔離 fixture，不作用於此 repo index。
+- 修正前：`python -m pytest tests/test_upstream_examples.py -q` exit 1，3 failed（children props、字級門檻、resize 等待）。
+- 修正後與完整閘門結果見本節後續驗證補記；完成前不推進 commit 水位。
+- 此 repo 沒有 `REVIEW.md`；五軸自我審查記於本決策，不另建平行工作清單。CHANGELOG 中英同步；不新增或刪除 tag／release，不提交、不推送。
+
+### 自我掃描指紋審查（12 筆，無新增種類）
+
+| skill／檔案 | 規則／筆數 | 審查理由 |
+| --- | --- | --- |
+| browser-testing-with-devtools/SKILL.md | YR1、P1、YR4，各 1 | 第 64 行為真實瀏覽器 profile 的隔離風險說明；第 77 行是教導不要執行頁面惡意指令的反面範例。本次只加 resize 等待句，命中原文未變。 |
+| context-engineering/SKILL.md | EA2，2 | 第 66 行禁止未檢查套件大小就新增依賴，第 342 行將未驗證即信任外部檔案列為 Red Flag；均為限制而非授權。本次只改 host 壓縮門檻。 |
+| doubt-driven-development/SKILL.md | EA5，1 | Cross-model escalation 明確列出 CLI 與詢問流程，屬可見的審查教學，非隱藏帳務切換；本次只補保留反證。 |
+| git-workflow-and-versioning/SKILL.md | TM1，1 | git reset --hard HEAD 為復原教學範例，不是執行動作；本次改 description 與安全掃描輸出。 |
+| security-and-hardening/SKILL.md | YR4、MP3、EA2，各 1 | 第 21 行的 Threat Model／後文 Never disable security 是防禦說明；第 129 行 purge history 為先輪替再補救；第 198 行 no consent 是要避免的 PII 風險。只改 session cookies 描述。 |
+| security-and-hardening/references/hardening-patterns.md | SSRF1，1 | 第 155 行 169.254.169.254 為 assertSafeUrl 應阻擋的 link-local 範例；本次只改 staged-secret 命令。 |
+| shipping-and-launch/SKILL.md | EA2，1 | 第 25 行出貨前測試／建置／型別門檻，是要求通過檢查而非忽略拒絕；本次只補 children props 型別。 |
+
+由 SkillSpector 2.12.0 的 `baseline skills/<name> --no-llm -o -` 產生目前內容的精準指紋，僅原地替換上述 12 筆雜湊、保留具體理由；沒有新增 rule 或擴大豁免。首次完整 gate 在自我掃描途中主動中止以先處理換雜湊，屬 incomplete，不算成功；正式完整 gate 於指紋更新後執行。
+
+掃描限制：browser skill 的 reference_resolution 將第 28 行執行時產生的路徑標為 reference_missing／partial，execution_successful 為 true；其他技能也可能有類似文件路徑的 coverage gap。這次 gate 沿用靜態 `--no-llm` 合約，沒有宣稱完整語意安全證明或 live host 驗收。
+
+### 補審 PR #768（嚴格檢查實際發現）
+
+- 狀態：CLOSED、mergedAt null；head `a257fbf870bf0699ac05b34ae327b7784ac207fa`，base main。以 `gh pr view 768 --repo addyosmani/agent-skills --json ...` 與 `gh pr diff 768 --repo addyosmani/agent-skills` 只讀目前 head，未向上游寫入。
+- 裁決：**不採用**。diff 僅改 `.claude/commands/build.md`、`commands/build.toml`、`.gemini/commands/build.toml`（各 +2/-1），將 plan approval 限於本機實作與 commit，遠端 push／merge／部署／production migration／基礎設施另要求操作與目標的明確授權。沒有執行程式碼或隱藏內容；但上游已 closed 未合併，依慣例不單獨摘取、不改本線產品行為或安全設定。
+- 原本在 PR 767 水位執行 `check_upstream_updates.py --strict` exit 1，PR 軸新增此 PR；完整報告另顯示 commit 軸仍有 14 筆，issue 765 之後無新增。先前只讀報告尾端而漏看 commit 清單，已更正，不將該次檢查計為綠燈。記錄裁決後只把 PR 水位推進 768，issue 維持 765。
+
+### 最終本機驗證與五軸自我審查
+
+- `pwsh -NoProfile -File tools/dev_check.ps1`：正式完整執行 exit 0；43 pytest passed、243 Node tests passed／0 skipped、150 routing checks passed／rank-1 100%（97/97）；25 skills 自我掃描 0 新 finding。結尾：`SkillSpector self-scan: no new findings across 25 skill(s).`、`WINDOWS DEV CHECK GREEN`。首次主動中止的 gate exit -1，屬 incomplete，未計成功。
+- 聚焦回歸：`node --test scripts/staged-secret-scan-test.js scripts/run-evals-test.js` 由 exit 1（77 pass／2 fail）轉 exit 0（79 pass／0 fail／0 skipped）；`python -m pytest tests/test_upstream_examples.py -q` 由 exit 1（3 failed）轉 repo `.venv` exit 0（3 passed）。三個 Python 回歸是靜態文件合約，沒有宣稱執行 React 或瀏覽器測試。
+- `check_dependency_freshness.py --strict` exit 0；pytest 最新版 9.2.0 為有版本期限的 DEFERRED，沒有調高相容下限。
+- 正確性：21/21 SHA 各一列裁決；30/30 產品路徑與指定 tip 逐位元組相同，hook 與 manifest 不變。可讀性：沿用原語言與換行，CHANGELOG 中英同步。架構：沒有新 skill 或平行工作清單。安全：只印 staged-secret 匹配檔名，12 筆誤判僅換精準指紋，無新增規則。效能：重複路由成本仍明列；沒有引入執行時工作。
+- gate 完成後才推進 commit 水位至 `794766453133319119c7d10170af7fa1d37ea1c4`；其後僅調整審查紀錄與 baseline metadata，以聚焦 pytest／文件連結檢查覆核，不重跑未受影響的 25 技能掃描。詳細輸出保留在本機 `.dev-check.log`、`.regression-red-node.log`、`.regression-green-node.log`、`.regression-red-pytest.log`、`.regression-green-pytest.log`、`.dependency-freshness.log`、`.upstream-check.log`（均為忽略的驗證產物）。
+
+### 最新上游範圍差異：本輪不冒進水位
+
+最終 `.venv\Scripts\python tools/check_upstream_updates.py --strict` exit **1**，結尾 PR／issue 軸無新項目，但報告前段列出 **14 upstream commit(s) require review**，目前 tip `301b02b`。這 14 筆在本輪明定範圍 `eb07f19..7947664` 之後，涉及 quality-gate 執行腳本、TDD fixture、hook 還原、eval 單 case 支援、review 證據與 0.6.15 manifest bump，不能用本輪 21 筆的審查或綠燈覆蓋。
+
+因此 `reviewed_through` 保留在已完成逐筆審查與產品驗證的 `794766453133319119c7d10170af7fa1d37ea1c4`，不把 14 筆標成已審，不刪版本或檔案來消紅燈。尚未完成的同步明列在 ROADMAP；是否另派這段範圍由維護者決定。本輪完成的是指定 21 筆與 hook 保留決定，**最新 Upstream check 仍紅，並未全部消除**。
+
+最後 metadata／文件改動後聚焦覆核：`.venv\Scripts\python -m pytest tests -q` exit 0（43 passed in 8.93s）；`.venv\Scripts\python tools/check_links.py` exit 0（31 份維護文件，0 份有缺檔）；`git diff --check` exit 0。HEAD 維持 detached，repo index 無變更。

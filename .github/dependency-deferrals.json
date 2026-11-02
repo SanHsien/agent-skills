@@ -10,6 +10,11 @@
       "deferredLatest": "7.1.0",
       "reason": "同上：v6 只出現在上游自有的 test-plugin-install.yml。本線自有的 ci.yml 已釘 v7.1.0 的 SHA。",
       "reviewedOn": "2026-10-25"
+    },
+    "pytest": {
+      "deferredLatest": "9.2.0",
+      "reason": "repo 專用環境已採用 pytest 9.2.0 驗證；此 repo 的靜態規格測試未使用新 API，pytest>=9.1 是最低相容承諾，無需強迫既有使用者升級。已審查 9.2.0 的 -c、parametrize keyword-only 與 plugin import exit code 變更；完整測試結果見 docs/DECISIONS.md 2026-11-02。下一個 release 自動重新審查。",
+      "reviewedOn": "2026-11-02"
     }
   }
 }

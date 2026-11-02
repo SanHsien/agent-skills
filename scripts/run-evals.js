@@ -345,6 +345,15 @@ function runDeterministic(minRank1) {
       if (idx === 0 && hit.score > 0) rank1++;
       if (idx >= 0 && idx < topK && hit.score > 0) {
         passed++;
+        // Inside top_k is a pass, but only #1 counts toward the rank-1 rate
+        // the --min-rank1 floor measures. Name the prompt so a description
+        // change that costs a skill its own prompt is visible in the run
+        // output, not only as a one-point drop in the percentage.
+        if (idx > 0) {
+          console.log(`  ·  ${expected}: positive prompt ranked #${idx + 1}, inside top ${topK} but not first, so it counts against the rank-1 rate`);
+          console.log(`       "${t.prompt}"`);
+          console.log(`       #1: ${ranking[0].name} (${ranking[0].score.toFixed(3)}) vs ${hit.score.toFixed(3)}`);
+        }
       } else if (!hit || hit.score === 0) {
         console.log(`  ✗  ${expected}: description shares no vocabulary with a prompt users would say`);
         console.log(`       "${t.prompt}"`);

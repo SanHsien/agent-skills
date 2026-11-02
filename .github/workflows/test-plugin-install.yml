@@ -46,6 +46,9 @@ jobs:
       - name: Test floor-guard reference
         run: node --test scripts/floor-guard-reference-test.js
 
+      - name: Test staged-secret scan reference
+        run: node --test scripts/staged-secret-scan-test.js
+
       - name: Test session-start hook payload
         run: bash hooks/session-start-test.sh
 
