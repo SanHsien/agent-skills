@@ -181,4 +181,4 @@ fingerprints:
   rule_id: EA2
   skill: test-driven-development
   file: SKILL.md
-  reason: "自我指涉誤判（test-driven-development/SKILL.md:378）。命中的是 Red Flags 清單中「『全部測試通過』但其實沒跑過測試」這一條，語意是要抓出這種行為，不是宣稱自己有自主決策權。 2026-11-02：上游 ba3d99e／2b14012 讓行號變動，指紋改為 SKILL.md:380；被引用的 references/floor-guard.md 與該句語意在本輪未變，裁決不變。"
+  reason: "自我指涉誤判（test-driven-development/SKILL.md:378）。命中的是 Red Flags 清單中「『全部測試通過』但其實沒跑過測試」這一條，語意是要抓出這種行為，不是宣稱自己有自主決策權。 2026-11-02：上游 ba3d99e／2b14012 讓行號變動，指紋改為 SKILL.md:380；Red Flags 那一行的文字逐字未變，只是行號位移，裁決不變。"
