@@ -31,7 +31,12 @@ node scripts/run-evals.js --min-rank1 95  # enforce the current routing floor
 # Tier 3 — behavioral, runs each eval through headless claude, then grades it
 node scripts/run-evals.js --behavioral test-driven-development            # spends tokens
 node scripts/run-evals.js --behavioral test-driven-development --dry-run  # prints the plan only
+node scripts/run-evals.js --behavioral test-driven-development --eval 1   # run only case 1
 ```
+
+`--eval <id>` selects one behavioral case by its integer `id` (including `0`)
+and also works with `--dry-run`. Unknown or invalid IDs fail before execution;
+omitting the selector runs every case as before.
 
 Tier 3 supports two behavioral artifact kinds. `execution` is the default: each eval runs in a throwaway git repository, real project inputs from `files[]` are materialized out of `evals/fixtures/` and committed as the baseline, and the grader judges the full `--output-format stream-json --verbose` execution trace, including tool calls. `dialogue` is reserved for skills whose deliverable is the conversation itself; it needs no fixture, and the grader judges the assistant's conversational turns without requiring file edits or commands. Claiming `dialogue` is a human-reviewed exemption, not a general escape hatch for execution skills.
 

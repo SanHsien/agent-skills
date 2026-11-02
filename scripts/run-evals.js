@@ -577,7 +577,7 @@ function persistGradingOutcome(base, grading, raw, runMeta) {
 // resolve to files outside the project tree for both reads and writes.
 const VALID_SKILL_NAME = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
-function runBehavioral(skillName, dryRun) {
+function runBehavioral(skillName, dryRun, evalId = null) {
   if (!skillName || !VALID_SKILL_NAME.test(skillName)) {
     console.error(`Invalid skill name: "${skillName}" — must be kebab-case (e.g. "my-skill")`);
     process.exit(1);
@@ -598,10 +598,15 @@ function runBehavioral(skillName, dryRun) {
     console.error(`"${skillName}" has duplicate behavioral eval id=${duplicateIds.join(', ')}; each grading slot needs a unique id`);
     process.exit(1);
   }
+  const selected = evalId === null ? d.evals : d.evals.filter((ev) => ev.id === evalId);
+  if (!selected.length) {
+    console.error(`"${skillName}" has no behavioral eval id=${evalId}`);
+    process.exit(1);
+  }
   if (!dryRun) fs.mkdirSync(RESULTS_DIR, { recursive: true });
   let failures = 0;
 
-  for (const ev of d.evals) {
+  for (const ev of selected) {
     const kind = ev.kind || 'execution';
     const fixtureRequired = kind !== 'dialogue';
     const fixtures = (ev.files || []).length;
@@ -705,6 +710,20 @@ function runBehavioral(skillName, dryRun) {
 
 function main(args = process.argv.slice(2)) {
   const bIdx = args.indexOf('--behavioral');
+  const evalIdx = args.indexOf('--eval');
+  let evalId = null;
+  if (evalIdx !== -1) {
+    if (bIdx === -1) {
+      console.error('--eval applies only to behavioral evals');
+      process.exit(1);
+    }
+    const raw = args[evalIdx + 1];
+    if (raw === undefined || !/^-?\d+$/.test(raw) || !Number.isSafeInteger(Number(raw))) {
+      console.error('--eval must be an integer case id');
+      process.exit(1);
+    }
+    evalId = Number(raw);
+  }
   const rankIdx = args.indexOf('--min-rank1');
   let minRank1 = null;
   if (rankIdx !== -1) {
@@ -720,7 +739,7 @@ function main(args = process.argv.slice(2)) {
       console.error('--min-rank1 applies only to deterministic evals');
       process.exit(1);
     }
-    runBehavioral(args[bIdx + 1], args.includes('--dry-run'));
+    runBehavioral(args[bIdx + 1], args.includes('--dry-run'), evalId);
   } else {
     runDeterministic(minRank1);
   }

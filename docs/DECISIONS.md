@@ -588,3 +588,42 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 因此 `reviewed_through` 保留在已完成逐筆審查與產品驗證的 `794766453133319119c7d10170af7fa1d37ea1c4`，不把 14 筆標成已審，不刪版本或檔案來消紅燈。尚未完成的同步明列在 ROADMAP；是否另派這段範圍由維護者決定。本輪完成的是指定 21 筆與 hook 保留決定，**最新 Upstream check 仍紅，並未全部消除**。
 
 最後 metadata／文件改動後聚焦覆核：`.venv\Scripts\python -m pytest tests -q` exit 0（43 passed in 8.93s）；`.venv\Scripts\python tools/check_links.py` exit 0（31 份維護文件，0 份有缺檔）；`git diff --check` exit 0。HEAD 維持 detached，repo index 無變更。
+
+
+## 2026-11-02（續）：逐筆審查 `7947664..301b02b` 與 PR #769–#773
+
+範圍是上一輪留下的 14 筆 commit 與新出現的 PR #769–#773；issue 軸無新增（仍是 #765）。方法同上一輪：讀每筆 parent diff 與最終樹，對新增行掃隱藏內容（`grep -nE '\S\s{40,}\S|eval\(|new Function|globalThis|[A-Za-z0-9+/]{100,}'`，無命中），再以 `git show upstream/main:<path>` 把 20 個變更路徑寫入工作樹；寫入後 `git diff upstream/main -- <20 個路徑>` 為空，即與 `301b02b` 逐位元組相同。四份 manifest 與根 `plugin.json` 只差 `0.6.14 → 0.6.15` 一行，不採用。本機 fork 的這些路徑改前都等於 `7947664`（新增檔組則不存在），所以沒有 fork 自有內容被覆蓋。
+
+### Commit 軸逐筆裁決（14 筆）
+
+| SHA | 裁決 | 理由與產品落點 |
+| --- | --- | --- |
+| `ba3d99e63be02e7e8782eaab7aebbcfe73b31be1` | 採用 | constraint-driven-development 新增 `scripts/quality-gate.mjs`（45 行，讀 semgrep／axe 報告，不完整報告或未知嚴重度回 2、有 blocking 回 1）與 `scripts/quality-gate-test.js`，SKILL.md 與 `test-plugin-install.yml` 對應更新。腳本只讀指定的 JSON 檔、不執行外部命令、不連網。 |
+| `9604a3f77b149b25fbe3a38184b2f29de0dd05f0` | 採用 | `scripts/run-evals.js` 加依 id 選單一行為案例，附 `run-evals-test.js` 與 `evals/README.md`。 |
+| `2b1401229b894399e4d3fca81d21a51c12ab139e` | 採用 | TDD 技能要求崩潰與回滾測試走真實邊界；新增 `evals/fixtures/test-driven-development-persistence/` 與對應 eval case。 |
+| `52acec00502020956d0cdd9bf0b263655c4eebcc` | 採用 | `hooks/simplify-ignore.sh` 保留重新縮排的 placeholder 並強化 Stop 清理，附 `simplify-ignore-test.sh`。 |
+| `6867dbbe70e0836fba3c68e8617f4bc92bb7e3dc` | 採用 | `run-evals-test.js` 迴圈縮排，無行為差異。 |
+| `db3031dd4a75b72028a95084aad58d3cd13d8e49` | 採用 | 讓 TDD fixture 的 README 不直接寫出答案並刪除未被呼叫的 fixture 腳本；最終樹沒有 `scripts/test-driven-development-fixture-test.py`，與 `2b14012` 一併採最終樹。 |
+| `353ae84755adc40c8a84e4db29b5bf2dfc9e7f5b` | 採用 | code-review-and-quality 要求用程式碼與 baseline 驗證 finding；新增 `evals/fixtures/review-evidence/` 四個檔與 eval case。 |
+| `253341f866f3c14b3217bb87be20fcebba0ef8de` | 採用（隨最終樹） | merge，唯一差異是 `test-plugin-install.yml`，內容已含在最終樹。 |
+| `259a29239697e415bb56aed8ea9eabaa9c0973e8` | 採用（隨最終樹） | merge #742，內容即 `9604a3f` 與 `6867dbb`。 |
+| `2b27791b42e20a5d7aa5778f6cbcbb0a2629c7f2`、`8b376edc5488221c75c1c7c229cdec26aeab3c9b`、`afcafdf58f48862b85021a5cd8cf3cd560dceb93`、`301b02b12bff98e4688e6984af6556802322bbde` | 無額外內容 | merge #750、#766、#694、#736，相對各自 parent 的 diff 為空（檢查器 Files 欄 `(none)`）。 |
+| `8bfcc1f9916f2eea55494d8c1fa7f4bde867dd9e` | **不採用** | 五份 manifest 的 0.6.14 → 0.6.15 release bump；本 fork 維持單一 tag／release（0.6.9），沿用 2026-09-30 與 2026-10-30 的決策。重看條件：維護者授權升版。 |
+
+### PR 軸
+
+全部取目前 head，並把狀態與 head 釘進 `monitored`（漂移就報）。皆 open、未合併，依慣例等合併後隨 commit 軸同步，不單獨摘取。
+
+| PR | head | 規模與落點 | 本 fork 對照與重看條件 |
+| --- | --- | --- | --- |
+| #769 isolate fixture repositories from inherited Git hooks | `e38287b` | +31／-0，`scripts/run-evals.js`、`run-evals-test.js` | 缺陷存在於本線（與上游同檔）。合併後同步。 |
+| #770 retain evidence and continue after grader failures | `bfd0508` | +71／-2，`run-evals.js`、README、測試 | 同上。 |
+| #771 cache large WebFetch responses without argv limits | `8cc86c5` | +27／-5，`hooks/sdd-cache-post.sh`、`sdd-cache-test.sh` | 缺陷存在：本線 `hooks/sdd-cache-post.sh` 仍以 `jq --arg content "$CONTENT"` 傳大內容。合併後同步；若 Windows 使用者回報大型回應失敗，可提前只移植 stdin 讀入那段。 |
+| #772 reject unknown and malformed CLI options | `aace1f5` | +72／-1，`run-evals.js`、README、測試 | 同 #769。 |
+| #773 exercise the version-validator CLI against temporary manifests | `262d02d` | +70／-14，只動 `scripts/validate-versions-test.js` | 純測試；上游尚未合併。 |
+
+水位：`reviewed_through` `7947664` → `301b02b12bff98e4688e6984af6556802322bbde`、`reviewed_pr_through` 768 → 773、`reviewed_issue_through` 仍 765、`reviewed_date` 2026-11-02。
+
+### 驗證
+
+`pwsh -NoProfile -File tools/dev_check.ps1` 完整執行 exit 0（`WINDOWS DEV CHECK GREEN`）。第一次執行時 SkillSpector 自我掃描對 3 筆既有誤判報新指紋（`constraint-driven-development/SKILL.md` 的兩筆 AE1 行號 216→223、258→265，`test-driven-development/SKILL.md` 的一筆 EA2 行號 378→380；來自 `ba3d99e`、`2b14012` 的行數變動），沒有新增 rule 或擴大豁免；對照被引用的 `references/floor-guard.md`（本輪未變）與 Red Flags 該句後，只在 `.skillspector-baseline.yaml` 原地替換這 3 個雜湊並於原理由後註明，再跑一次完整 gate 為 `SkillSpector self-scan: no new findings across 25 skill(s).`。`python tools/check_upstream_updates.py --strict` exit 0。

@@ -117,16 +117,16 @@ fingerprints:
   skill: using-agent-skills
   file: SKILL.md
   reason: "自我指涉誤判：各 skill 的 Boundaries／Red Flags 段落列出的『without asking』『without consent』等字樣，是警告 agent 不要這樣做的反面教材／檢查清單項目，語意是禁止而非授權自主決策。"
-- hash: sha256:68637dad81fdadbde1917b7d5415aa111fb23486c488ed6c2c9ea4a4e5a07f80
+- hash: sha256:19a3d416aee615a2c27ab73fdf46664acb112a81e37b478bd0d62bcfc5b954bf
   rule_id: AE1
   skill: constraint-driven-development
   file: SKILL.md
-  reason: "2026-10-31 隨上游 0.6.14 同步換雜湊（SKILL.md:216，SKILL.md 內容變動）；上游 #708 把 references/floor-guard.md 的 MIN_AFTER／MAX_AFTER 兩條正規式各加一段可選的管線符號比對，#729 把 SKILL.md 的 `gitleaks detect` 改 `gitleaks dir .`，重讀後仍是 git hook 範例文件，判斷不變。AE1 的成因同 2026-10-24：新版掃描器的 static_patterns_tool_misuse 在 references/floor-guard.md 碰到有界解析器的跨度上限（static_parse_limit），SKILL.md 引用該檔時因此回報 AE1。人工逐行審閱該檔的 JS 參考實作：只以 execFileSync 的 argv 陣列呼叫 git（不經 shell），參數為固定字面值、--base 參數與 git ls-files 輸出；沒有網路、寫檔或讀環境變數，輸出截斷至 120 字元；未被靜態分析完整覆蓋的是長正規表示式，內容無害。"
-- hash: sha256:21f4d3b38859faed8d6e33d7c90f78d17bc2a72e45b5c8916fa3d44068697940
+  reason: "2026-10-31 隨上游 0.6.14 同步換雜湊（SKILL.md:216，SKILL.md 內容變動）；上游 #708 把 references/floor-guard.md 的 MIN_AFTER／MAX_AFTER 兩條正規式各加一段可選的管線符號比對，#729 把 SKILL.md 的 `gitleaks detect` 改 `gitleaks dir .`，重讀後仍是 git hook 範例文件，判斷不變。AE1 的成因同 2026-10-24：新版掃描器的 static_patterns_tool_misuse 在 references/floor-guard.md 碰到有界解析器的跨度上限（static_parse_limit），SKILL.md 引用該檔時因此回報 AE1。人工逐行審閱該檔的 JS 參考實作：只以 execFileSync 的 argv 陣列呼叫 git（不經 shell），參數為固定字面值、--base 參數與 git ls-files 輸出；沒有網路、寫檔或讀環境變數，輸出截斷至 120 字元；未被靜態分析完整覆蓋的是長正規表示式，內容無害。 2026-11-02：上游 ba3d99e／2b14012 讓行號變動，指紋改為 SKILL.md:223；被引用的 references/floor-guard.md 與該句語意在本輪未變，裁決不變。"
+- hash: sha256:c79b3eb33ed57214679e3d45db1e758d7e6cc53754cef38897577e1bf7f8c413
   rule_id: AE1
   skill: constraint-driven-development
   file: SKILL.md
-  reason: "2026-10-31 隨上游 0.6.14 同步換雜湊（SKILL.md:258，SKILL.md 內容變動）；理由同 SKILL.md:216 那一筆：references/floor-guard.md 只改兩條正規式（#708），仍是 git hook 範例文件，只以 execFileSync 的 argv 陣列呼叫 git，無網路、寫檔或讀環境變數。"
+  reason: "2026-10-31 隨上游 0.6.14 同步換雜湊（SKILL.md:258，SKILL.md 內容變動）；理由同 SKILL.md:216 那一筆：references/floor-guard.md 只改兩條正規式（#708），仍是 git hook 範例文件，只以 execFileSync 的 argv 陣列呼叫 git，無網路、寫檔或讀環境變數。 2026-11-02：上游 ba3d99e／2b14012 讓行號變動，指紋改為 SKILL.md:265；被引用的 references/floor-guard.md 與該句語意在本輪未變，裁決不變。"
 - hash: sha256:f841ceb98b549a3f6d98d06dab2f17311864e013a660bcffdc4cdd3e0cadc38c
   rule_id: YR4
   skill: security-and-hardening
@@ -177,8 +177,8 @@ fingerprints:
   skill: spec-driven-development
   file: SKILL.md
   reason: "自我指涉誤判（spec-driven-development/SKILL.md:214，同一行三個命中之三）。同上：引用的是本 repo 內的 skill 路徑。2026-10-31 隨上游 0.6.14 同步換雜湊（檔案內容變動，指紋綁內容）。"
-- hash: sha256:4532fa4fbdfe684352c0ca93567d61cbe80ddc92dd5c3bb950eb5c6c66af7e39
+- hash: sha256:0617c7e96ea9c2d4b0b6913ce8b2d3fe03e2b345f3af22f05fbb5709dae5847b
   rule_id: EA2
   skill: test-driven-development
   file: SKILL.md
-  reason: "自我指涉誤判（test-driven-development/SKILL.md:378）。命中的是 Red Flags 清單中「『全部測試通過』但其實沒跑過測試」這一條，語意是要抓出這種行為，不是宣稱自己有自主決策權。"
+  reason: "自我指涉誤判（test-driven-development/SKILL.md:378）。命中的是 Red Flags 清單中「『全部測試通過』但其實沒跑過測試」這一條，語意是要抓出這種行為，不是宣稱自己有自主決策權。 2026-11-02：上游 ba3d99e／2b14012 讓行號變動，指紋改為 SKILL.md:380；被引用的 references/floor-guard.md 與該句語意在本輪未變，裁決不變。"
