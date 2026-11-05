@@ -627,3 +627,9 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 ### 驗證
 
 `pwsh -NoProfile -File tools/dev_check.ps1` 完整執行 exit 0（`WINDOWS DEV CHECK GREEN`）。第一次執行時 SkillSpector 自我掃描對 3 筆既有誤判報新指紋（`constraint-driven-development/SKILL.md` 的兩筆 AE1 行號 216→223、258→265，`test-driven-development/SKILL.md` 的一筆 EA2 行號 378→380；來自 `ba3d99e`、`2b14012` 的行數變動），沒有新增 rule 或擴大豁免；對照被引用的 `references/floor-guard.md`（本輪未變）與 Red Flags 該句後，只在 `.skillspector-baseline.yaml` 原地替換這 3 個雜湊並於原理由後註明，再跑一次完整 gate 為 `SkillSpector self-scan: no new findings across 25 skill(s).`。`python tools/check_upstream_updates.py --strict` exit 0。
+
+## 2026-11-05：依賴裁決
+
+**現況**：`github/codeql-action/init` 與 `github/codeql-action/analyze` 宣告 4.39.1，落後於 4.39.3。其餘套件由既有有效 hold／deferral 涵蓋或為最新版本。
+
+**決定**：github/codeql-action 4.39.1→4.39.3 已升級（codeql.yml 改釘 SHA）。已讀官方 [4.39.2 release](https://github.com/github/codeql-action/releases/tag/v4.39.2) 與 [4.39.3 release](https://github.com/github/codeql-action/releases/tag/v4.39.3)：4.39.2 更新預設 bundle 為 2.27.4、加入舊 CodeQL／macOS traced analysis 棄用警告，並移除未公開的 TRAP cache cleanup 功能；4.39.3 修正 diff-informed 過濾對特殊字元／非 ASCII 路徑錯誤移除警報的問題。其餘套件維持既有 hold／deferral，沒有變更 Python 相容下限或 checker，也不建立永久 hold。

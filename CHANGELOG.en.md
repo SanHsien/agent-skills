@@ -11,6 +11,12 @@ lives in its own history and in the review ledger at
 
 ---
 
+## [Unreleased] - 2026-11-05
+
+### Maintenance
+
+- Bump CodeQL Action to 4.39.3.
+
 ## [Unreleased] - 2026-11-02
 
 ### Synced and decided
