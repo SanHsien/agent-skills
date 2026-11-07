@@ -655,3 +655,21 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 **舊 tag 處理**：不刪 `0.6.9` 的 tag 與 release。新版 tag `0.6.15` 要建立在本次變更推上 `origin/main` 之後的 commit 上（對外動作，推送後才能執行）：`gh release create 0.6.15 -R SanHsien/agent-skills --target <推送後 origin/main 的完整 SHA> --title 0.6.15 --latest --notes-file <說明檔>`；說明檔只寫版本號與內容來源（上游 `301b02b` 的產品內容，本 fork 的維護變更見 `CHANGELOG.md`）。`0.6.9` 的 Latest 標記會在新 release 建立時由 GitHub 移到 `0.6.15`。
 
 **重新考慮的條件**：保留多個 tag 造成實際問題（例如某個工具需要唯一的 tag，或 `git describe` 結果與預期不符）；或本 fork 的產品內容與上游分岔到同一個版本號會造成混淆，屆時改用 fork 自己的版本號格式。
+
+## 2026-11-08（續）：PR #774–#780 與 issue #776
+
+範圍：commit 軸無新增（`git fetch upstream` 後 `git rev-parse upstream/main` 仍是 `301b02b`，與 `reviewed_through` 相同，`git diff --numstat 301b02b upstream/main` 為空）；新出現的是 PR #774–#780（7 筆）與 issue #776（1 筆），這是 Upstream check 轉紅的原因。方法：`gh pr view <n> --repo addyosmani/agent-skills --json state,headRefOid,files,...` 取目前 head 與檔案清單，`gh pr diff` 讀完整 diff，對新增行掃隱藏內容（長空白、`eval(`／`new Function`／`globalThis`、長 base64、`curl|sh`、`iwr`）與 Unicode 不可見字元（類別 Cf／Co、BOM），五份 diff 皆無命中（#777 第 220 行唯一的長字串命中是 JWT 說明文字的散文，非編碼內容）。全程只讀，未向上游寫入。
+
+| 項目 | 狀態與 head | 規模 | 裁決與理由 |
+| --- | --- | --- | --- |
+| PR #774 add experiment-driven-development | open；`00bc7b5` | +453／-10，17 檔：新技能 `skills/experiment-driven-development/SKILL.md`（210 行）、1 個 eval case、7 個 fixture 檔，另改 README 技能數 25→26、`using-agent-skills`、CLAUDE.md、4 份 docs | 延後（釘 monitored）。新技能投稿，非本線缺陷；依 CONTRIBUTING 預檢與慣例（#566、#582 等）等上游合併再隨 commit 軸同步。注意合併後技能數變 26，繁中 `README.md` 的技能數字要同步，並預期自我掃描會對新技能報新指紋。 |
+| PR #775 add architecture-coaching | open；`0112358` | +129／-0，2 檔：`skills/architecture-coaching/SKILL.md`（97 行）、eval case | 延後（釘 monitored）。同為新技能投稿；技能內文連到作者個人 repo（`ban-boi/weifan-skill`）僅作出處，無執行指令。等合併。 |
+| PR #777 add credential-liveness-verification | open；`2c7a3eb` | +241／-0，6 檔：新技能（91 行）、eval case、3 個 fixture（含 `check_health.py`） | 延後（釘 monitored）。新技能投稿；fixture 腳本只在 eval 沙箱用。等合併。 |
+| PR #778 ci: hook suites on macOS stock bash | open；`43b3f4c` | +22／-4，只動上游自有的 `.github/workflows/test-plugin-install.yml` | 延後（釘 monitored）。該 workflow 依既有決策與上游逐位元組一致、不手改；本線 CI 已在 Windows 與 Ubuntu 跑 `dev_check`，本線不登記 macOS 為支援目標。`scripts/staged-secret-scan-test.js` 本線已存在（`.github/workflows/test-plugin-install.yml:52` 以獨立步驟執行），所以 PR 只是把它加進另一份測試清單。等合併。 |
+| PR #779 other-hosts: Oh My Pi 命令命名空間（對應 issue #776） | open；`19e6caf` | +1／-1，只動 `docs/other-hosts.md` | 延後（釘 monitored）。缺陷在本線存在：`docs/other-hosts.md:9` 仍是未加說明的安裝指令，與上游同。純文件、只影響 omp 使用者，issue #776 內說明原因的回覆者 ayobamiseun（CONTRIBUTOR）就是 #779 的作者，不是上游維護者；依慣例不單獨摘取未合併 PR。 |
+| PR #780 release(probity-rules) 0.4.66 / plugin 0.6.18 | **CLOSED**、未合併；`e4f6798` | +39522／-1364，243 檔（`gh api repos/addyosmani/agent-skills/pulls/780 -q .changed_files` 實查；`gh pr view --json files` 最多只回 100 筆，不可當總數） | **不採用**。提交者在 PR 留言自承「開錯 repo，應開在自己的 fork」並關閉；內容是 probity 規則包發版（含 hooks、五份 manifest 版號 0.6.18），與本線無關。未在關閉狀態下逐檔評估取用。 |
+| issue #776 `/build auto` 在 omp 不生效 | open | 使用問題 | 無獨立處置。原因是 omp 的命令名稱為 `plugin:command`（`/agent-skills:build`），文件修正即 PR #779；提問者回覆已用 `/agent-skills:build` 仍不生效，這點上游尚未結論，等待後續討論，本線無可套用修正。 |
+
+仍在 monitored 的 #769–#773 逐一以 `gh pr view` 重查：state 皆 OPEN、head 與 baseline 釘的值逐字元相同，沒有漂移。
+
+水位：`reviewed_through` 不動（`301b02b`）、`reviewed_pr_through` 773 → 780、`reviewed_issue_through` 765 → 776、`reviewed_date` 2026-11-08；monitored 新增 `pr#774`、`pr#775`、`pr#777`、`pr#778`、`pr#779`（#780 已 closed，不釘）。沒有任何產品檔變動，版本維持 0.6.15（`node scripts/validate-versions.js` 五份一致），不需要新 tag。

@@ -5,7 +5,7 @@
 
 ## 現況
 
-這是 addyosmani/agent-skills 的 Windows-first 維護型 fork。2026-11-02 本輪工作樹已同步 `eb07f19..7947664` 的 21 筆 commit、30 個產品檔；逐筆 SHA／裁決／理由見 `docs/DECISIONS.md`。2026-11-08 五份 manifest 已從 0.6.9 升到 0.6.15（內容早已同步、版本號停住會讓 Claude Code 的版本快取拿不到新檔；舊 tag 0.6.9 保留，單一 tag 政策取消，見 `docs/DECISIONS.md` 2026-11-08）。`hooks/hooks.json` 已決定保留：相容性與可回復優先，重複路由成本與重看條件已登記；未宣稱已解決原生宿主的雙重注入。pytest 9.2.0 在 repo 專用環境驗證，下限維持 9.1，依 deferrals 記錄針對 9.2.0 的暫緩理由。PR／issue 水位為 768／765；#768 已關閉未合併，讀完 diff 後不採用，本輪未驗證遠端 CI；7947664..301b02b 的 14 筆 commit 與 PR #769–#773 已於同日續審：20 個產品路徑同步至 `301b02b`，當時 0.6.15 版本號未採用（2026-11-08 已採用），PR 水位推進到 773 並把 #769–#773 釘在 `monitored`，Upstream strict 為 exit 0。本機 gate 與 commit 水位以 `docs/UPSTREAM.md` 的本輪驗收紀錄為準。
+這是 addyosmani/agent-skills 的 Windows-first 維護型 fork。2026-11-02 本輪工作樹已同步 `eb07f19..7947664` 的 21 筆 commit、30 個產品檔；逐筆 SHA／裁決／理由見 `docs/DECISIONS.md`。2026-11-08 五份 manifest 已從 0.6.9 升到 0.6.15（內容早已同步、版本號停住會讓 Claude Code 的版本快取拿不到新檔；舊 tag 0.6.9 保留，單一 tag 政策取消，見 `docs/DECISIONS.md` 2026-11-08）。`hooks/hooks.json` 已決定保留：相容性與可回復優先，重複路由成本與重看條件已登記；未宣稱已解決原生宿主的雙重注入。pytest 9.2.0 在 repo 專用環境驗證，下限維持 9.1，依 deferrals 記錄針對 9.2.0 的暫緩理由。PR／issue 水位為 780／776（2026-11-08 續審 #774–#780 與 issue #776，見 `docs/DECISIONS.md`；起算時為 768／765）；#768 已關閉未合併，讀完 diff 後不採用，本輪未驗證遠端 CI；7947664..301b02b 的 14 筆 commit 與 PR #769–#773 已於同日續審：20 個產品路徑同步至 `301b02b`，當時 0.6.15 版本號未採用（2026-11-08 已採用），PR 水位推進到 773 並把 #769–#773 釘在 `monitored`，Upstream strict 為 exit 0。本機 gate 與 commit 水位以 `docs/UPSTREAM.md` 的本輪驗收紀錄為準。
 
 ## 近期：可以直接動手
 
@@ -17,7 +17,7 @@
 
 | 項目 | 觸發條件 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| 上游合併 open PR 後同步（所有 open PR 都等合併；近輪重查過：#769–#773、#722、#730–#732、#736、#742、#744、#750、#753、#755、#757、#761–#764、#766；更早的見 `docs/UPSTREAM.md:105`） | 任一筆被上游合併、commit 軸出現新 commit；依慣例未合併 PR 不單獨摘取 | 同步後，除登記的分岔檔（繁中 `README.md`、`AGENTS.md`、`.gitignore`、`scripts/validate-reference-links*.js`、`hooks/hooks.json`、5 份 plugin manifest 的版本號）外，上游動到的檔案與 `upstream/main` 逐位元組一致；`reviewed_through` 推進；`tools\dev_check.ps1` 綠 | Claude Sonnet | `docs/DECISIONS.md`；`tools/upstream_baseline.json` |
+| 上游合併 open PR 後同步（所有 open PR 都等合併；近輪重查過：#769–#779、#722、#730–#732、#736、#742、#744、#750、#753、#755、#757、#761–#764、#766；更早的見 `docs/UPSTREAM.md:105`） | 任一筆被上游合併、commit 軸出現新 commit；依慣例未合併 PR 不單獨摘取 | 同步後，除登記的分岔檔（繁中 `README.md`、`AGENTS.md`、`.gitignore`、`scripts/validate-reference-links*.js`、`hooks/hooks.json`、5 份 plugin manifest 的版本號）外，上游動到的檔案與 `upstream/main` 逐位元組一致；`reviewed_through` 推進；`tools\dev_check.ps1` 綠 | Claude Sonnet | `docs/DECISIONS.md`；`tools/upstream_baseline.json` |
 | #748 已 closed 未合併；本線出現 `references/*.md#...%XX` 連結或 CJK 標題錨點時最小重做 | 本線出現 `references/*.md#...%XX` 形式連結或 CJK 標題錨點（#748 已於 2026-10-29 closed，不再等上游合併） | 在 `validate-reference-links.js` 最小重做 fragment 解碼比對，與本線的 `stripInlineHtml` 並存，node 測試全過；`tools\dev_check.ps1` 綠 | Codex | `docs/DECISIONS.md:362` |
 
 ## 刻意不做

@@ -160,3 +160,9 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 - 這輪沒有新的上游 commit（`git rev-parse upstream/main` 仍是 `301b02b`，與 `reviewed_through` 相同），三軸水位不動。
 - 五份 manifest 從 0.6.9 改為 0.6.15，與 `upstream/main` 的 manifest 逐位元組相同；先前「版本號不採用」的各處裁決（2026-09-30、2026-10-24、2026-10-30、2026-10-31、2026-11-02）因單一 tag 政策取消而失效。理由與證據見 `docs/DECISIONS.md` 「2026-11-08：升版到 0.6.15，並把單一 tag 政策改為保留舊 tag」。
 - 驗證：`node scripts/validate-versions.js` 輸出 `All plugin manifests use version 0.6.15.`。
+
+## 2026-11-08（續）：PR #774–#780／issue #776 bounded review
+
+- commit baseline 不變（`301b02b`，上游 main 無新 commit）；PR：已看到 **#780**；issue：已看到 **#776**
+- #774、#775、#777（三個新技能投稿）、#778（macOS hook CI）、#779（Oh My Pi 命令命名空間說明，對應 issue #776）皆 open 未合併，讀完 diff、掃過隱藏內容，釘進 `monitored`，等上游合併後隨 commit 軸同步。#780 是提交者自承開錯 repo 而關閉的 probity 發版 PR，不採用。#769–#773 重查未漂移。
+- 沒有產品檔變動，版本維持 0.6.15。逐筆理由見 [`DECISIONS.md`](DECISIONS.md) 同日（續）條目。
