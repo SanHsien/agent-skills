@@ -10,6 +10,13 @@
 
 ---
 
+## [Unreleased] - 2026-11-08
+
+### 版本
+
+- 五份 plugin manifest 從 0.6.9 升到 0.6.15，與 `upstream/main` 的 manifest 相同；產品檔早已同步，版本號停住會讓依版本號快取 plugin 的 Claude Code 拿不到新檔。
+- 取消「單一 tag／release」政策：舊 tag 與 release（含 0.6.9）保留，升版新增 tag 與 release。理由與證據見 [`docs/DECISIONS.md`](docs/DECISIONS.md) 2026-11-08。
+
 ## [Unreleased] - 2026-11-05
 
 ### 維護

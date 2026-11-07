@@ -11,6 +11,13 @@ lives in its own history and in the review ledger at
 
 ---
 
+## [Unreleased] - 2026-11-08
+
+### Version
+
+- Bumped all five plugin manifests from 0.6.9 to 0.6.15, matching the manifests on `upstream/main`. The product files were already synced; leaving the version number at 0.6.9 meant Claude Code, which caches plugins by version, never delivered them.
+- Dropped the single tag/release policy: old tags and releases (including 0.6.9) are kept, and each version bump adds a new tag and release. Reasoning and evidence are in [`docs/DECISIONS.md`](docs/DECISIONS.md), 2026-11-08.
+
 ## [Unreleased] - 2026-11-05
 
 ### Maintenance

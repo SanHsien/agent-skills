@@ -287,7 +287,7 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 - `spec-driven-development` 的 EA2 命中三層邊界表的「Never do」那一列；三筆 AS3 命中同一行對本 repo 另外三個 skill 的路徑引用。
 - `test-driven-development` 的 EA2 命中 Red Flags 裡「宣稱全部測試通過、但其實沒跑過測試」。
 
-**release bump 不採用**：`a06bc63`（0.6.12）、`aeac41d`（0.6.13）。本 fork 只保留單一 tag／release（現為 0.6.9），升版需要刪舊 tag 與 release，屬維護者授權動作，與 2026-09-30 對 0.6.10／0.6.11 的處理相同。上游已把 tag 檢查從 `scripts/validate-versions.js` 移除，五份 manifest 版本一致即通過。
+**release bump 不採用**：`a06bc63`（0.6.12）、`aeac41d`（0.6.13）。本 fork 只保留單一 tag／release（現為 0.6.9），升版需要刪舊 tag 與 release，屬維護者授權動作，與 2026-09-30 對 0.6.10／0.6.11 的處理相同。上游已把 tag 檢查從 `scripts/validate-versions.js` 移除，五份 manifest 版本一致即通過。（**已被取代**：2026-11-08 起不再採單一 tag 政策，見「2026-11-08：升版到 0.6.15，並把單一 tag 政策改為保留舊 tag」。）
 
 ## 2026-10-24：自我掃描跟上 SkillSpector 2.12.0
 
@@ -393,7 +393,7 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 上游發布 0.6.14（commit `eb07f19f52c2669f2364897aaa293e2aaddd7b1c`），包含 70 個 commit，涉及 53 個檔案變更。
 
 **逐項審查與決策**：
-1. **Release bump 0.6.14（`eb07f19`）**：**不採用**。本 fork 嚴格維持「單一最新分支（main）、單一最新 tag、單一最新 release」（現為 0.6.9）政策。升版需刪除舊 tag 與 release，屬維護者專屬授權動作（見路線圖近期第一列待辦）。5 份 plugin manifest（`plugin.json`、`.agents/plugins/marketplace.json`、`.claude-plugin/marketplace.json`、`.claude-plugin/plugin.json`、`.codex-plugin/plugin.json`）版本號維持 0.6.9。
+1. **Release bump 0.6.14（`eb07f19`）**：**不採用**。本 fork 嚴格維持「單一最新分支（main）、單一最新 tag、單一最新 release」（現為 0.6.9）政策。升版需刪除舊 tag 與 release，屬維護者專屬授權動作（見路線圖近期第一列待辦）。5 份 plugin manifest（`plugin.json`、`.agents/plugins/marketplace.json`、`.claude-plugin/marketplace.json`、`.claude-plugin/plugin.json`、`.codex-plugin/plugin.json`）版本號維持 0.6.9。（**已被取代**：2026-11-08 已升到 0.6.15 並改為保留舊 tag，見「2026-11-08：升版到 0.6.15，並把單一 tag 政策改為保留舊 tag」。）
 2. **上游合併之 PR 改動（共 33 項實質變更與其 merge commit）**：
    以下每項為「#PR / 該 PR 的 commit、最後一個是 merge commit」；共 33 個 PR（33 個 merge）、36 個非 merge commit（另有 release bump `eb07f19`，見第 1 項）。逐項裁決格式：`#NNN：採用，已同步；衝突：無／<檔案>`。「衝突」指該 PR 動到本 fork 自持的檔案（5 份 manifest、繁中 `README.md`、`AGENTS.md`、`.gitignore`、`scripts/validate-reference-links*.js`）。
    - **#463 / fb4c9ff、2f06a51、9d00489**：root `plugin.json` 符合 Agent Plugins 1.0.0 規範（加入 `$schema`、author、homepage、repository、license、keywords）與 Copilot CLI 文件說明（`docs/copilot-cli-setup.md`）。#463：採用，已同步；衝突：`plugin.json`（fork 持有的 manifest；內容取上游，版本維持 0.6.9）。
@@ -608,7 +608,7 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 | `253341f866f3c14b3217bb87be20fcebba0ef8de` | 採用（隨最終樹） | merge，唯一差異是 `test-plugin-install.yml`，內容已含在最終樹。 |
 | `259a29239697e415bb56aed8ea9eabaa9c0973e8` | 採用（隨最終樹） | merge #742，內容即 `9604a3f` 與 `6867dbb`。 |
 | `2b27791b42e20a5d7aa5778f6cbcbb0a2629c7f2`、`8b376edc5488221c75c1c7c229cdec26aeab3c9b`、`afcafdf58f48862b85021a5cd8cf3cd560dceb93`、`301b02b12bff98e4688e6984af6556802322bbde` | 無額外內容 | merge #750、#766、#694、#736，相對各自 parent 的 diff 為空（檢查器 Files 欄 `(none)`）。 |
-| `8bfcc1f9916f2eea55494d8c1fa7f4bde867dd9e` | **不採用** | 五份 manifest 的 0.6.14 → 0.6.15 release bump；本 fork 維持單一 tag／release（0.6.9），沿用 2026-09-30 與 2026-10-30 的決策。重看條件：維護者授權升版。 |
+| `8bfcc1f9916f2eea55494d8c1fa7f4bde867dd9e` | **不採用** | 五份 manifest 的 0.6.14 → 0.6.15 release bump；本 fork 維持單一 tag／release（0.6.9），沿用 2026-09-30 與 2026-10-30 的決策。重看條件：維護者授權升版。**已被取代**：2026-11-08 已採用 0.6.15，見「2026-11-08：升版到 0.6.15，並把單一 tag 政策改為保留舊 tag」。 |
 
 ### PR 軸
 
@@ -633,3 +633,25 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 **現況**：`github/codeql-action/init` 與 `github/codeql-action/analyze` 宣告 4.39.1，落後於 4.39.3。其餘套件由既有有效 hold／deferral 涵蓋或為最新版本。
 
 **決定**：github/codeql-action 4.39.1→4.39.3 已升級（codeql.yml 改釘 SHA）。已讀官方 [4.39.2 release](https://github.com/github/codeql-action/releases/tag/v4.39.2) 與 [4.39.3 release](https://github.com/github/codeql-action/releases/tag/v4.39.3)：4.39.2 更新預設 bundle 為 2.27.4、加入舊 CodeQL／macOS traced analysis 棄用警告，並移除未公開的 TRAP cache cleanup 功能；4.39.3 修正 diff-informed 過濾對特殊字元／非 ASCII 路徑錯誤移除警報的問題。其餘套件維持既有 hold／deferral，沒有變更 Python 相容下限或 checker，也不建立永久 hold。
+
+## 2026-11-08：升版到 0.6.15，並把單一 tag 政策改為保留舊 tag
+
+**決定**（維護者授權艦隊規劃長裁決）：
+
+1. 五份 manifest（`plugin.json`、`.codex-plugin/plugin.json`、`.claude-plugin/plugin.json`、`.claude-plugin/marketplace.json`、`.agents/plugins/marketplace.json`）從 0.6.9 一次改為 0.6.15，`node scripts/validate-versions.js` 通過。改完後這五份與 `upstream/main`（`301b02b`）逐位元組相同。
+2. 取消「只留單一 tag／release」：舊 tag（含 `0.6.9`）與舊 release 一律保留、不刪；每次升版新增 tag 與 release，GitHub 的 Latest 指向最新版。`AGENTS.md` 與 `FORK.md` 的對應條款已改寫。
+3. 同日稍早寫的「維持 0.6.9、不升版」草稿作廢。
+
+**為什麼先前「不升版」的理由不成立**（以下為實查證據）：
+
+- 內容早已不同：tag `0.6.9`（`11413dd`）到本線 `9abea2b` 之間有 29 個 commit；`git diff --name-only 0.6.9..9abea2b` 依頂層目錄計，`skills/` 25、`evals/` 48、`scripts/` 17、`.claude/` 9、`hooks/` 7、`references/` 4、`agents/` 2、`commands/` 2、`.gemini/` 2。這些產品檔隨 2026-09-30 至 2026-11-02 的審查同步進來，但版本號一直停在 0.6.9。
+- Claude Code 依版本號快取 plugin，路徑形如 `~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/`（本機實例：`~/.claude/plugins/cache/myr2d2/myr2d2/0.9.1`）。版本號不變，已安裝 0.6.9 的使用者不會重新取得上述產品檔；版本號停住，同步等於沒有送達。
+- 單一 tag 政策本來的理由已不存在：上游已把 tag 檢查從 `scripts/validate-versions.js` 移除（見上方 2026-10-24 段），五份 manifest 版本一致即通過；`grep -rn "describe\|git tag\|--tags" .github scripts tests` 沒有任何檢查以 tag 數量或 `git describe` 為條件（`tools/check_upstream_updates.py` 的 `ls-remote --tags` 讀的是上游的 tag，不是本 fork 的）。
+
+**本輪要不要再同步 0.6.15 的產品檔**：不需要，也沒有可同步的。`tools/upstream_baseline.json` 的 `reviewed_through` 與 `upstream/main` 同為 `301b02b`（2026-11-08 `git fetch upstream` 後 `git rev-parse upstream/main` 驗證）；產品路徑與上游相同，剩下的差異只有本 fork 登記的分岔（繁中 `README.md`、`AGENTS.md`、`hooks/hooks.json`、`.gitignore`、`scripts/validate-reference-links*.js` 與維護工具、workflow）。真正沒採用的只有版本號，這次補上。
+
+**版本號與內容的對應**：上游 `8bfcc1f` 把五份 manifest 改為 0.6.15；`8bfcc1f..301b02b` 另有 1 個非 merge commit（`353ae84`，`code-review-and-quality` 的 SKILL 與 evals）。本 fork 的 0.6.15 因此是 `301b02b` 的產品內容，不是 `8bfcc1f` 當時的樹；上游 `main` 的 manifest 在 `301b02b` 也寫 0.6.15，所以沿用同一個號碼不會誤導。本 fork 的 hooks 等分岔不影響 manifest 版本。
+
+**舊 tag 處理**：不刪 `0.6.9` 的 tag 與 release。新版 tag `0.6.15` 要建立在本次變更推上 `origin/main` 之後的 commit 上（對外動作，推送後才能執行）：`gh release create 0.6.15 -R SanHsien/agent-skills --target <推送後 origin/main 的完整 SHA> --title 0.6.15 --latest --notes-file <說明檔>`；說明檔只寫版本號與內容來源（上游 `301b02b` 的產品內容，本 fork 的維護變更見 `CHANGELOG.md`）。`0.6.9` 的 Latest 標記會在新 release 建立時由 GitHub 移到 `0.6.15`。
+
+**重新考慮的條件**：保留多個 tag 造成實際問題（例如某個工具需要唯一的 tag，或 `git describe` 結果與預期不符）；或本 fork 的產品內容與上游分岔到同一個版本號會造成混淆，屆時改用 fork 自己的版本號格式。

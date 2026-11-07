@@ -123,7 +123,7 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 
 - commit baseline：`eb07f19f52c2669f2364897aaa293e2aaddd7b1c`（upstream 0.6.14）；PR：已看到 **#767**；issue：已看到 **#765**
 - 上游發布 0.6.14，合併 #463、#668、#688、#690、#691、#692、#696、#698、#699、#702、#704、#705、#706、#707、#708、#710、#711、#712、#713、#714、#719、#720、#721、#723、#724、#725、#726、#727、#728、#729、#735、#743、#747 等 PR。
-- 0.6.14 release bump 不採用（單一 tag 政策維持 0.6.9，待維護者授權）；產品檔案變更經比對審查確認健康無害，已於 2026-10-31 同步（見下節）。
+- 0.6.14 release bump 不採用（單一 tag 政策維持 0.6.9，待維護者授權）；產品檔案變更經比對審查確認健康無害，已於 2026-10-31 同步（見下節）。（**已被取代**：2026-11-08 已升到 0.6.15 並改為保留舊 tag，見 `docs/DECISIONS.md` 「2026-11-08：升版到 0.6.15，並把單一 tag 政策改為保留舊 tag」。）
 - PR #753–#766（13 筆）全為 open 未合併，等上游合併後隨 commit 軸同步；#764 為大型技能新增 proposal，且目前 head 把 `.claude-plugin/marketplace.json` 的來源改成作者個人 fork，不單獨摘取、等上游合併後重審；#767（修改 plugin 來源為個人 fork）已 closed 未合併，不採用。
 - issue #765 回報 `hooks/simplify-ignore.sh` 缺陷，對應伴隨 PR #766，等上游合併後同步。
 - 逐筆審查理由與證據見 [`DECISIONS.md`](DECISIONS.md)。
@@ -154,3 +154,9 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 - strict 檢查另發現 #768（head `a257fbf870bf0699ac05b34ae327b7784ac207fa`）；讀完三份 build 指令 diff，確認 CLOSED 未合併，依慣例不採用，逐筆理由見 DECISIONS。本輪 PR 水位補至 768；issue 維持 765（無新增）。
 
 - 最終 `check_upstream_updates.py --strict` exit **1**：PR 768／issue 765 以上無新項目，但最新 upstream tip 已為 `301b02b`，指定 `7947664` 之後尚有 14 個 commit。這段未審、未同步，保留在 ROADMAP；不能把已指定的 21 筆完成誤報成最新上游全綠。
+
+## 2026-11-08：版本號補上 0.6.15
+
+- 這輪沒有新的上游 commit（`git rev-parse upstream/main` 仍是 `301b02b`，與 `reviewed_through` 相同），三軸水位不動。
+- 五份 manifest 從 0.6.9 改為 0.6.15，與 `upstream/main` 的 manifest 逐位元組相同；先前「版本號不採用」的各處裁決（2026-09-30、2026-10-24、2026-10-30、2026-10-31、2026-11-02）因單一 tag 政策取消而失效。理由與證據見 `docs/DECISIONS.md` 「2026-11-08：升版到 0.6.15，並把單一 tag 政策改為保留舊 tag」。
+- 驗證：`node scripts/validate-versions.js` 輸出 `All plugin manifests use version 0.6.15.`。
