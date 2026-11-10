@@ -166,3 +166,9 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 - commit baseline 不變（`301b02b`，上游 main 無新 commit）；PR：已看到 **#780**；issue：已看到 **#776**
 - #774、#775、#777（三個新技能投稿）、#778（macOS hook CI）、#779（Oh My Pi 命令命名空間說明，對應 issue #776）皆 open 未合併，讀完 diff、掃過隱藏內容，釘進 `monitored`，等上游合併後隨 commit 軸同步。#780 是提交者自承開錯 repo 而關閉的 probity 發版 PR，不採用。#769–#773 重查未漂移。
 - 沒有產品檔變動，版本維持 0.6.15。逐筆理由見 [`DECISIONS.md`](DECISIONS.md) 同日（續）條目。
+
+## 2026-11-10：issue #781 與 PR #775 head 漂移 bounded review
+
+- commit baseline 不變（`301b02b`，上游 main 無新 commit）；PR：已看到 **#780**（無新增）；issue：已看到 **#781**
+- issue #781 是文件目錄規劃的使用問題，無對應 PR、無獨立修正，不處置。PR #775 的 head 從 `0112358` 漂移到 `6ea5597`（只多一個 frontmatter 加引號的 commit），讀完 diff、掃過隱藏與不可見字元，仍 open 未合併，重新釘 head 等上游合併。
+- 沒有產品檔變動，版本維持 0.6.15。逐筆理由見 [`DECISIONS.md`](DECISIONS.md) 同日條目。

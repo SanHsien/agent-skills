@@ -673,3 +673,16 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 仍在 monitored 的 #769–#773 逐一以 `gh pr view` 重查：state 皆 OPEN、head 與 baseline 釘的值逐字元相同，沒有漂移。
 
 水位：`reviewed_through` 不動（`301b02b`）、`reviewed_pr_through` 773 → 780、`reviewed_issue_through` 765 → 776、`reviewed_date` 2026-11-08；monitored 新增 `pr#774`、`pr#775`、`pr#777`、`pr#778`、`pr#779`（#780 已 closed，不釘）。沒有任何產品檔變動，版本維持 0.6.15（`node scripts/validate-versions.js` 五份一致），不需要新 tag。
+
+## 2026-11-10：issue #781 與 PR #775 head 漂移
+
+範圍：commit 軸無新增（`git fetch upstream` 後 `git rev-parse upstream/main` 仍是 `301b02b`，`git log 301b02b..upstream/main` 為空）；PR 軸無新增（仍是 #780）；新出現的是 issue #781（1 筆），以及 monitored 的 #775 head 漂移，這兩件是 Upstream check 轉紅的原因。方法：以 `git fetch upstream refs/pull/775/head` 取回 #775 目前 head（唯讀，用完刪除暫存 ref），`git diff 0112358 6ea5597` 讀新舊 head 差異，對整個 PR diff（141 行）的新增行掃隱藏內容（`curl`／`iwr`／`iex`／`dangerously`／`bypassPermissions`／`eval(`／`new Function`／`globalThis`、長 base64、長空白、提示注入字句）與 Unicode 控制／格式／私用字元，無命中。issue 內容與留言用 `gh api` 唯讀讀取，全程未向上游寫入。
+
+| 項目 | 狀態與 head | 規模 | 裁決與理由 |
+| --- | --- | --- | --- |
+| PR #775 add architecture-coaching（head 漂移） | open；`0112358` → `6ea5597` | 仍是 +129／-0，2 檔（`skills/architecture-coaching/SKILL.md` 97 行、`evals/cases/architecture-coaching.json` 32 行）；多 1 個 commit `6ea5597`：把 SKILL.md frontmatter 的 description 加上雙引號並把內文直引號換成彎引號，原因是 description 含 ASCII 冒號，嚴格 YAML 解析器（skills CLI）拒收裸純量 | 延後（重新釘 head）。新增的唯一變動是修自己這個新技能的 frontmatter，本線沒有這個技能所以沒有缺陷要修；前次延後理由（新技能投稿，等上游合併再隨 commit 軸同步）不變。合併後同步時，本線 `scripts/validate-skills.js` 要確認這份 frontmatter 通過。 |
+| issue #781 使用者詢問 skill 產出文件的目錄規劃 | open；作者 hinson0，無對應 PR（`pull_request` 欄為空），1 則留言為作者自己的截圖 | 使用問題／功能建議 | 無獨立處置。內容是抱怨 `interview-me`、`spec-driven-development` 各自把 spec／capability-map 寫到不同位置，要求 workflow 統一規劃文件目錄；這是上游技能的設計取捨，不是本線缺陷，且產品 `skills/` 以上游為準、本線不自行改寫。沒有上游維護者回應。重新考慮的條件：上游出現統一文件目錄慣例的 PR 或維護者回覆，屆時隨 commit 軸審查。 |
+
+仍在 monitored 的 #769–#774、#777–#779 由 `check_upstream_updates.py --strict` 比對，state 與 head 皆與 baseline 釘的值相同，沒有漂移。
+
+水位：`reviewed_through` 不動（`301b02b`）、`reviewed_pr_through` 不動（780）、`reviewed_issue_through` 776 → 781、`reviewed_date` 2026-11-08 → 2026-11-10；monitored 的 `pr#775` head 重新釘為 `6ea55973dbda7e0f7ed1fc6fc44a32e91d6f70e5`。沒有任何產品檔變動，版本維持 0.6.15，不需要新 tag。
