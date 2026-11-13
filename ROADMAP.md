@@ -11,7 +11,7 @@
 
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| 發 0.6.15 的 GitHub Release（不建 tag、不 push tag） | 版號 0.6.15 已在 `main`（c9998d4）；GitHub Release 沒發，原因是代理工具的權限檢查擋下 `gh release create`。Claude Code 依 manifest 版號更新 plugin，不依賴 Release，所以不影響使用者拿到新版 | 在 repo 外的目錄執行（以免帶到本機那個從上游來的同名 tag）：`gh release create 0.6.15 -R SanHsien/agent-skills --target c9998d4339361e0b724492ade60eeb44f365ec0d --title 0.6.15 --latest --notes-file <CHANGELOG 0.6.15 段>`；之後 `gh release view 0.6.15 -R SanHsien/agent-skills` 存在且為 Latest，`gh release view 0.6.9 -R SanHsien/agent-skills` 仍在；做完刪這一列 | 維護者 | `docs/DECISIONS.md` 2026-11-08（發版指令）；CHANGELOG 0.6.15 段為 `CHANGELOG.md` 的 `## [Unreleased] - 2026-11-08` 一節 |
+| 無 | 目前沒有可以直接動手的項目 | 無 | 無 | 無 |
 
 ## 中期：等條件成立再做
 
