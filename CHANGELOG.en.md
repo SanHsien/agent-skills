@@ -11,6 +11,14 @@ lives in its own history and in the review ledger at
 
 ---
 
+## [Unreleased] - 2026-11-21
+
+### Sync and decisions
+
+- Reviewed upstream `301b02b..8c99fa3` commit by commit (59 commits) and synced 66 product files: the new `accessibility-engineering` skill, `accessibility-auditor` persona and `/a11y` command (26 skills, 10 commands), spec evolution with delta specs, Documentation Drift, OWASP 2025 numbering, failing at startup without `SESSION_SECRET`, and checking for a clean checkout before review tests.
+- Redid the upstream code-span slug fix in `scripts/validate-reference-links.js` on top of this fork's HTML-stripping fix, with a failing test first.
+- All five plugin manifests follow upstream to 0.6.17; PR/issue watermarks advance to 810/808. Reasoning in [`docs/DECISIONS.md`](docs/DECISIONS.md), 2026-11-21.
+
 ## [Unreleased] - 2026-11-08
 
 ### Version

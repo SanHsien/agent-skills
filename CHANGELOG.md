@@ -10,6 +10,14 @@
 
 ---
 
+## [Unreleased] - 2026-11-21
+
+### 同步與決策
+
+- 逐筆審查上游 `301b02b..8c99fa3` 的 59 筆 commit，同步 66 個產品檔：新技能 `accessibility-engineering`、persona `accessibility-auditor` 與 `/a11y` 指令（skill 26、command 10）、spec 演進與 delta spec、Documentation Drift、OWASP 2025 編號、`SESSION_SECRET` 缺值即失敗、review 前確認 checkout 乾淨等。
+- `scripts/validate-reference-links.js` 最小重做上游 code span slug 修正，保留本線的 HTML 剝除修正；先加失敗測試再修。
+- 五份 plugin manifest 跟上游升到 0.6.17；PR／issue 水位推到 810／808。理由見 [`docs/DECISIONS.md`](docs/DECISIONS.md) 2026-11-21。
+
 ## [Unreleased] - 2026-11-08
 
 ### 版本

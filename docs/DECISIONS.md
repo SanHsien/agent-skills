@@ -686,3 +686,94 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 仍在 monitored 的 #769–#774、#777–#779 由 `check_upstream_updates.py --strict` 比對，state 與 head 皆與 baseline 釘的值相同，沒有漂移。
 
 水位：`reviewed_through` 不動（`301b02b`）、`reviewed_pr_through` 不動（780）、`reviewed_issue_through` 776 → 781、`reviewed_date` 2026-11-08 → 2026-11-10；monitored 的 `pr#775` head 重新釘為 `6ea55973dbda7e0f7ed1fc6fc44a32e91d6f70e5`。沒有任何產品檔變動，版本維持 0.6.15，不需要新 tag。
+
+## 2026-11-21：逐筆審查 `301b02b..8c99fa3`（59 commits，0.6.17）、PR #782–#807、issue #783–#805
+
+範圍：`git fetch upstream` 後 `upstream/main` 為 `8c99fa36d90068c82d547f7c12a9d67a3e95f4ee`；`python tools/check_upstream_updates.py --strict` exit 1，列出 59 筆 commit、18 筆新 PR、7 筆新 issue、5 筆 monitored 漂移。方法同 2026-11-02：讀每筆 parent diff 與 merge 的 remerge-diff，對整份 `git diff 301b02b upstream/main`（約 197 KB）的新增行掃隱藏內容（`curl|sh`／`iwr`／`iex`／`dangerously`／`bypassPermissions`／`eval(`／`new Function`／`globalThis`、長 base64、長空白、提示注入字句）與 Unicode Cf／Co／BOM，皆無命中；open PR #803、#806、#807 與已關閉的小型 PR（#792–#794、#800）的 diff 同樣掃過，無命中。PR／issue 內容只當資料讀，全程未向上游寫入。
+
+上游動到 71 個路徑。先確認本線在其中 66 個路徑與 `301b02b` 逐位元組相同（新增檔則不存在），再以 `git restore --source=upstream/main --worktree` 寫入，寫入後與 `upstream/main` 逐位元組相同（22 個新增檔逐一 `cmp`）。其餘 5 個是登記的分岔檔，手動合入：
+
+- `scripts/validate-reference-links.js` 與測試：本線有 CodeQL `stripInlineHtml` 修正，不能直接取上游。依 `08fcd16` 先加上游測試「markup inside a code span stays in the slug」，修正前 `node --test scripts/validate-reference-links-test.js` exit 1（33 項 32 pass／1 fail），再把 slug 改為由左到右一次掃描：code span 保留原文、連結保留文字、其餘片段仍經 `stripInlineHtml`（迴圈剝除到不剩 tag，再丟掉殘留 `<`／`>`）；修正後 exit 0（33/33 pass）。與上游單次 regex 的差別：連結文字內的 HTML 也會剝除，沿用本線先前行為（既有 `[Link](a.md) and <b>bold</b>` 測試釘住）。
+- `AGENTS.md`：上半部與上游相同，加上 a11y intent 一行；下半部是本線併入的上游 `CLAUDE.md` 內容，同步 `535f161` 對 `CLAUDE.md` 的三處改動（persona 清單、`/a11y`、Review 階段加 `accessibility-engineering`）。本線不建 `CLAUDE.md`，維持既有分岔。
+- 繁中 `README.md`：command 數 9 → 10 並加 `/a11y` 列、skill 數 25 → 26、Review 群組加 `accessibility-engineering`、persona 4 → 5 並說明 `accessibility-auditor`；順帶修正原本就失效的錨點 `README.en.md#all-24-skills` → `#all-26-skills`。`README.en.md` 以上游 README 重建，保留前 9 行的語言列與 fork 說明。
+
+### Commit 軸逐筆裁決（59 筆）
+
+| SHA | 裁決 | 理由與產品落點 |
+| --- | --- | --- |
+| `cee618cc33d8250e20854c26876dc503e2bfe162` | 採用 | spec-driven-development 加 V1 範圍與 delta spec 指引，`/spec` 指令與 eval case 同步。 |
+| `ce60dbc27ff9705f21f419fe7f7b51d20cf5fef0` | 採用 | review 收斂：Antigravity `commands/*.toml` 對齊、`/build` 支援 delta spec、delta 驗證。 |
+| `5971d80afe66cf620ac5d62994779aa9317cc117` | 採用 | plan 指向來源 spec 的防線、新／delta 分支明確化；planning 技能同步。 |
+| `d463d94fb6b2d95ad5db065f5a10868baf66d4f7` | 採用 | debugging 技能辨識貼上程式碼的診斷請求，附 plugin eval prompt／grader。 |
+| `9097b64fa76d34df1800c7343e9bfb985e208d88` | 採用 | debugging 描述明講貼上 diff／stack trace 也適用（#620）。 |
+| `41a16af46341dca53eca6b42d785383074fdcc62` | 採用 | TDD 的 pasted-code 子句依新 router 重調（#620）。 |
+| `5a5263874920e899f488840a229b0bc21c305e86` | 採用 | code-review 描述說明 review 看似簡單時技能補了什麼（#620）。 |
+| `3be977869a2cc4a2619a7d18895e1cc9123db399` | 採用（隨最終樹） | merge main 進 spec-evolution；remerge-diff 為解衝突（spec SKILL.md 收斂），以最終樹為準。 |
+| `9f17476d0b2e97aba4552637629c0757cf5f74a2` | 採用 | eval 把 skill 資源放在 fixture baseline 之外（新 `scripts/lib/skill-resources.js`，只在暫存目錄 mkdir／複製），附測試。 |
+| `7be23cfcb3fa0090522023781d22ee2be2dcd8c3`、`2e69bd41b9f2ea5e5021f57d7eec7ed64c063fd8`、`6852bc2525a335ec130074a6fd4cc93400873e2e`、`7755fb6062cbeb9c98c0957127a67d9d325620e1`、`551c59cfddb6428be85364ba7588cf92c4c51448` | 採用（隨最終樹） | documentation-and-adrs 的 Documentation Drift 小節：初版、描述補詞、eval 加難、排序、最後刪到兩條規則；採 `551c59c` 後的最終內容與兩個 fixture。 |
+| `5454ae98060ec22c95e76cb2e78ad14b2816a45a`、`34e42d37e98798a517773af3e2a14cf7fb64db84`、`a3d5857023f2a2758f83378e3eb70e216e1bea41` | 採用（隨最終樹） | merge main 進 #620 系列分支，remerge-diff 另加 code-review 平鋪請求 case、TDD refactor stays-quiet case 與 2.1.319 量測紀錄。 |
+| `480bed13919a6c03193725b4313b7c1a61a83c51` | 採用 | 有多份 delta spec 時 `/build` 挑未實作的那份。 |
+| `43b3f4cdbacd2f8096a8df572e12ea688d523fbe` | 採用 | 上游自有 `test-plugin-install.yml` 加 macOS 內建 bash 跑 hook 測試、secret-scan 測試跨平台；依既有決策該 workflow 與上游逐位元組一致。 |
+| `08fcd164ee5cca0aa00cf8cfc8f03b963bbd7342` | 採用（最小重做） | code span 內的 markup 留在 slug；見上方分岔檔說明，先紅後綠。 |
+| `58433ebf697f6a72b1d73e071b45504e78c8d934` | 採用 | security checklist 與技能的 OWASP Top 10 編號改為 2025 版。 |
+| `c512fe89d7ca3c1203c5763275d79884288db837` | 採用 | hardening-patterns 缺 `SESSION_SECRET` 時啟動即失敗，不再用預設值。 |
+| `ef3d549c57020b0f503ee5b590c93a7788c76fb7` | 採用 | constraint-driven 的架構閘門實際跑 dependency-cruiser，才會失敗。 |
+| `dab5364fbf57fbc5ff6c28b0d5b0801a67e8fe26` | 採用 | frontend-ui-engineering 用專案自己的工具驗證、依 APG 模式（即先前延後的 #732）。 |
+| `53bd30db8c02ca952364a124ca89e31651cfd9d0` | 採用 | TDD 恢復 #750 的崩潰與回滾那一行。 |
+| `7d492de581658395232a7cdc03d1be72ef015252`、`f3c02d3d4f89eaace6aad6e87927fab565b30fd5`、`7acb450cdd9620bb9ee12fac17ecebf1422cbe53`、`c3f19a4a938d190704b4450ccd4e063310ae8cb7`、`6fd2b2a670803d58018a57970a12b5a28a14c393`、`c4f3cc788b821b85ef2948b6b223ffafcae481ee`、`e982f644895e91163ad8545225bb3a821b53784c`、`a8bb8d46da6a4cf3557b33f95c04344d3885c7f3`、`a8e88e1402ceacd9414d6b4be0f3b3b50f1d51f6`、`dee5781ef80d5b84cf724f858d2cc20f61e7cfc8`、`8322e1ce0451481ac9f10cdaf33c2235533ee459`、`9a69de588142a63c726b347d31a918d415a91fce`、`49d7b464f38c585449f12414008b40904986976f`、`d7fd10362675f8829b78e5e031fd57e6e9e9cae7`、`45a9831738039b4cf7da3584aa71be150e089dda`、`18336b6e6c24ebed8e26e4959c4cccab8b69042f`、`222bf920f0d3ac8ce9badf51cd7c60709050c1e0` | 無額外內容 | merge #787、#786、#785、#782、#514、#732、#778、#744、#383、#763、#757、#799、#798、#797、#795、#667、#261；相對 parent 的 diff 為空（檢查器 Files 欄 `(none)`），child commit 已個別採用。 |
+| `970d8d3df49279e85ac34fc1ce67b881225717fd`、`8110c7ad876b8c5f3e9b391efe44f8d50bbf04b3`、`7d90e74db41af477a476ea5c1dc93779e3a2a157`、`3de865b744d0584c319cc1d6edc73efbc4ccff79` | 採用（隨最終樹） | merge #762 與把 main 合進 pr763／pr757；唯一差異是 `evals/README.md` 量測段落的解衝突，最終樹保留兩側。 |
+| `39b723ceebf81474d0557c1fecd01eddab585563` | 採用（被下一個 bump 取代） | 五份 manifest 0.6.15 → 0.6.16；依 2026-11-08 政策版本號跟上游。 |
+| `701e2cbaa028ec09c45c66ce819200a27fe039cb` | 採用 | 行為 eval 紀錄可供歷史重評分（新 `scripts/lib/behavioral-record.js`：以 `wx`／0600 寫 JSON 紀錄、呼叫 `claude --version`，無網路），附測試與 README。 |
+| `924995886b5de2c452f3c7c59a7ea4642db103e8` | 採用 | code-review 跑測試前先確認 checkout 乾淨且在被審 ref（issue #788）。 |
+| `b8bea427a250508295fdf5884e3375ecc24870a5` | 採用 | capability map 與 module spec 存到 `spec/`，artifact-path 測試同步。 |
+| `ec0a2c83b72bfe5049e9dab1d7290e7f1b1fcfe1` | 採用 | per-agent 文件的 Gemini subagent 範例改為可載入。 |
+| `f7647ae098acbf3d158626f2dbb8f152dd8232ec` | 採用 | ci-cd 技能的 rollback workflow 範例補 Vercel token。 |
+| `1ffd569920ce46ad8e913652091d9cc096213d75`、`675e6d95fd828180ff9f16875d9466988b6f6127`、`535f1611b407f27b6a0402802a2673f4e5be01d9`、`0094fdbd5ebb15ec9243a94e43e7224edbae52de`、`3b79b0ce438e944fab594b143f20f64b6093562d`、`f9e7e19210afb70c621489a9fc80651ce6d7fc8c` | 採用（隨最終樹） | 新技能 `accessibility-engineering`、persona `accessibility-auditor`、三份 `/a11y` 指令、eval 與 fixture、目錄表面更新（#261，上游維護者合併）。`scripts/audit-a11y.sh` 以 `npx --yes` 取釘版的 `@axe-core/cli@4.13.0` 與 `pa11y@9.1.1`，是使用者自行執行的技能輔助腳本；本輪未執行。上游 `CLAUDE.md` 的改動移入本線 `AGENTS.md`。 |
+| `8c99fa36d90068c82d547f7c12a9d67a3e95f4ee` | 採用 | 五份 manifest 0.6.16 → 0.6.17，與 `upstream/main` 逐位元組相同。新 tag／release 0.6.17 屬推送後的對外動作，本輪不做，列入 ROADMAP。 |
+
+### PR 軸（#782–#807 與 monitored）
+
+| PR | 狀態與 head | 裁決 | 理由與重看條件 |
+| --- | --- | --- | --- |
+| #774、#775、#777 新技能投稿 | CLOSED 未合併 | 略過（解除 monitored） | 上游維護者以範圍過窄或不屬於本 pack 為由婉拒（#775 作者自行接受）。 |
+| #778 macOS hook CI | MERGED（`43b3f4c`） | 採用（隨 commit 軸） | 見上表。解除 monitored。 |
+| #779 Oh My Pi 命令命名空間 | CLOSED 未合併 | 略過（解除 monitored） | 上游維護者指出提問者用 `/agent-skills:build auto` 仍失敗，命名空間不是原因，不要文件誤導。 |
+| #782、#785、#786、#787、#795、#797、#798、#799 | MERGED | 採用（隨 commit 軸） | 見上表。 |
+| #784 四個資安技能＋Python validator＋skills.json | CLOSED 未合併（+1172） | 略過 | 維護者婉拒，一次太多且新技能門檻高。 |
+| #790 Kimi Code plugin | CLOSED 未合併 | 略過 | 新宿主 manifest 需上游共同維護者同意；本線不支援該宿主。 |
+| #792、#793、#794 validator Unicode／完整檔名 | CLOSED 未合併 | 略過 | 上游判定只掃自家檔案、目前沒有檔案踩到，踩到時 CI 會失敗。本線 `REFERENCE_LINK_RE` 同樣缺 `\p{M}`，但沒有連結踩到；併入中期 #748 那列的觸發條件。 |
+| #796 omp migration（70 檔、+3632） | CLOSED 未合併 | 略過 | 無說明、像是給作者自己 fork 的遷移。 |
+| #800 doubt-driven standalone 自足說明 | CLOSED 未合併 | 略過 | 上游以 #670（技能內附共用 reference）處理同一問題。 |
+| #801 code-review 入口限長 | CLOSED 未合併 | 略過 | 維護者婉拒把三分之一內容移到可能不被讀的 reference；對應 issue #791。 |
+| #803 TDD Java testing-patterns reference | OPEN；`d217c52` | 延後（釘 monitored） | 新 reference 299 行，非本線缺陷。重看：上游合併或 head 改變。 |
+| #806 floor-guard 只報檔案與行號 | OPEN；`9c7f62d` | 延後（釘 monitored） | 缺陷在本線存在：`skills/constraint-driven-development/references/floor-guard.md` 與上游相同，`flag` 存匹配行前 120 字並印到 stderr，與「不輸出秘密值」的承諾矛盾（issue #804）。只影響使用者自己的終端與 agent log，依慣例等合併。重看：上游合併、head 改變，或本線使用者回報洩漏。 |
+| #807 plan 指令依設定的 task list 目標 | OPEN；`2a47bf2` | 延後（釘 monitored） | 三份 plan 指令各改一句（issue #802 的後續），非缺陷。重看：上游合併或 head 改變。 |
+| #769–#773 | OPEN，head 未漂移 | 維持延後 | 同 2026-11-02（續）。 |
+
+### Issue 軸（#783–#805）
+
+| issue | 狀態 | 裁決 |
+| --- | --- | --- |
+| #783 標題「_」 | CLOSED | 略過：沒有內容。 |
+| #788 code-review 跑測試前查 git status | CLOSED | 採用：已由 #795（`9249958`）修正並隨本輪同步。 |
+| #789 防止技能產生臃腫單元測試 | OPEN | 觀察：上游維護者要求具體例子後才改技能。重看：出現對應 PR。 |
+| #791 code-review 入口限長 | OPEN | 觀察：對應 PR #801 已被婉拒。重看：上游出現新 PR 或維護者改變立場。 |
+| #802 plan 指令依 task list 目標 | OPEN | 延後：隨 PR #807。 |
+| #804 floor-guard 印出匹配行 | OPEN | 延後：隨 PR #806；缺陷在本線存在。 |
+| #805 SSRF GOOD 範例 fetch 時重新解析 DNS（TOCTOU） | OPEN | 觀察：缺陷在本線存在（`skills/security-and-hardening/references/hardening-patterns.md:136–154`，`assertSafeUrl` 檢查 `lookup` 結果後，`fetch` 另行解析）。目前無 PR、無上游維護者回應；唯一留言是另一位貢獻者介紹自己的專案，當資料看待。重看：上游出現修正 PR 或維護者回覆。 |
+
+### 自我掃描指紋審查（15 筆，無新增種類）
+
+第一次完整 `tools/dev_check.ps1` exit 1：ruff、43 pytest、validate-skills（26 skills、5 personas）、validate-commands（10）、reference links、artifact paths、routing evals（164 checks、rank-1 100%，107/107）、282 Node tests、文件連結全過，只有 SkillSpector 自我掃描在 6 個 skill 報 15 筆「新」finding。逐筆比對報告的命中文字與 `.skillspector-baseline.yaml`：每一筆的 skill、rule、檔案與數量都和既有條目一對一相同（constraint-driven-development AE1×2、planning-and-task-breakdown EA2×2、security-and-hardening YR4／MP3／SSRF1／EA2、spec-driven-development EA2＋AS3×3、test-driven-development EA2、using-agent-skills EA2×2），原因是本輪同步改了這些檔案的內容，精準指紋綁內容而換雜湊。依 `skillspector baseline skills/<name> --no-llm -o -` 產生的新雜湊原地替換這 15 筆，保留原理由並加註日期；沒有新增 rule、沒有擴大豁免。新技能 `accessibility-engineering` 掃描 0 finding。
+
+指紋替換後重跑完整 `pwsh -NoProfile -File tools/dev_check.ps1` exit 0，結尾 `SkillSpector self-scan: no new findings across 26 skill(s).`、`WINDOWS DEV CHECK GREEN`；`node scripts/validate-versions.js` 五份一致為 0.6.17；`git diff --check` 乾淨；水位推進後 `python tools/check_upstream_updates.py --strict` exit 0。
+
+### 收尾時新出現的項目（2026-11-22 重查）
+
+| 項目 | 狀態與 head | 裁決 | 理由與重看條件 |
+| --- | --- | --- | --- |
+| PR #809 SSRF 範例標成不完整 | OPEN；`60c790f` | 延後（釘 monitored） | 只改 `hardening-patterns.md` 的 SSRF 範例（+7／-4），是 issue #805 的文件修正；diff 掃過無隱藏內容。缺陷在本線存在，依慣例等合併。重看：上游合併或 head 改變。 |
+| PR #810 a11y 腳本路徑改由已安裝技能解析 | OPEN；`1de897e` | 延後（釘 monitored） | 三份 `/a11y` 指令與 SKILL.md 各改一句，讓 plugin／單技能安裝也找得到 `audit-a11y.sh`；本線剛同步該技能，同一缺陷存在。重看：上游合併或 head 改變。 |
+| issue #808 以 OpenCode plugin 安裝 | OPEN | 觀察 | 功能請求，無 PR；本線不自行新增宿主安裝方式。重看：上游出現對應 PR。 |
+
+水位：`reviewed_through` `301b02b` → `8c99fa36d90068c82d547f7c12a9d67a3e95f4ee`、`reviewed_pr_through` 780 → 810、`reviewed_issue_through` 781 → 808、`reviewed_date` 2026-11-21；monitored 移除 #774、#775、#777、#778、#779，新增 #803、#806、#807、#809、#810。版本 0.6.15 → 0.6.17。

@@ -29,7 +29,7 @@ CLI、Command Code、Kiro 等宿主使用。
 
 ## Slash Commands
 
-9 個對應開發生命週期的 slash command，各自自動觸發對應的 skill：
+10 個對應開發生命週期的 slash command，各自自動觸發對應的 skill：
 
 | 情境 | Command | 核心原則 |
 |------|---------|---------|
@@ -40,6 +40,7 @@ CLI、Command Code、Kiro 等宿主使用。
 | 定品質底線 | `/constraints` | 決定一次、處處落實 |
 | 合併前 review | `/review` | 提升程式碼健康度 |
 | 稽核網頁效能 | `/webperf` | 先量測再優化 |
+| 稽核無障礙 | `/a11y` | 自動化只是冒煙測試，人工驗證才算完成稽核 |
 | 簡化程式碼 | `/code-simplify` | 清晰勝過取巧 |
 | 上線 | `/ship` | 快即是穩 |
 
@@ -103,7 +104,7 @@ Gemini CLI、Windsurf、OpenCode、GitHub Copilot、Antigravity CLI、Command Co
 用開放的 [skills CLI](https://github.com/vercel-labs/skills)：
 
 ```bash
-npx skills add SanHsien/agent-skills            # 安裝全部 25 個 skill
+npx skills add SanHsien/agent-skills            # 安裝全部 26 個 skill
 npx skills add SanHsien/agent-skills --skill code-review-and-quality
 ```
 
@@ -111,27 +112,28 @@ npx skills add SanHsien/agent-skills --skill code-review-and-quality
 > 仍可運作，但共用 checklist 的路徑會失效；需要的話把該 checklist 複製進安裝後 skill 自己的
 > `references/` 目錄。
 
-## 全部 25 個 Skill（依生命週期分組）
+## 全部 26 個 Skill（依生命週期分組）
 
-Commands 是入口；完整清單依 [`AGENTS.md`](AGENTS.md) 的分組如下（24 個生命週期 skill +
+Commands 是入口；完整清單依 [`AGENTS.md`](AGENTS.md) 的分組如下（25 個生命週期 skill +
 `using-agent-skills` 這個判斷該用哪個 skill 的 meta-skill）：
 
 - **Define（定義）**：`interview-me`、`idea-refine`、`spec-driven-development`、`constraint-driven-development`
 - **Plan（規劃）**：`planning-and-task-breakdown`
 - **Build（實作）**：`incremental-implementation`、`test-driven-development`、`context-engineering`、`source-driven-development`、`doubt-driven-development`、`frontend-ui-engineering`、`api-and-interface-design`
 - **Verify（驗證）**：`browser-testing-with-devtools`、`debugging-and-error-recovery`
-- **Review（審查）**：`code-review-and-quality`、`code-simplification`、`security-and-hardening`、`performance-optimization`
+- **Review（審查）**：`code-review-and-quality`、`code-simplification`、`security-and-hardening`、`performance-optimization`、`accessibility-engineering`
 - **Ship（上線）**：`git-workflow-and-versioning`、`ci-cd-and-automation`、`deprecation-and-migration`、`documentation-and-adrs`、`observability-and-instrumentation`、`shipping-and-launch`
 - **Meta**：`using-agent-skills`
 
-每個 skill 的完整說明、觸發條件與依賴關係見 [README.en.md 的 skill 表](README.en.md#all-24-skills)
+每個 skill 的完整說明、觸發條件與依賴關係見 [README.en.md 的 skill 表](README.en.md#all-26-skills)
 （英文，逐字對照上游），或直接讀 `skills/<name>/SKILL.md`。
 
 ## Agent Persona
 
-4 個預先設定好角色的 subagent，供 `/review` 與 `/ship` 併發呼叫：`code-reviewer`（資深工程師視角
+5 個預先設定好角色的 subagent，前 3 個供 `/review` 與 `/ship` 併發呼叫：`code-reviewer`（資深工程師視角
 五軸 review）、`test-engineer`（測試策略與涵蓋率）、`security-auditor`（威脅建模與 OWASP）、
-`web-performance-auditor`（Core Web Vitals 稽核，`/webperf` 呼叫）。決策矩陣與編排規則見
+`web-performance-auditor`（Core Web Vitals 稽核，`/webperf` 呼叫）、
+`accessibility-auditor`（WCAG 2.2 AA 稽核，依實際使用者影響排序，`/a11y` 呼叫）。決策矩陣與編排規則見
 [docs/agents.md](docs/agents.md)。
 
 ## 本 fork 的維護

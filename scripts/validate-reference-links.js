@@ -73,8 +73,19 @@ function stripInlineHtml(text) {
 // GitHub's heading anchor: the rendered text, lowercased, with everything but
 // letters, numbers, `_`, `-` and spaces dropped, then spaces turned to hyphens.
 function slugify(heading) {
-  // Links and images keep their text.
-  const text = stripInlineHtml(heading.replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1'));
+  // One left-to-right pass, so markup inside a code span is left alone: GitHub
+  // renders `<dialog>` in a code span as the text <dialog>, which slugs to `dialog`.
+  // Code spans keep their text as written; links and images keep their text;
+  // inline HTML outside code spans renders no text.
+  const TOKEN_RE = /(`+)([\s\S]*?)\1|!?\[([^\]]*)\]\([^)]*\)/g;
+  let text = '';
+  let last = 0;
+  for (const m of heading.matchAll(TOKEN_RE)) {
+    text += stripInlineHtml(heading.slice(last, m.index));
+    text += m[1] ? m[2] : stripInlineHtml(m[3]);
+    last = m.index + m[0].length;
+  }
+  text += stripInlineHtml(heading.slice(last));
   return text.toLowerCase().replace(/[^\p{L}\p{M}\p{N}_\- ]/gu, '').replace(/ /g, '-');
 }
 

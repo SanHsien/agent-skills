@@ -172,3 +172,10 @@ README 衝突的解法：上游新英文說明翻進 `README.md`，並同步 `RE
 - commit baseline 不變（`301b02b`，上游 main 無新 commit）；PR：已看到 **#780**（無新增）；issue：已看到 **#781**
 - issue #781 是文件目錄規劃的使用問題，無對應 PR、無獨立修正，不處置。PR #775 的 head 從 `0112358` 漂移到 `6ea5597`（只多一個 frontmatter 加引號的 commit），讀完 diff、掃過隱藏與不可見字元，仍 open 未合併，重新釘 head 等上游合併。
 - 沒有產品檔變動，版本維持 0.6.15。逐筆理由見 [`DECISIONS.md`](DECISIONS.md) 同日條目。
+
+## 2026-11-21：59 commits／PR #782–#807／issue #783–#805 bounded review
+
+- commit baseline：`8c99fa36d90068c82d547f7c12a9d67a3e95f4ee`（upstream 0.6.17）；PR：已看到 **#810**；issue：已看到 **#808**
+- 方法：上游動到 71 個路徑；66 個本線與 `301b02b` 逐位元組相同，直接取 `upstream/main`。5 個分岔檔手動合入：`scripts/validate-reference-links*.js`（最小重做 `08fcd16`，先紅後綠）、`AGENTS.md`（含上游 `CLAUDE.md` 的目錄改動）、繁中 `README.md`；`README.en.md` 以上游 README 重建。
+- 新技能 `accessibility-engineering`、persona `accessibility-auditor`、`/a11y` 隨 #261 合併抵達；manifest 跟上游到 0.6.17，tag／release 待推送後建立。
+- monitored：移除已關閉的 #774、#775、#777、#779 與已合併的 #778；新增 open 的 #803、#806、#807、#809、#810；#769–#773 未漂移。issue #804、#805 的缺陷在本線存在，等上游修正。逐筆理由見 [`DECISIONS.md`](DECISIONS.md) 同日條目。
