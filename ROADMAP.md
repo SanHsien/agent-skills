@@ -11,13 +11,12 @@
 
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| 無 | 目前沒有可以直接動手的項目 | 無 | 無 | 無 |
+| 上游合併 open PR 後同步（所有 open PR 都等合併；近輪重查過：#769–#779、#722、#730–#732、#736、#742、#744、#750、#753、#755、#757、#761–#764、#766；更早的見 `docs/UPSTREAM.md:105`） | 觸發條件已成立（2026-11-21 查：`python tools/check_upstream_updates.py --strict` exit 1：baseline `301b02b` 後 59 個 commit；`Upstream check` 2026-11-20 failure）。原條件：任一筆被上游合併、commit 軸出現新 commit；依慣例未合併 PR 不單獨摘取 | 同步後，除登記的分岔檔（繁中 `README.md`、`AGENTS.md`、`.gitignore`、`scripts/validate-reference-links*.js`、`hooks/hooks.json`、5 份 plugin manifest 的版本號）外，上游動到的檔案與 `upstream/main` 逐位元組一致；`reviewed_through` 推進；`tools\dev_check.ps1` 綠 | Claude Sonnet | `docs/DECISIONS.md`；`tools/upstream_baseline.json` |
 
 ## 中期：等條件成立再做
 
 | 項目 | 觸發條件 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| 上游合併 open PR 後同步（所有 open PR 都等合併；近輪重查過：#769–#779、#722、#730–#732、#736、#742、#744、#750、#753、#755、#757、#761–#764、#766；更早的見 `docs/UPSTREAM.md:105`） | 任一筆被上游合併、commit 軸出現新 commit；依慣例未合併 PR 不單獨摘取 | 同步後，除登記的分岔檔（繁中 `README.md`、`AGENTS.md`、`.gitignore`、`scripts/validate-reference-links*.js`、`hooks/hooks.json`、5 份 plugin manifest 的版本號）外，上游動到的檔案與 `upstream/main` 逐位元組一致；`reviewed_through` 推進；`tools\dev_check.ps1` 綠 | Claude Sonnet | `docs/DECISIONS.md`；`tools/upstream_baseline.json` |
 | #748 已 closed 未合併；本線出現 `references/*.md#...%XX` 連結或 CJK 標題錨點時最小重做 | 本線出現 `references/*.md#...%XX` 形式連結或 CJK 標題錨點（#748 已於 2026-10-29 closed，不再等上游合併） | 在 `validate-reference-links.js` 最小重做 fragment 解碼比對，與本線的 `stripInlineHtml` 並存，node 測試全過；`tools\dev_check.ps1` 綠 | Codex | `docs/DECISIONS.md:362` |
 
 ## 刻意不做
