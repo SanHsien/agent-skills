@@ -14,10 +14,8 @@ OpenCode uses a **skill-driven execution model** powered by the `skill` tool and
 
 ### Core Rules
 
-- If a task matches a skill, you MUST invoke it
+- When a task matches a skill, invoke it and follow its workflow in full; a skill applied halfway skips the exit criteria it exists for.
 - Skills are located in `skills/<skill-name>/SKILL.md`
-- Never implement directly if a skill applies
-- Always follow the skill instructions exactly (do not partially apply them)
 
 ### Intent → Skill Mapping
 
@@ -47,24 +45,7 @@ Instead, the agent must internally follow this lifecycle:
 
 ### Execution Model
 
-For every request:
-
-1. Determine if any skill applies (even 1% chance)
-2. Invoke the appropriate skill using the `skill` tool
-3. Follow the skill workflow strictly
-4. Only proceed to implementation after required steps (spec, plan, etc.) are complete
-
-### Anti-Rationalization
-
-The following thoughts are incorrect and must be ignored:
-
-- "This is too small for a skill"
-- "I can just quickly implement this"
-- "I’ll gather context first"
-
-Correct behavior:
-
-- Always check for and use skills first
+For each request, check the intent mapping above. When a skill applies, invoke it with the `skill` tool, follow its workflow, and finish the steps it requires (spec, plan, etc.) before implementing. Size alone does not exempt a request: a small change that matches a skill still goes through it. A request that no skill covers goes straight to the work.
 
 This ensures OpenCode behaves similarly to Claude Code with full workflow enforcement.
 

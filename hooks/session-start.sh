@@ -2,10 +2,13 @@
 # agent-skills session start hook
 # Injects the using-agent-skills meta-skill into a new session.
 #
-# Not wired by the plugin: hosts that already route skills from their
-# descriptions (Claude Code, Codex CLI) would run a second router on top of
-# the native one — see docs/getting-started.md. Wire this script into a
-# SessionStart hook only on hosts without native skill routing.
+# Upstream does not wire this script: hosts that already route skills from
+# their descriptions (Claude Code, Codex CLI) would run a second router on top
+# of the native one — see docs/getting-started.md.
+# This fork deliberately keeps hooks/hooks.json, which wires it into the
+# Claude Code SessionStart hook, so on native-routing hosts the meta-skill is
+# injected on top of native routing (about 3.5k tokens per session). See
+# docs/DECISIONS.md, 2026-11-02 "Hook 保留決定".
 #
 # Every output path must emit the standard SessionStart envelope
 #   {"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": "..."}}

@@ -18,7 +18,8 @@
 | 項目 | 說明 |
 |---|---|
 | `README.md` | 繁中主檔；英文原文在 `README.en.md` |
-| `AGENTS.md` | 上游內容保留，尾端加一節本 fork 的維護規則（上游的 `CLAUDE.md` 已刪除，只維護 `AGENTS.md`） |
+| `AGENTS.md` | 上游內容保留，尾端加一節本 fork 的維護規則（上游的 `CLAUDE.md` 已刪除，只維護 `AGENTS.md`）；Core Rules 與 Execution Model 兩段改寫壓力語言（2026-11-22，見 `docs/DECISIONS.md`） |
+| `hooks/session-start.sh` | 只改檔頭註解：說明本 fork 以 `hooks/hooks.json` 刻意接線（2026-11-22，見 `docs/DECISIONS.md`）；腳本行為與上游相同 |
 | `NOTICE.md` / `FORK.md` | 來源、授權與同步說明 |
 | `tools/dev_check.ps1` | Windows 本機一鍵 gate |
 | `tools/check_upstream_updates.py` | 上游 commit／PR／issue 三軸未審查追蹤 |

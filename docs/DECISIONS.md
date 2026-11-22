@@ -777,3 +777,11 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 | issue #808 以 OpenCode plugin 安裝 | OPEN | 觀察 | 功能請求，無 PR；本線不自行新增宿主安裝方式。重看：上游出現對應 PR。 |
 
 水位：`reviewed_through` `301b02b` → `8c99fa36d90068c82d547f7c12a9d67a3e95f4ee`、`reviewed_pr_through` 780 → 810、`reviewed_issue_through` 781 → 808、`reviewed_date` 2026-11-21；monitored 移除 #774、#775、#777、#778、#779，新增 #803、#806、#807、#809、#810。版本 0.6.15 → 0.6.17。
+
+## 2026-11-22：AGENTS.md 壓力語言改寫；`session-start.sh` 檔頭註解對齊 hook 保留決定
+
+來源：2026-11-22 prompt audit 批次 4（agent-skills）。
+
+**AGENTS.md（M，採用）**：OpenCode 段的「you MUST invoke it」「Never implement directly if a skill applies」「Determine if any skill applies (even 1% chance)」，以及把「I'll gather context first」列為必須忽略的念頭，文字與 `upstream/main` 一字不差。本 repo 沒有 `CLAUDE.md`，Claude Code 也會讀這份檔，「1% 機率＋MUST」會讓現行模型過度觸發 skill，禁止先收集 context 會讓模型動手前少讀。改成：符合 skill 就照 workflow 做完、小改動不因大小豁免、沒有 skill 涵蓋就直接做。保留 skill 優先與做完整流程的意圖，只拿掉催促語氣與「不准先讀」。代價：上游改這兩段時同步要手動合入；已登記在 `FORK.md` 與路線圖分岔清單。適合回貢上游，但需維護者在當次對話同意。
+
+**hooks（flag，只改註解）**：`hooks/session-start.sh` 第 5–8 行寫「Not wired by the plugin」，與本線刻意保留的 `hooks/hooks.json` 接線矛盾（2026-11-02〈Hook 保留決定〉已記錄這句在本 fork 不成立）。依規劃長判斷只改註解，說明上游不接線、本 fork 刻意接線及每 session 約 3.5k tokens 的代價；不改 `hooks.json` 接線、不刪檔。重看條件沿用 2026-11-02。

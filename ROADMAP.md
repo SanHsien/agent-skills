@@ -16,7 +16,7 @@
 
 | 項目 | 觸發條件 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| 上游合併 open PR 後同步（monitored：#769–#773、#803、#806、#807、#809、#810；其餘 open PR 見歷次 `docs/DECISIONS.md`） | 任一筆被上游合併、head 漂移，或 commit 軸出現新 commit（`python tools/check_upstream_updates.py --strict` 轉 exit 1）；依慣例未合併 PR 不單獨摘取 | 同步後，除登記的分岔檔（繁中 `README.md`、`AGENTS.md`、`.gitignore`、`scripts/validate-reference-links*.js`、`hooks/hooks.json`）外，上游動到的檔案與 `upstream/main` 逐位元組一致；`reviewed_through` 推進；`tools\dev_check.ps1` 綠 | Claude Sonnet | `docs/DECISIONS.md`；`tools/upstream_baseline.json` |
+| 上游合併 open PR 後同步（monitored：#769–#773、#803、#806、#807、#809、#810；其餘 open PR 見歷次 `docs/DECISIONS.md`） | 任一筆被上游合併、head 漂移，或 commit 軸出現新 commit（`python tools/check_upstream_updates.py --strict` 轉 exit 1）；依慣例未合併 PR 不單獨摘取 | 同步後，除登記的分岔檔（繁中 `README.md`、`AGENTS.md`、`.gitignore`、`scripts/validate-reference-links*.js`、`hooks/hooks.json`、`hooks/session-start.sh` 檔頭註解）外，上游動到的檔案與 `upstream/main` 逐位元組一致；`reviewed_through` 推進；`tools\dev_check.ps1` 綠 | Claude Sonnet | `docs/DECISIONS.md`；`tools/upstream_baseline.json` |
 | issue #804（floor-guard 印出匹配行）、#805（SSRF 範例 TOCTOU）：缺陷在本線存在 | 上游合併 #806 或 #809（#805 的修正）；或本線使用者回報實際洩漏／被繞過 | 隨 commit 軸同步，或在本線最小重做並附失敗測試；`tools\dev_check.ps1` 綠 | Claude Sonnet | `docs/DECISIONS.md` 2026-11-21 |
 | #748 已 closed 未合併；本線出現 `references/*.md#...%XX` 連結或 CJK 標題錨點時最小重做 | 本線出現 `references/*.md#...%XX` 形式連結、CJK 標題錨點或含組合字元（`\p{M}`）的錨點（#748 已於 2026-10-29 closed；同類的 #792 於 2026-11-18 closed，不再等上游合併） | 在 `validate-reference-links.js` 最小重做 fragment 解碼比對，與本線的 `stripInlineHtml` 並存，node 測試全過；`tools\dev_check.ps1` 綠 | Codex | `docs/DECISIONS.md:362` |
 
