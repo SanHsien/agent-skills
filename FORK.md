@@ -36,7 +36,7 @@
 ## 分支與 remote
 
 - `origin/main`：SanHsien 維護線，也是唯一長期分支。
-- 單一長期分支（`main`）；tag 與 release 保留歷史版本：升版時新增 tag 與 release，**不刪舊 tag、不刪舊 release**（目前最新為 0.6.15，0.6.9 仍保留），GitHub 的 Latest 指向最新版。原因：Claude Code 依版本號快取 plugin，舊 tag 是版本與內容對照的依據。2026-11-08 取代原本的「單一 tag」政策，見 [`docs/DECISIONS.md`](docs/DECISIONS.md)。
+- 單一長期分支（`main`）；tag 與 release 保留歷史版本：升版時新增 tag 與 release，**不刪舊 tag、不刪舊 release**（目前最新為 0.6.17，0.6.9、0.6.15 仍保留），GitHub 的 Latest 指向最新版。原因：Claude Code 依版本號快取 plugin，舊 tag 是版本與內容對照的依據。2026-11-08 取代原本的「單一 tag」政策，見 [`docs/DECISIONS.md`](docs/DECISIONS.md)。
 - 日常修改直接推 `origin/main`。只有需要他人審查或高風險改動時才開 branch → PR。
 - `upstream/main`：Addy Osmani 原始專案，只追蹤、不推送。
 - Dependabot 或外部 fork 的變更同樣走 PR，讀 diff 並通過 CI 後再合併。
