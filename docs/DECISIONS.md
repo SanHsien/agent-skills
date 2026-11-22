@@ -687,7 +687,7 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 
 水位：`reviewed_through` 不動（`301b02b`）、`reviewed_pr_through` 不動（780）、`reviewed_issue_through` 776 → 781、`reviewed_date` 2026-11-08 → 2026-11-10；monitored 的 `pr#775` head 重新釘為 `6ea55973dbda7e0f7ed1fc6fc44a32e91d6f70e5`。沒有任何產品檔變動，版本維持 0.6.15，不需要新 tag。
 
-## 2026-11-21：逐筆審查 `301b02b..8c99fa3`（59 commits，0.6.17）、PR #782–#807、issue #783–#805
+## 2026-11-21：逐筆審查 `301b02b..8c99fa3`（59 commits，0.6.17）、PR #782–#810、issue #783–#808
 
 範圍：`git fetch upstream` 後 `upstream/main` 為 `8c99fa36d90068c82d547f7c12a9d67a3e95f4ee`；`python tools/check_upstream_updates.py --strict` exit 1，列出 59 筆 commit、18 筆新 PR、7 筆新 issue、5 筆 monitored 漂移。方法同 2026-11-02：讀每筆 parent diff 與 merge 的 remerge-diff，對整份 `git diff 301b02b upstream/main`（約 197 KB）的新增行掃隱藏內容（`curl|sh`／`iwr`／`iex`／`dangerously`／`bypassPermissions`／`eval(`／`new Function`／`globalThis`、長 base64、長空白、提示注入字句）與 Unicode Cf／Co／BOM，皆無命中；open PR #803、#806、#807 與已關閉的小型 PR（#792–#794、#800）的 diff 同樣掃過，無命中。PR／issue 內容只當資料讀，全程未向上游寫入。
 
@@ -731,7 +731,7 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 | `1ffd569920ce46ad8e913652091d9cc096213d75`、`675e6d95fd828180ff9f16875d9466988b6f6127`、`535f1611b407f27b6a0402802a2673f4e5be01d9`、`0094fdbd5ebb15ec9243a94e43e7224edbae52de`、`3b79b0ce438e944fab594b143f20f64b6093562d`、`f9e7e19210afb70c621489a9fc80651ce6d7fc8c` | 採用（隨最終樹） | 新技能 `accessibility-engineering`、persona `accessibility-auditor`、三份 `/a11y` 指令、eval 與 fixture、目錄表面更新（#261，上游維護者合併）。`scripts/audit-a11y.sh` 以 `npx --yes` 取釘版的 `@axe-core/cli@4.13.0` 與 `pa11y@9.1.1`，是使用者自行執行的技能輔助腳本；本輪未執行。上游 `CLAUDE.md` 的改動移入本線 `AGENTS.md`。 |
 | `8c99fa36d90068c82d547f7c12a9d67a3e95f4ee` | 採用 | 五份 manifest 0.6.16 → 0.6.17，與 `upstream/main` 逐位元組相同。新 tag／release 0.6.17 屬推送後的對外動作，本輪不做，列入 ROADMAP。 |
 
-### PR 軸（#782–#807 與 monitored）
+### PR 軸（#782–#810 與 monitored）
 
 | PR | 狀態與 head | 裁決 | 理由與重看條件 |
 | --- | --- | --- | --- |
@@ -750,7 +750,7 @@ completely inspected」。收進 baseline 等於接受這塊沒被這個 analyze
 | #807 plan 指令依設定的 task list 目標 | OPEN；`2a47bf2` | 延後（釘 monitored） | 三份 plan 指令各改一句（issue #802 的後續），非缺陷。重看：上游合併或 head 改變。 |
 | #769–#773 | OPEN，head 未漂移 | 維持延後 | 同 2026-11-02（續）。 |
 
-### Issue 軸（#783–#805）
+### Issue 軸（#783–#808）
 
 | issue | 狀態 | 裁決 |
 | --- | --- | --- |
